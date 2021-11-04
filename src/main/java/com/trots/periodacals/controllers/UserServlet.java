@@ -1,6 +1,6 @@
 package com.trots.periodacals.controllers;
 
-import com.trots.periodacals.dao.UserDao;
+import com.trots.periodacals.dao.RegistrationDao;
 import com.trots.periodacals.entity.User;
 
 import javax.servlet.RequestDispatcher;
@@ -14,11 +14,11 @@ import java.util.List;
 
 @WebServlet("/registration")
 public class UserServlet extends HttpServlet {
-    private UserDao userDao = new UserDao();
+    private RegistrationDao registrationDao = new RegistrationDao();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("UserServlet#doGet");
-        List<User> list = userDao.findAllUsers();
+        List<User> list = registrationDao.findAllUsers();
         System.out.println(list.get(0).getId());
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/registrationPage.jsp");
@@ -42,7 +42,7 @@ public class UserServlet extends HttpServlet {
         user.setName(name);
         user.setSurname(surname);
 
-        userDao.registerUser(user);
+        registrationDao.registerUser(user);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/shopPage.jsp");
         dispatcher.forward(request, response);

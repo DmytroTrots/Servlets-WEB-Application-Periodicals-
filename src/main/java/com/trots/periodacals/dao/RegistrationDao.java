@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
-public class UserDao {
+public class RegistrationDao {
 
     Connection con = ConnectionPool.getInstance().getConnection();
 
