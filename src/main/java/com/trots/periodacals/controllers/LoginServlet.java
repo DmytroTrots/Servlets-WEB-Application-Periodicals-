@@ -41,35 +41,35 @@ public class LoginServlet extends HttpServlet {
         {
             String userValidate = loginDao.authenticateUser(user);
 
-            if(userValidate.equals("Admin_Role"))
+            if(userValidate.equals("admin"))
             {
                 System.out.println("Admin's Home");
 
                 HttpSession session = request.getSession(); //Creating a session
-                session.setAttribute("Admin", username); //setting session attribute
+                session.setAttribute("Role", userValidate); //setting session attribute
                 request.setAttribute("userName", username);
 
-                request.getRequestDispatcher("/WEB-INF/views/adminMainPage.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/shop");
             }
-            else if(userValidate.equals("Manager_Role"))
+            else if(userValidate.equals("manager"))
             {
                 System.out.println("Editor's Home");
 
                 HttpSession session = request.getSession();
-                session.setAttribute("Manager", username);
+                session.setAttribute("Role", userValidate);
                 request.setAttribute("userName", username);
 
-                request.getRequestDispatcher("/WEB-INF/views/managerMainPage.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/shop");
             }
-            else if(userValidate.equals("Customer_Role"))
+            else if(userValidate.equals("customer"))
             {
                 System.out.println("User's Home");
 
                 HttpSession session = request.getSession();
-                session.setAttribute("Customer", username);
+                session.setAttribute("Role", userValidate);
                 request.setAttribute("userName", username);
 
-                request.getRequestDispatcher("/WEB-INF/views/customerMainPage.jsp").forward(request, response);
+                response.sendRedirect(request.getContextPath() + "/shop");
             }
             else
             {

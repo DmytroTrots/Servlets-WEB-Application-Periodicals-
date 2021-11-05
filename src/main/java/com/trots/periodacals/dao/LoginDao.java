@@ -33,11 +33,11 @@ public class LoginDao {
                 roleDB = resultSet.getString("name");
 
                 if(username.equals(userNameDB) && password.equals(passwordDB) && roleDB.equals("admin"))
-                    return "Admin_Role";
+                    return "admin";
                 else if(username.equals(userNameDB) && password.equals(passwordDB) && roleDB.equals("manager"))
-                    return "Manager_Role";
+                    return "manager";
                 else if(username.equals(userNameDB) && password.equals(passwordDB) && roleDB.equals("customer"))
-                    return "Customer_Role";
+                    return "customer";
             }
         }
         catch(SQLException e)
