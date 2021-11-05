@@ -12,13 +12,13 @@ public class UserDao {
     public boolean addUser(User user, String role) throws SQLException {
         boolean result = false;
         int idOfRole = 0;
-        try(PreparedStatement rs = con.prepareStatement("SELECT `role`.`id` FROM role WHERE `name` = ?");
+        try(PreparedStatement ps = con.prepareStatement("SELECT `role`.`id` FROM role WHERE `name` = ?");
             PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `dbperiodicals`.`user` " +
                 "(`username`, `email`, `password`, `role_id`, `telephone`, `name`, `surname`)" +
                 "VALUES (?, ?, ?, ?, ?, ?, ?);"
             )){
-            rs.setString(1, role);
-            ResultSet resultSet = rs.executeQuery();
+            ps.setString(1, role);
+            ResultSet resultSet = ps.executeQuery();
             if(resultSet.next()){
                 idOfRole = resultSet.getInt("id");
             }
