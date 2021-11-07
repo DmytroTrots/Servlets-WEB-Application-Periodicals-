@@ -7,26 +7,30 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ConnectionPool {
+public class ConnectionPool implements ConnectionBuilder{
+
+    private DataSource dataSource;
+
     private static ConnectionPool instance = null;
 
-    public static ConnectionPool getInstance(){
+    public ConnectionPool() {
+        try {
+            Context context = new InitialContext();
+            dataSource = (DataSource)context.lookup("java:comp/env/jdbc/connectionPool");
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized ConnectionPool getInstance(){
         if(instance==null){
             instance = new ConnectionPool();
         }
         return instance;
     }
 
-    public Connection getConnection(){
-        Context context;
-        Connection con = null;
-        try {
-            context = new InitialContext();
-            DataSource ds = (DataSource)context.lookup("java:comp/env/jdbc/connectionPool");
-            con = ds.getConnection();
-        } catch (NamingException | SQLException e) {
-            e.printStackTrace();
-        }
-        return con;
+    @Override
+    public Connection getConnection() throws SQLException {
+        return dataSource.getConnection();
     }
 }
