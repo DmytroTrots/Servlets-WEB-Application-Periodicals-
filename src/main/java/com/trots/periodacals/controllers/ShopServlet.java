@@ -1,5 +1,8 @@
 package com.trots.periodacals.controllers;
 
+import com.trots.periodacals.dao.UserDao;
+import com.trots.periodacals.dbconnection.ConnectionPool;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,6 +13,14 @@ import java.io.IOException;
 
 @WebServlet("/shop")
 public class ShopServlet extends HttpServlet {
+
+    private UserDao userDao;
+
+    @Override
+    public void init() {
+        userDao = new UserDao();
+        userDao.setConnectionBuilder(new ConnectionPool());
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

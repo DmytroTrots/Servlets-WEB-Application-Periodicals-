@@ -1,6 +1,7 @@
 package com.trots.periodacals.controllers;
 
-import com.trots.periodacals.dao.RegistrationDao;
+import com.trots.periodacals.dao.UserDao;
+import com.trots.periodacals.dbconnection.ConnectionPool;
 import com.trots.periodacals.entity.User;
 
 import javax.servlet.RequestDispatcher;
@@ -15,11 +16,17 @@ import java.util.List;
 
 @WebServlet("/registration")
 public class UserServlet extends HttpServlet {
-    private RegistrationDao registrationDao = new RegistrationDao();
+    private UserDao userDao;
+
+    @Override
+    public void init() {
+        userDao = new UserDao();
+        userDao.setConnectionBuilder(new ConnectionPool());
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("UserServlet#doGet");
-        List<User> list = registrationDao.findAllUsers();
+        List<User> list = userDao.findAllUsers();
         System.out.println(list.get(0).getId());
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/registrationPage.jsp");
@@ -39,11 +46,11 @@ public class UserServlet extends HttpServlet {
         user.setEmail(email);
         user.setPassword(password);
         user.setTelephone(telephone);
-        user.setRoleId(2);
+        user.setRole("customer");
         user.setName(name);
         user.setSurname(surname);
 
-        registrationDao.registerUser(user);
+        userDao.registerUser(user);
 
         HttpSession session = request.getSession(); //Creating a session
         session.setAttribute("Role", "customer"); //setting session attribute

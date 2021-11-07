@@ -1,5 +1,6 @@
 package com.trots.periodacals.entity;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 
 public class User {
@@ -9,10 +10,19 @@ public class User {
     private String password;
     private String telephone;
     private Date create_time;
-    private int roleId;
+    private String role;
     private String name;
     private String surname;
     private String banStatus;
+    private BigDecimal balance;
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 
     public int getId() {
         return id;
@@ -62,12 +72,12 @@ public class User {
         this.create_time = create_time;
     }
 
-    public int getRoleId() {
-        return roleId;
+    public String getRole() {
+        return role;
     }
 
-    public void setRoleId(int roleId) {
-        this.roleId = roleId;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getName() {
@@ -92,5 +102,22 @@ public class User {
 
     public void setBanStatus(String banStatus) {
         this.banStatus = banStatus;
+    }
+
+    public User(int id, String username, String email, String password, String telephone, Date create_time, String role, String name, String surname, String banStatus, BigDecimal balance) {
+        this.id = id;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.telephone = telephone;
+        this.create_time = create_time;
+        this.role = role;
+        this.name = name;
+        this.surname = surname;
+        this.banStatus = banStatus;
+        this.balance = balance;
+    }
+
+    public User() {
     }
 }
