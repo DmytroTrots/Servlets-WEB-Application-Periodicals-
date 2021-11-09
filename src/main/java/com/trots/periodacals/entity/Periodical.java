@@ -1,16 +1,35 @@
 package com.trots.periodacals.entity;
 
+import java.math.BigDecimal;
+
 public class Periodical {
     private int sellId;
     private String title;
     private int numberOfPages;
     private int periodicityPerYear;
     private int percentageOfAdvertising;
-    private int pricePerMonth;
+    private Double pricePerMonth;
     private String description;
     private double rating;
     private String language;
     private int publisherId;
+    private String publisher;
+    private String image;
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
 
     public int getSellId() {
         return sellId;
@@ -52,11 +71,11 @@ public class Periodical {
         this.percentageOfAdvertising = percentageOfAdvertising;
     }
 
-    public int getPricePerMonth() {
+    public Double getPricePerMonth() {
         return pricePerMonth;
     }
 
-    public void setPricePerMonth(int pricePerMonth) {
+    public void setPricePerMonth(Double pricePerMonth) {
         this.pricePerMonth = pricePerMonth;
     }
 

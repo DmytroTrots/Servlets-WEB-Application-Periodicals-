@@ -1,7 +1,6 @@
 package com.trots.periodacals.controllers;
 
-import com.trots.periodacals.dao.UserDao;
-import com.trots.periodacals.dbconnection.ConnectionPool;
+import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
 
 import javax.servlet.RequestDispatcher;
@@ -12,23 +11,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.List;
 
 @WebServlet("/registration")
 public class UserServlet extends HttpServlet {
-    private UserDao userDao;
-
-    @Override
-    public void init() {
-        userDao = new UserDao();
-        userDao.setConnectionBuilder(new ConnectionPool());
-    }
+    private UserDaoImpl userDaoImpl = new UserDaoImpl();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("UserServlet#doGet");
-        List<User> list = userDao.findAllUsers();
-        System.out.println(list.get(0).getId());
-
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/registrationPage.jsp");
         dispatcher.forward(request, response);
     }
@@ -40,6 +28,7 @@ public class UserServlet extends HttpServlet {
         String telephone = request.getParameter("telephone");
         String name = request.getParameter("name");
         String surname = request.getParameter("surname");
+        String address = request.getParameter("address");
 
         User user = new User();
         user.setUsername(username);
@@ -49,16 +38,10 @@ public class UserServlet extends HttpServlet {
         user.setRole("customer");
         user.setName(name);
         user.setSurname(surname);
+        user.setAddress(address);
 
-        userDao.registerUser(user);
+        userDaoImpl.registerUser(user);
 
-        HttpSession session = request.getSession(); //Creating a session
-        session.setAttribute("Role", "customer"); //setting session attribute
-        request.setAttribute("userName", "customer");
-
-        response.sendRedirect(request.getContextPath() + "/shop");
+        response.sendRedirect(request.getContextPath() + "/login");
     }
-
-
-
 }

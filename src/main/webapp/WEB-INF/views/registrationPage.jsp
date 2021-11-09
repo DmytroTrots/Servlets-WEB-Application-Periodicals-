@@ -1,4 +1,3 @@
-
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -32,6 +31,10 @@
             <tr>
                 <td>Telephone</td>
                 <td><input type="text" name="telephone" /></td>
+            </tr>
+            <tr>
+                <td>Address</td>
+                <td><input type="text" name="address" /></td>
             </tr>
         </table>
         <input type="submit" value="Submit" />

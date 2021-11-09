@@ -3,14 +3,25 @@
 <%@ page import="java.util.Set" %>
 <%@ page import="java.util.stream.Collectors" %>
 <%@ page import="java.util.LinkedHashSet" %>
-<%@ page import="com.trots.periodacals.dao.UserDao" %>
+<%@ page import="com.trots.periodacals.daoimpl.UserDaoImpl" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    UserDaoImpl userDao = new UserDaoImpl();
+    List<User> list = userDao.findAllUsers();
+    request.setAttribute("USERS_LIST", list);
+    Set<String> uniqueList = list.stream().map(User::getRole).collect(Collectors.toCollection(LinkedHashSet::new));
+    request.setAttribute("ROLE_LIST", uniqueList);
+
+%>
 <html>
 <head>
     <title>AddUser</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="/resources/css/style.css">
 </head>
 <body>
+<%@include file="header.jsp"%>
 <div align="center">
     <h1>AddUser</h1>
     <form action="<%= request.getContextPath() %>/addUser" method="post">
@@ -50,10 +61,10 @@
                 </td>
             </tr>
         </table>
+        <input type="submit" value="Submit"/>
     </form>
 </div>
 
-<input type="submit" value="Submit"/>
 </form>
 </div>
 <h3>

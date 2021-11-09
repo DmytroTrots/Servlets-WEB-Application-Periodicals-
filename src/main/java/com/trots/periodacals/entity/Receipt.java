@@ -1,14 +1,96 @@
 package com.trots.periodacals.entity;
 
-public class Receipt {
+import java.sql.Date;
+
+public class Receipt extends Periodical {
     private int id;
+    private int months;
     private String name;
     private String surname;
-    private String fathersName;
-    private String adress;
+    private String address;
     private String telephoneNumber;
-    private int status_id;
-    private int user_id;
+    private int statusId;
+    private int userId;
+    private Double price;
+    private String email;
+    private Date create_time;
+    private int periodicalId;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getPeriodicalId() {
+        return periodicalId;
+    }
+
+    public void setPeriodicalId(int periodicalId) {
+        this.periodicalId = periodicalId;
+    }
+
+    public Receipt(int id, int months, String name, String surname, String address, String telephoneNumber, int statusId, int userId, Double price, String email) {
+        this.id = id;
+        this.months = months;
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.telephoneNumber = telephoneNumber;
+        this.statusId = statusId;
+        this.userId = userId;
+        this.price = price;
+        this.email = email;
+    }
+
+    public Receipt(int months, String name, String surname, String address, String telephoneNumber, int statusId, int userId, Double price, String email) {
+        this.months = months;
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.telephoneNumber = telephoneNumber;
+        this.statusId = statusId;
+        this.userId = userId;
+        this.price = price;
+        this.email = email;
+    }
+
+    public Receipt() {
+    }
+
+    public Date getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(Date create_time) {
+        this.create_time = create_time;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public int getMonths() {
+        return months;
+    }
+
+    public void setMonths(int months) {
+        this.months = months;
+    }
 
     public int getId() {
         return id;
@@ -34,20 +116,12 @@ public class Receipt {
         this.surname = surname;
     }
 
-    public String getFathersName() {
-        return fathersName;
-    }
-
-    public void setFathersName(String fathersName) {
-        this.fathersName = fathersName;
-    }
-
     public String getAdress() {
-        return adress;
+        return address;
     }
 
     public void setAdress(String adress) {
-        this.adress = adress;
+        this.address = adress;
     }
 
     public String getTelephoneNumber() {
@@ -58,19 +132,19 @@ public class Receipt {
         this.telephoneNumber = telephoneNumber;
     }
 
-    public int getStatus_id() {
-        return status_id;
+    public int getStatusId() {
+        return statusId;
     }
 
-    public void setStatus_id(int status_id) {
-        this.status_id = status_id;
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

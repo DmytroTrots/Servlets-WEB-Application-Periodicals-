@@ -1,58 +1,37 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>shop</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/resources/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
-<div>
-    <div class="header-dark">
-        <nav class="navbar navbar-dark navbar-expand-md navigation-clean-search">
-            <div class="container"><a class="navbar-brand" href="#">Periodicals</a>
-                <button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span
-                        class="navbar-toggler-icon"></span></button>
-                <div class="collapse navbar-collapse"
-                     id="navcol-1">
-                    <ul class="nav navbar-nav">
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="/shop">Shop</a></li>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="/shop">Profile</a></li>
-                        <%
-                            if ((request.getSession(false).getAttribute("Role") == "admin")) {
-                        %>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="/shop">Administration</a>
-                        </li>
-                        <%} %>
-
-                        <%
-                            if ((request.getSession(false).getAttribute("Role") == "manager")) {
-                        %>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="/shop">Orders</a></li>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="/shop">Feedback</a></li>
-                        <%} %>
-
-                        <%
-                            if ((request.getSession(false).getAttribute("Role") == "customer")) {
-                        %>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="/shop">Send massage</a></li>
-                        <%} %>
-
-                    </ul>
-                    <%
-                        if ((request.getSession(false).getAttribute("Role") == null)) {
-                    %>
-                    <span class="navbar-text">
-                        <a href="/login" class="login">Log In</a>
-                    </span>
-                    <a class="btn btn-light action-button" role="button" href="/registration">Sign Up</a>
-                    <%} else{%>
-                    <span class="navbar-text">
-                        <a href="/logout" class="login">LogOut</a>
-                    </span>
-                    <%} %>
+<%@include file="header.jsp" %>
+<div class="container">
+    <div class="card-header my-3">All Products</div>
+    <div class="row">
+        <c:forEach var="list" items="${PERIODICAL}">
+            <div class="col-md-3 my-3">
+                <div class="card w-100">
+                    <img class="card-img-top" src="/resources/images/${list.image}"
+                         alt="Card image cap">
+                    <div class="card-body">
+                        <h5 class="card-title">${list.title}</h5>
+                        <h6 class="price">Price: $${list.pricePerMonth}</h6>
+                        <h6 class="category">Publisher: ${list.publisher}</h6>
+                        <div class="mt-3 d-flex justify-content-between">
+                            <a class="btn btn-dark" href="cart?id=${list.sellId}">Add to Cart</a> <a
+                                class="btn btn-primary" href="order-periodical?month=1&id=${list.sellId}&name=${user.getName()}
+                                &surname=${user.getSurname()}&address=${user.getAddress()}&email=${user.getEmail()}
+                                                                            &telephone=${user.getTelephone()}">Buy Now</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </nav>
+        </c:forEach>
     </div>
 </div>
 </body>

@@ -1,7 +1,6 @@
 package com.trots.periodacals.controllers;
 
-import com.trots.periodacals.dao.UserDao;
-import com.trots.periodacals.dbconnection.ConnectionPool;
+import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
 
 import javax.servlet.RequestDispatcher;
@@ -12,27 +11,22 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-
-    private UserDao userDao;
-
-    @Override
-    public void init() {
-        userDao = new UserDao();
-        userDao.setConnectionBuilder(new ConnectionPool());
-    }
-
     public LoginServlet() {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        System.out.println("Login#doGet");
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/loginPage.jsp");
         dispatcher.forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
@@ -41,43 +35,69 @@ public class LoginServlet extends HttpServlet {
         user.setUsername(username);
         user.setPassword(password);
 
-        UserDao userDao = new UserDao();
+        UserDaoImpl userDaoImpl = new UserDaoImpl();
 
-        try {
-            String userValidate = userDao.authenticateUser(user);
+        List<User> userList = userDaoImpl.findAllUsers();
 
-            if (userValidate.equals("admin")) {
+        try
+        {
+            String userValidate = userDaoImpl.authenticateUser(user);
+
+            if(userValidate.equals("admin"))
+            {
                 System.out.println("Admin's Home");
 
                 HttpSession session = request.getSession(); //Creating a session
                 session.setAttribute("Role", userValidate); //setting session attribute
+                for (User u : userList){
+                    if (u.getUsername().equals(username)){
+                        session.setAttribute("ID", u.getId());
+                    }
+                }
                 request.setAttribute("userName", username);
 
                 response.sendRedirect(request.getContextPath() + "/shop");
-            } else if (userValidate.equals("manager")) {
+            }
+            else if(userValidate.equals("manager"))
+            {
                 System.out.println("Editor's Home");
 
                 HttpSession session = request.getSession();
                 session.setAttribute("Role", userValidate);
+                for (User u : userList){
+                    if (u.getUsername().equals(username)){
+                        session.setAttribute("ID", u.getId());
+                    }
+                }
                 request.setAttribute("userName", username);
 
                 response.sendRedirect(request.getContextPath() + "/shop");
-            } else if (userValidate.equals("customer")) {
+            }
+            else if(userValidate.equals("customer"))
+            {
                 System.out.println("User's Home");
 
                 HttpSession session = request.getSession();
                 session.setAttribute("Role", userValidate);
+                for (User u : userList){
+                    if (u.getUsername().equals(username)){
+                        session.setAttribute("ID", u.getId());
+                    }
+                }
                 request.setAttribute("userName", username);
 
                 response.sendRedirect(request.getContextPath() + "/shop");
-            } else {
-                System.out.println("Error message = " + userValidate);
+            }
+            else
+            {
+                System.out.println("Error message = "+userValidate);
                 request.setAttribute("errMessage", userValidate);
 
                 request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
             }
-        } catch (Exception e1) {
+        } catch (Exception e1)
+        {
             e1.printStackTrace();
         }
-    }
+    } //End of doPost()
 }
