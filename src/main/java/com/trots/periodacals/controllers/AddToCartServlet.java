@@ -27,6 +27,7 @@ public class AddToCartServlet extends HttpServlet {
             ArrayList<Cart> cartList = new ArrayList<>();
 
             int id = Integer.parseInt(request.getParameter("id"));
+            Integer currentPage = (Integer) request.getSession().getAttribute("currentPage");
 
             Cart cm = new Cart();
             cm.setSellId(id);
@@ -38,7 +39,7 @@ public class AddToCartServlet extends HttpServlet {
             if (cart_list == null) {
                 cartList.add(cm);
                 session.setAttribute("cart-list", cartList);
-                response.sendRedirect(request.getContextPath()+"/shop");
+                response.sendRedirect(request.getContextPath()+"/shop?currentPage="+currentPage+"&category="+request.getSession().getAttribute("category"));
             } else {
                 cartList = cart_list;
                 boolean exist = false;
@@ -50,7 +51,7 @@ public class AddToCartServlet extends HttpServlet {
                 }
                 if(!exist){
                     cartList.add(cm);
-                    response.sendRedirect(request.getContextPath()+"/shop");
+                    response.sendRedirect(request.getContextPath()+"/shop?currentPage="+currentPage+"&category="+request.getSession().getAttribute("category"));
                 }
             }
 

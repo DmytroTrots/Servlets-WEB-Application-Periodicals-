@@ -15,6 +15,16 @@ public class Periodical {
     private int publisherId;
     private String publisher;
     private String image;
+    private String telephonePub;
+
+    public String getTelephonePub() {
+        return telephonePub;
+    }
+
+    public void setTelephonePub(String telephonePub) {
+        this.telephonePub = telephonePub;
+    }
+
     public String getImage() {
         return image;
     }

@@ -1,32 +1,34 @@
 package com.trots.periodacals.daoimpl;
 
-import com.trots.periodacals.dao.ReceiptDao;
+import com.trots.periodacals.dao.SubjectDao;
 import com.trots.periodacals.dbconnection.ConnectionPool;
-import com.trots.periodacals.entity.Receipt;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
-public class ReceiptDaoImpl {
-    private ReceiptDao receiptDao = new ReceiptDao();
+public class SubjectDaoImpl {
+    SubjectDao subjectDao = new SubjectDao();
 
-    public boolean insertReceiptAfterPayment(Receipt receipt){
+    public Map<String, Integer> findAllSubjectsFromDB(){
         try(Connection con = ConnectionPool.getInstance().getConnection()) {
-            return receiptDao.insertOrder(receipt, con);
+            return subjectDao.findAllSubjects(con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return false;
+        return Collections.emptyMap();
     }
 
-    public List<Receipt> getAllOrdersOfUserById(Integer id){
+    public Integer insertSubjectIntoDB(String subj){
         try(Connection con = ConnectionPool.getInstance().getConnection()) {
-            return receiptDao.findOrdersOfOneUser(id, con);
+            return subjectDao.insertSubject(subj, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return Collections.emptyList();
+        return null;
     }
+
+
 }

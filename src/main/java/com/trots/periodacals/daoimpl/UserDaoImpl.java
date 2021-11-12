@@ -78,4 +78,22 @@ public class UserDaoImpl {
         }
         return user;
     }
+
+    public boolean updateBanStatusOfUser(String status, Integer id){
+        try (Connection con = ConnectionPool.getInstance().getConnection()){
+            return userDao.setBanStatus(status, id, con);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean deleteUserFromAdminPage(Integer id){
+        try(Connection con = ConnectionPool.getInstance().getConnection()){
+            return userDao.deleteUserAdmin(id, con);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
 }

@@ -78,7 +78,6 @@ public class PeriodicalsDao {
                 resultSet.close();
             }
         }
-
         return summa;
     }
 
@@ -96,7 +95,143 @@ public class PeriodicalsDao {
                 resultSet.close();
             }
         }
-
         return summa;
     }
+
+    public Integer insertPeriodical(Periodical periodical, Connection connection) throws SQLException {
+        Integer periodicalId = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `dbperiodicals`.`periodical` " + "(`title`, `number_of_pages`, `periodicity_per_year`, `percentage_of_advertising`, `price_per_month`, " + "`description`, `rating`, `language`, `publisher_id`, `images`) " + "VALUES (?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, periodical.getTitle());
+            preparedStatement.setInt(2, periodical.getNumberOfPages());
+            preparedStatement.setInt(3, periodical.getPeriodicityPerYear());
+            preparedStatement.setInt(4, periodical.getPercentageOfAdvertising());
+            preparedStatement.setDouble(5, periodical.getPricePerMonth());
+            preparedStatement.setString(6, periodical.getDescription());
+            preparedStatement.setDouble(7, periodical.getRating());
+            preparedStatement.setString(8, periodical.getLanguage());
+            preparedStatement.setInt(9, periodical.getPublisherId());
+            preparedStatement.setString(10, periodical.getImage());
+            preparedStatement.executeUpdate();
+            try (ResultSet resultSet = preparedStatement.getGeneratedKeys()) {
+                if (resultSet.next()) {
+                    periodicalId = resultSet.getInt(1);
+                }
+            }
+        }
+        return periodicalId;
+    }
+
+    public boolean deletePeriodicalAdmin(Integer id, Connection con) throws SQLException {
+        try (PreparedStatement preparedStatement = con.prepareStatement("DELETE FROM `dbperiodicals`.`periodical` WHERE (`sell_id` = ?)")) {
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        }
+        return true;
+    }
+
+    public Periodical getOnePeriod(Integer id, Connection con) throws SQLException {
+        Periodical periodical = new Periodical();
+        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT `sell_id`, `title`, `number_of_pages`, `periodicity_per_year`, `percentage_of_advertising`, `price_per_month`, `description`, `rating`, `language`, `publisher`.`name`, `publisher`.`telephone_number`, `images` FROM periodical, publisher WHERE sell_id = ?")) {
+            preparedStatement.setInt(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    periodical.setTitle(resultSet.getString("title"));
+                    periodical.setNumberOfPages(resultSet.getInt("number_of_pages"));
+                    periodical.setPeriodicityPerYear(resultSet.getInt("periodicity_per_year"));
+                    periodical.setPercentageOfAdvertising(resultSet.getInt("percentage_of_advertising"));
+                    periodical.setPricePerMonth(resultSet.getDouble("price_per_month"));
+                    periodical.setDescription(resultSet.getString("description"));
+                    periodical.setRating(resultSet.getDouble("rating"));
+                    periodical.setLanguage(resultSet.getString("language"));
+                    periodical.setTelephonePub(resultSet.getString("telephone_number"));
+                    periodical.setPublisher(resultSet.getString("name"));
+                    periodical.setImage(resultSet.getString("images"));
+                }
+            }
+        }
+        return periodical;
+    }
+
+    public boolean updatePeriodical(Periodical periodical, Integer id, String newImage, String oldImage, Connection connection) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `dbperiodicals`.`periodical` " + "SET `title` = ?, `number_of_pages` = ?, `periodicity_per_year` = ?, `percentage_of_advertising` = ?, " + "`price_per_month` = ?, `description` = ?, `rating` = ?, `language` = ?, `publisher_id` = ?, `images` = ? " + "WHERE (`sell_id` = ?)")) {
+            preparedStatement.setString(1, periodical.getTitle());
+            preparedStatement.setInt(2, periodical.getNumberOfPages());
+            preparedStatement.setInt(3, periodical.getPeriodicityPerYear());
+            preparedStatement.setInt(4, periodical.getPercentageOfAdvertising());
+            preparedStatement.setDouble(5, periodical.getPricePerMonth());
+            preparedStatement.setString(6, periodical.getDescription());
+            preparedStatement.setDouble(7, periodical.getRating());
+            preparedStatement.setString(8, periodical.getLanguage());
+            preparedStatement.setInt(9, periodical.getPublisherId());
+            if (!newImage.equals(oldImage) && !newImage.equals("")) {
+                preparedStatement.setString(10, newImage);
+            } else {
+                preparedStatement.setString(10, oldImage);
+            }
+            preparedStatement.setInt(11, id);
+
+            preparedStatement.executeUpdate();
+        }
+        return true;
+    }
+
+    public List<Periodical> getRecords(Connection connection) throws SQLException {
+        List<Periodical> list = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement("select periodical.sell_id, periodical.rating, periodical.title, periodical.price_per_month, periodical.images, publisher.name from periodical, publisher WHERE publisher.id = publisher_id")) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Periodical periodical = new Periodical();
+                    periodical.setSellId(resultSet.getInt("sell_id"));
+                    periodical.setTitle(resultSet.getString("title"));
+                    periodical.setPricePerMonth(resultSet.getDouble("price_per_month"));
+                    periodical.setPublisher(resultSet.getString("name"));
+                    periodical.setImage(resultSet.getString("images"));
+                    periodical.setRating(resultSet.getDouble("rating"));
+                    list.add(periodical);
+                }
+            }
+        }
+        return list;
+    }
+
+
+    public List<Periodical> getRecordsWithSubject(int subject, Connection connection) throws SQLException {
+        List<Periodical> periodicalsList = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `periodical`.`sell_id`, periodical.rating, `periodical`.`title`, " + "`periodical`.`price_per_month`,`periodical`.`images`, `publisher`.`name`\n" + "FROM periodical_has_subject\n" + "    " + "JOIN periodical ON periodical_has_subject.periodical_id = periodical.sell_id\n" + "    " + "JOIN publisher ON periodical.publisher_id = publisher.id\n" + "    " + "JOIN `subject` ON periodical_has_subject.subject_id = `subject`.id \n" + "WHERE `subject`.id = ?")) {
+            preparedStatement.setInt(1, subject);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    Periodical periodical = new Periodical();
+                    periodical.setSellId(resultSet.getInt("sell_id"));
+                    periodical.setTitle(resultSet.getString("title"));
+                    periodical.setPricePerMonth(resultSet.getDouble("price_per_month"));
+                    periodical.setPublisher(resultSet.getString("name"));
+                    periodical.setImage(resultSet.getString("images"));
+                    periodical.setRating(resultSet.getDouble("rating"));
+                    periodicalsList.add(periodical);
+                }
+            }
+        }
+        return periodicalsList;
+    }
+
+    public Periodical getPeriodicalByName(String title, Connection connection) throws SQLException {
+        Periodical periodical = null;
+        try(PreparedStatement preparedStatement = connection.prepareStatement("select periodical.sell_id, periodical.rating, periodical.title, periodical.price_per_month, periodical.images, publisher.name from periodical, publisher WHERE publisher.id = publisher_id and periodical.title = ?")){
+            preparedStatement.setString(1, title);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
+                    periodical = new Periodical();
+                    periodical.setSellId(resultSet.getInt("sell_id"));
+                    periodical.setTitle(resultSet.getString("title"));
+                    periodical.setPricePerMonth(resultSet.getDouble("price_per_month"));
+                    periodical.setPublisher(resultSet.getString("name"));
+                    periodical.setImage(resultSet.getString("images"));
+                    periodical.setRating(resultSet.getDouble("rating"));
+                }
+            }
+        }
+        return periodical;
+    }
 }
+

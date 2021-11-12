@@ -1,17 +1,17 @@
 <div>
     <div class="header-dark">
         <nav class="navbar navbar-dark navbar-expand-md navigation-clean-search">
-            <div class="container"><a class="navbar-brand" href="#">Periodicals</a>
+            <div class="container"><a class="navbar-brand" href="/shop?currentPage=1&category=0">Periodicals</a>
                 <button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span
                         class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse"
                      id="navcol-1">
                     <ul class="nav navbar-nav">
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="/shop">Shop</a></li>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="/shop?currentPage=1&category=0">Shop</a></li>
                         <%
                             if ((request.getSession(false).getAttribute("Role") != null)) {
                         %>
-                        <li class="nav-item" role="presentation"><a class="nav-link" href="#">Profile</a>
+                        <li class="nav-item" role="presentation"><a class="nav-link" href="profile">Profile</a>
                         </li>
                         <%} %>
                         <li class="nav-item" role="presentation"><a class="nav-link" href="cartPage.jsp">Cart<span class="badge badge-danger">${(cart_list.size()>0)?cart_list.size():null}</span></a>

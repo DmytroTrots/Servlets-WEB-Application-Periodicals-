@@ -19,7 +19,7 @@ public class LogoutServlet extends HttpServlet {
         if(session!=null) //If session is not null
         {
             session.invalidate(); //removes all session attributes bound to the session
-            response.sendRedirect(request.getContextPath()+"/shop");
+            response.sendRedirect(request.getContextPath()+"/shop?currentPage=1&category=0");
             System.out.println("Logged out");
         }
     }

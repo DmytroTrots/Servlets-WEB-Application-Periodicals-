@@ -1,10 +1,14 @@
 package com.trots.periodacals.dao;
 
+import com.trots.periodacals.entity.Periodical;
 import com.trots.periodacals.entity.Receipt;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReceiptDao {
 
@@ -25,5 +29,29 @@ public class ReceiptDao {
             preparedStatement.executeUpdate();
         }
         return true;
+    }
+
+    public List<Receipt> findOrdersOfOneUser(Integer id, Connection con) throws SQLException {
+        ResultSet resultSet = null;
+        List<Receipt> list = new ArrayList<>();
+        try(PreparedStatement preparedStatement = con.prepareStatement("select receipt.price_per_month, " +
+                "receipt.number_of_moths, `status`.`name`, periodical.title, receipt.create_time\n" +
+                "from ((`receipt` inner join `status` on  receipt.`status_id` = `status`.`id`)\n" + "" +
+                "inner join `periodical` on receipt.`periodical_id` = `periodical`.`sell_id`)\n" +
+                "where receipt.user_id = ?")) {
+            preparedStatement.setInt(1, id);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()){
+                Receipt receipt = new Receipt();
+                receipt.setPrice(resultSet.getDouble("price_per_month"));
+                receipt.setMonths(resultSet.getInt("number_of_moths"));
+                receipt.setTitle(resultSet.getString("title"));
+                receipt.setDescription(resultSet.getString("name"));
+                receipt.setCreate_time(resultSet.getDate("create_time"));
+                list.add(receipt);
+            }
+
+        }
+        return list;
     }
 }

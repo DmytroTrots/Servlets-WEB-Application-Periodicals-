@@ -51,6 +51,10 @@
                 <td><input type="text" name="telephone"/></td>
             </tr>
             <tr>
+                <td>Address</td>
+                <td><input type="text" name="address"/></td>
+            </tr>
+            <tr>
                 <td>Role</td>
                 <td><select id="inputState" class="form-control" name="nameOfRole" required>
                     <option selected disabled>Choose Category</option>
@@ -94,8 +98,8 @@
             <td>${tempBook.telephone}</td>
             <td>${tempBook.balance}</td>
             <td>${tempBook.banStatus}</td>
-            <td><a href="/editUser?id=${tempBook.id }">Edit</a>
-                <a href="DeleteBookServlet?id=${tempBook.id}">Delete</a></td>
+            <td><a href="ban-user?id=${tempBook.id}">Edit</a>
+                <a href="delete-user?id=${tempBook.id}">Delete</a></td>
         </tr>
     </c:forEach>
     </tbody>

@@ -56,7 +56,7 @@ public class LoginServlet extends HttpServlet {
                 }
                 request.setAttribute("userName", username);
 
-                response.sendRedirect(request.getContextPath() + "/shop");
+                response.sendRedirect(request.getContextPath() + "/shop?currentPage=1&category=0");
             }
             else if(userValidate.equals("manager"))
             {
@@ -71,7 +71,7 @@ public class LoginServlet extends HttpServlet {
                 }
                 request.setAttribute("userName", username);
 
-                response.sendRedirect(request.getContextPath() + "/shop");
+                response.sendRedirect(request.getContextPath() + "/shop?currentPage=1&category=0");
             }
             else if(userValidate.equals("customer"))
             {
@@ -86,7 +86,7 @@ public class LoginServlet extends HttpServlet {
                 }
                 request.setAttribute("userName", username);
 
-                response.sendRedirect(request.getContextPath() + "/shop");
+                response.sendRedirect(request.getContextPath() + "/shop?currentPage=1&category=0");
             }
             else
             {

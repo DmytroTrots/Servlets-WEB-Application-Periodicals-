@@ -35,6 +35,8 @@ public class OrderServlet extends HttpServlet {
                     numberOfMonths = 1;
                 }
 
+                Integer currentPage = (Integer) req.getSession().getAttribute("currentPage");
+
 
                 UserDaoImpl userDao = new UserDaoImpl();
                 PeriodicalsDaoImpl periodicalsDao = new PeriodicalsDaoImpl();
@@ -68,7 +70,7 @@ public class OrderServlet extends HttpServlet {
                                 }
                             }
                         }
-                        resp.sendRedirect(req.getContextPath() + "/shop");
+                        resp.sendRedirect(req.getContextPath() + "/shop?currentPage="+currentPage+"&category="+req.getSession().getAttribute("category"));
                     }
                 } else {
                     out.println("Failed");

@@ -87,7 +87,7 @@ public class UserDao {
     }
 
     public boolean updateBalanceTopUp(int id, Double balance, Connection con) throws SQLException {
-        try(PreparedStatement preparedStatement = con.prepareStatement("UPDATE `dbperiodicals`.`user` SET `balance` = ? WHERE (`id` = ?);")){
+        try (PreparedStatement preparedStatement = con.prepareStatement("UPDATE `dbperiodicals`.`user` SET `balance` = ? WHERE (`id` = ?)")) {
             preparedStatement.setDouble(1, balance);
             preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
@@ -98,14 +98,14 @@ public class UserDao {
 
     public Double findBalanceOfUserById(Integer id, Connection con) throws SQLException {
         Double balance = null;
-        ResultSet resultSet= null;
-        try(PreparedStatement preparedStatement = con.prepareStatement("SELECT `balance` FROM user WHERE (`id` = ?)")){
+        ResultSet resultSet = null;
+        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT `balance` FROM user WHERE (`id` = ?)")) {
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 balance = resultSet.getDouble("balance");
             }
-        }finally {
+        } finally {
             if (resultSet != null) {
                 resultSet.close();
             }
@@ -116,25 +116,46 @@ public class UserDao {
     public User findSingleUserById(Integer id, Connection con) throws SQLException {
         User user = null;
         ResultSet resultSet = null;
-        try(PreparedStatement preparedStatement = con.prepareStatement("SELECT * FROM user WHERE (`id` = ?)")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT * FROM user WHERE (`id` = ?)")) {
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 user = new User();
                 user.setName(resultSet.getString("name"));
                 user.setSurname(resultSet.getString("surname"));
                 user.setEmail(resultSet.getString("email"));
                 user.setTelephone(resultSet.getString("telephone"));
                 user.setAddress(resultSet.getString("address"));
+                user.setBanStatus(resultSet.getString("ban_status"));
             }
-        }finally {
+        } finally {
             if (resultSet != null) {
                 resultSet.close();
             }
         }
         return user;
     }
+
+    public boolean setBanStatus(String status, Integer id, Connection con) throws SQLException {
+        try (PreparedStatement preparedStatement = con.prepareStatement("UPDATE `dbperiodicals`.`user` " +
+                "SET `ban_status` = ? WHERE (`id` = ?)")) {
+            preparedStatement.setString(1, status);
+            preparedStatement.setInt(2, id);
+            preparedStatement.executeUpdate();
+        }
+        return true;
+    }
+
+    public boolean deleteUserAdmin(Integer id, Connection con) throws SQLException {
+        try(PreparedStatement preparedStatement = con.prepareStatement("DELETE FROM `dbperiodicals`.`user` WHERE (`id` = ?)")){
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+        }
+        return true;
+    }
 }
+
+
 
 
 
