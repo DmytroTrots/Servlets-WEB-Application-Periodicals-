@@ -1,7 +1,7 @@
 package com.trots.periodacals.daoimpl;
 
-import com.trots.periodacals.dao.ReceiptDao;
 import com.trots.periodacals.dbconnection.ConnectionPool;
+import com.trots.periodacals.entity.DBManager;
 import com.trots.periodacals.entity.Receipt;
 
 import java.sql.Connection;
@@ -10,11 +10,23 @@ import java.util.Collections;
 import java.util.List;
 
 public class ReceiptDaoImpl {
-    private ReceiptDao receiptDao = new ReceiptDao();
+
+    private static ReceiptDaoImpl instance;
+
+    public static synchronized ReceiptDaoImpl getInstance() {
+        if (instance == null) {
+            instance = new ReceiptDaoImpl();
+        }
+        return instance;
+    }
+
+    private DBManager dbManager = DBManager.getInstance();
+
+    private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public boolean insertReceiptAfterPayment(Receipt receipt){
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
-            return receiptDao.insertOrder(receipt, con);
+        try(Connection con = connectionPool.getConnection()) {
+            return dbManager.insertOrder(receipt, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -22,8 +34,8 @@ public class ReceiptDaoImpl {
     }
 
     public List<Receipt> getAllOrdersOfUserById(Integer id){
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
-            return receiptDao.findOrdersOfOneUser(id, con);
+        try(Connection con = connectionPool.getConnection()) {
+            return dbManager.findOrdersOfOneUser(id, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

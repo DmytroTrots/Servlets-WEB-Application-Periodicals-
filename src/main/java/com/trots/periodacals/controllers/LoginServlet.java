@@ -35,13 +35,11 @@ public class LoginServlet extends HttpServlet {
         user.setUsername(username);
         user.setPassword(password);
 
-        UserDaoImpl userDaoImpl = new UserDaoImpl();
-
-        List<User> userList = userDaoImpl.findAllUsers();
+        List<User> userList = UserDaoImpl.getInstance().findAllUsers();
 
         try
         {
-            String userValidate = userDaoImpl.authenticateUser(user);
+            String userValidate = UserDaoImpl.getInstance().authenticateUser(user);
 
             if(userValidate.equals("admin"))
             {

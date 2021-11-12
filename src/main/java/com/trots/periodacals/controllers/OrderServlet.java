@@ -37,10 +37,7 @@ public class OrderServlet extends HttpServlet {
 
                 Integer currentPage = (Integer) req.getSession().getAttribute("currentPage");
 
-
-                UserDaoImpl userDao = new UserDaoImpl();
-                PeriodicalsDaoImpl periodicalsDao = new PeriodicalsDaoImpl();
-                Double price = periodicalsDao.getPriceById(periodicalId);
+                Double price = PeriodicalsDaoImpl.getInstance().getPriceById(periodicalId);
                 Double actualBalance = (Double) req.getSession().getAttribute("balance");
                 if (actualBalance > price * numberOfMonths) {
                     Receipt receipt = new Receipt();
@@ -55,10 +52,9 @@ public class OrderServlet extends HttpServlet {
                     receipt.setUserId(id);
 
                     actualBalance = actualBalance-(price*numberOfMonths);
-                    userDao.updateFieldBalanceAfterTopUp(id, actualBalance);
+                    UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
 
-                    ReceiptDaoImpl receiptDao = new ReceiptDaoImpl();
-                    boolean result = receiptDao.insertReceiptAfterPayment(receipt);
+                    boolean result = ReceiptDaoImpl.getInstance().insertReceiptAfterPayment(receipt);
 
                     if (result) {
                         ArrayList<Cart> cart_list = (ArrayList<Cart>) req.getSession().getAttribute("cart-list");

@@ -10,25 +10,22 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try(PrintWriter out = resp.getWriter()){
-            Integer id = (Integer) req.getSession().getAttribute("ID");
-            if(id!=null){
-                ReceiptDaoImpl receiptDao = new ReceiptDaoImpl();
-                List<Receipt> receiptList= receiptDao.getAllOrdersOfUserById(id);
-                if (!receiptList.isEmpty()){
+        Integer id = (Integer) req.getSession().getAttribute("ID");
+        if (id != null) {
+            List<Receipt> receiptList = ReceiptDaoImpl.getInstance().getAllOrdersOfUserById(id);
+            if (!receiptList.isEmpty()) {
                 req.setAttribute("receiptList", receiptList);
-                }
             }
-            RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/views/profilePage.jsp");
-            dispatcher.forward(req, resp);
         }
+        RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/views/profilePage.jsp");
+        dispatcher.forward(req, resp);
+
     }
 
     @Override

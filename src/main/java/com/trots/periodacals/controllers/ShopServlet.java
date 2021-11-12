@@ -1,6 +1,5 @@
 package com.trots.periodacals.controllers;
 
-import com.trots.periodacals.dao.SubjectPeriodicalsDao;
 import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import com.trots.periodacals.daoimpl.SubjectDaoImpl;
 import com.trots.periodacals.daoimpl.SubjectPeriodicalsDaoImpl;
@@ -27,12 +26,8 @@ public class ShopServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        SubjectDaoImpl subjectDao = new SubjectDaoImpl();
-        SubjectPeriodicalsDaoImpl subjectPeriodicalsDao = new SubjectPeriodicalsDaoImpl();
-        Map<String, Integer> subjectsMap = subjectDao.findAllSubjectsFromDB();
+        Map<String, Integer> subjectsMap = SubjectDaoImpl.getInstance().findAllSubjectsFromDB();
         request.setAttribute("subjectMap", subjectsMap);
-        PeriodicalsDaoImpl pd = new PeriodicalsDaoImpl();
-        UserDaoImpl userDao = new UserDaoImpl();
         int category = Integer.parseInt(request.getParameter("category"));
         int currentPage = Integer.parseInt(request.getParameter("currentPage"));
         int recordsPerPage = 12;
@@ -43,17 +38,17 @@ public class ShopServlet extends HttpServlet {
         List<Periodical> paginList;
 
         if (category == 0) {
-            paginList = pd.getRecordsForPagination();
+            paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPagination();
         } else {
-            paginList = pd.getRecordsForPaginationBySubject(category);
+            paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPaginationBySubject(category);
         }
 
         if (searchField != null && !searchField.equals("")) {
             paginList.clear();
-            Periodical periodical = pd.getRecordPeriodicalByName(searchField);
+            Periodical periodical = PeriodicalsDaoImpl.getInstance().getRecordPeriodicalByName(searchField);
             if (periodical != null) {
                 int periodicalId = periodical.getSellId();
-                List<String> listOfPeriodicalSubject = subjectPeriodicalsDao.findAllSubjectOfPeriodicalById(periodicalId);
+                List<String> listOfPeriodicalSubject = SubjectPeriodicalsDaoImpl.getInstance().findAllSubjectOfPeriodicalById(periodicalId);
                 {
                     for (String s : listOfPeriodicalSubject) {
                         if (subjectsMap.get(s) == category || category == 0) {
@@ -64,7 +59,6 @@ public class ShopServlet extends HttpServlet {
                 }
             }
         }
-
 
         if (!(sort == null)) {
             if (sort.equals("ws")) {
@@ -110,7 +104,7 @@ public class ShopServlet extends HttpServlet {
 
         User user = null;
         if (id != null) {
-            user = userDao.getSingleUserById(id);
+            user = UserDaoImpl.getInstance().getSingleUserById(id);
             if (user.getBanStatus() == null) {
                 request.getSession().setAttribute("user", user);
             } else {
@@ -121,7 +115,7 @@ public class ShopServlet extends HttpServlet {
 
 
         if (id != null) {
-            Double actualBalance = userDao.getBalanceOfUserBiId(id);
+            Double actualBalance = UserDaoImpl.getInstance().getBalanceOfUserById(id);
             session.setAttribute("balance", actualBalance);
         }
         ArrayList<Cart> cart_list = (ArrayList<Cart>) session.getAttribute("cart-list");

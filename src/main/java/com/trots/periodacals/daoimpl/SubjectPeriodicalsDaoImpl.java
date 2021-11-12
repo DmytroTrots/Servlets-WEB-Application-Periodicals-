@@ -1,7 +1,7 @@
 package com.trots.periodacals.daoimpl;
 
-import com.trots.periodacals.dao.SubjectPeriodicalsDao;
 import com.trots.periodacals.dbconnection.ConnectionPool;
+import com.trots.periodacals.entity.DBManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -10,11 +10,22 @@ import java.util.List;
 
 public class SubjectPeriodicalsDaoImpl {
 
-    SubjectPeriodicalsDao subjectPeriodicalsDao = new SubjectPeriodicalsDao();
+    private static SubjectPeriodicalsDaoImpl instance;
+
+    public static synchronized SubjectPeriodicalsDaoImpl getInstance() {
+        if (instance == null) {
+            instance = new SubjectPeriodicalsDaoImpl();
+        }
+        return instance;
+    }
+
+    private DBManager dbManager = DBManager.getInstance();
+
+    private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public boolean insertSubjectIdAndPeriodicalIdIntoDB(Integer subjId, Integer periodId) {
-        try (Connection connection = ConnectionPool.getInstance().getConnection()) {
-            return subjectPeriodicalsDao.insertSubjIdAndPeriodicalId(subjId, periodId, connection);
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.insertSubjIdAndPeriodicalId(subjId, periodId, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -22,8 +33,8 @@ public class SubjectPeriodicalsDaoImpl {
     }
 
     public List<String> findAllSubjectOfPeriodicalById(Integer id){
-        try (Connection connection = ConnectionPool.getInstance().getConnection()) {
-            return subjectPeriodicalsDao.getSubjectOfPeriodById(id, connection);
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.getSubjectOfPeriodById(id, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

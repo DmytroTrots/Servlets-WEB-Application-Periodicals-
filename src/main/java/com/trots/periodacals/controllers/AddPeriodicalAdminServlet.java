@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -27,12 +26,9 @@ import java.util.Map;
 public class AddPeriodicalAdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        PublisherDaoImpl publisherDao = new PublisherDaoImpl();
-        SubjectDaoImpl subjectDao = new SubjectDaoImpl();
-        PeriodicalsDaoImpl periodicalsDao = new PeriodicalsDaoImpl();
-        request.setAttribute("PERIODICAL", periodicalsDao.getAllPeriodicals());
-        Map<String, Integer> publisherMap = publisherDao.findAllPublishersWithoutTelephone();
-        Map<String, Integer> subjectMap = subjectDao.findAllSubjectsFromDB();
+        request.setAttribute("PERIODICAL", PeriodicalsDaoImpl.getInstance().getAllPeriodicals());
+        Map<String, Integer> publisherMap = PublisherDaoImpl.getInstance().findAllPublishersWithoutTelephone();
+        Map<String, Integer> subjectMap = SubjectDaoImpl.getInstance().findAllSubjectsFromDB();
         request.getSession().setAttribute("publisherMap", publisherMap);
         request.getSession().setAttribute("subjectMap", subjectMap);
 
@@ -43,10 +39,6 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
         Periodical periodical = new Periodical();
-        PublisherDaoImpl publisherDao = new PublisherDaoImpl();
-        PeriodicalsDaoImpl periodicalsDao = new PeriodicalsDaoImpl();
-        SubjectPeriodicalsDaoImpl subjectPeriodicalsDao = new SubjectPeriodicalsDaoImpl();
-        SubjectDaoImpl subjectDao = new SubjectDaoImpl();
         Map<String, Integer> publisherMap = (Map<String, Integer>) request.getSession().getAttribute("publisherMap");
         Map<String, Integer> subjectMap = (Map<String, Integer>) request.getSession().getAttribute("subjectMap");
 
@@ -65,7 +57,7 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
         ///add publisher to table/find index of publisher
         Integer publisherId = publisherMap.get(publisher);
         if (publisherId == null) {
-            publisherId = publisherDao.insertPublisherIntoDB(publisher, telephone);
+            publisherId = PublisherDaoImpl.getInstance().insertPublisherIntoDB(publisher, telephone);
         }
         periodical.setPublisherId(publisherId);
 
@@ -82,17 +74,17 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
         }
 
         ///insert periodical into db
-        Integer periodicalId = periodicalsDao.insertPeriodicalIntoDB(periodical);
+        Integer periodicalId = PeriodicalsDaoImpl.getInstance().insertPeriodicalIntoDB(periodical);
         ///insert subject into db
 
         for (String s : subject) {
             Integer subjectsId = subjectMap.get(subject.get(subject.indexOf(s)));
             if (subjectsId == null && !subject.get(subject.indexOf(s)).equals("")) {
-                subjectsId = subjectDao.insertSubjectIntoDB(subject.get(subject.indexOf(s)));
+                subjectsId = SubjectDaoImpl.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));
             }
             ///insert n:m table con
             if (!subject.get(subject.indexOf(s)).equals("")) {
-                subjectPeriodicalsDao.insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, periodicalId);
+                SubjectPeriodicalsDaoImpl.getInstance().insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, periodicalId);
             }
         }
 

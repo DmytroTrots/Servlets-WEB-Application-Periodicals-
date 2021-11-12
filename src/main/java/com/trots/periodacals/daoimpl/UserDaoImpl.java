@@ -1,99 +1,109 @@
 package com.trots.periodacals.daoimpl;
 
-import com.trots.periodacals.dao.UserDao;
 import com.trots.periodacals.dbconnection.ConnectionPool;
+import com.trots.periodacals.entity.DBManager;
 import com.trots.periodacals.entity.User;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
 public class UserDaoImpl {
 
-    private UserDao userDao = new UserDao();
+    private static UserDaoImpl instance;
+
+    public static synchronized UserDaoImpl getInstance() {
+        if (instance == null) {
+            instance = new UserDaoImpl();
+        }
+        return instance;
+    }
+
+    private DBManager dbManager = DBManager.getInstance();
+
+    private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public String authenticateUser(User user) {
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
-            return userDao.loginCheck(user, con);
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.loginCheck(con, user);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return "Invalid user credentials";
     }
 
-    public boolean addUser(User user) {
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
-            return userDao.registrationByAdmin(user, con);
+    public List<User> findAllUsers() {
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.findAll(con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return false;
+        return Collections.emptyList();
     }
 
     public boolean registerUser(User user) {
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
-            return userDao.registrationMethod(user, con);
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.registrationMethod(user, con);
         } catch (SQLException e) {
             Logger.getLogger(e.getMessage());
         }
         return false;
     }
 
-    public List<User> findAllUsers() {
-        List<User> list = new ArrayList<>();
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
-            list = userDao.findAll(con);
+    public boolean addUser(User user) {
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.registrationByAdmin(user, con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return list;
-    }
-
-    public boolean updateFieldBalanceAfterTopUp(int id, Double balance) {
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
-            return userDao.updateBalanceTopUp(id, balance, con);
-        }catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return false;
     }
 
-    public Double getBalanceOfUserBiId(Integer id){
-        try(Connection con = ConnectionPool.getInstance().getConnection()) {
-            return userDao.findBalanceOfUserById(id, con);
-        }catch (SQLException throwables) {
+    public boolean updateFieldBalanceAfterTopUp(int id, Double balance) {
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.updateBalanceTopUp(id, balance, con);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
+    public Double getBalanceOfUserById(Integer id) {
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.findBalanceOfUserById(id, con);
+        } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return null;
     }
 
-    public User getSingleUserById(Integer id){
-        User user = null;
-        try (Connection con = ConnectionPool.getInstance().getConnection()){
-            user = userDao.findSingleUserById(id, con);
+    public User getSingleUserById(Integer id) {
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.findSingleUserById(id, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return user;
+        return null;
     }
 
-    public boolean updateBanStatusOfUser(String status, Integer id){
-        try (Connection con = ConnectionPool.getInstance().getConnection()){
-            return userDao.setBanStatus(status, id, con);
+    public boolean updateBanStatusOfUser(String status, Integer id) {
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.setBanStatus(status, id, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return false;
     }
 
-    public boolean deleteUserFromAdminPage(Integer id){
-        try(Connection con = ConnectionPool.getInstance().getConnection()){
-            return userDao.deleteUserAdmin(id, con);
+    public boolean deleteUserFromAdminPage(Integer id) {
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.deleteUserAdmin(id, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return false;
     }
+
 }

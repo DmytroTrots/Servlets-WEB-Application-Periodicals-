@@ -9,27 +9,33 @@ import java.sql.SQLException;
 
 public class ConnectionPool {
 
-    public ConnectionPool() {
-    }
+    private static ConnectionPool instance;
 
-    private static ConnectionPool instance = null;
+    private DataSource dataSource;
 
-    public synchronized static ConnectionPool getInstance(){
-        if(instance==null){
+    public static synchronized ConnectionPool getInstance() {
+        if (instance == null) {
             instance = new ConnectionPool();
         }
         return instance;
     }
 
-    public Connection getConnection(){
-        Context context;
+    public ConnectionPool() {
+        try {
+            Context initContext = new InitialContext();
+            Context envContext = (Context) initContext.lookup("java:comp/env");
+            dataSource = (DataSource) envContext.lookup("jdbc/connectionPool");
+        } catch (NamingException ex) {
+            throw new IllegalStateException("Cannot obtain a data source", ex);
+        }
+    }
+
+    public Connection getConnection() {
         Connection con = null;
         try {
-            context = new InitialContext();
-            DataSource ds = (DataSource)context.lookup("java:comp/env/jdbc/connectionPool");
-            con = ds.getConnection();
-        } catch (NamingException | SQLException e) {
-            e.printStackTrace();
+            con = dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Can't obtain a connection", e);
         }
         return con;
     }

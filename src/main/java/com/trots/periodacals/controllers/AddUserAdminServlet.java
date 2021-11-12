@@ -14,8 +14,6 @@ import java.io.IOException;
 @WebServlet("/addUser")
 public class AddUserAdminServlet extends HttpServlet {
 
-    UserDaoImpl userDaoImpl = new UserDaoImpl();
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/addUserAdminPage.jsp");
@@ -35,7 +33,7 @@ public class AddUserAdminServlet extends HttpServlet {
         user.setRole(request.getParameter("nameOfRole"));
         user.setAddress(request.getParameter("address"));
 
-        userDaoImpl.addUser(user);
+        UserDaoImpl.getInstance().addUser(user);
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/addUserAdminPage.jsp");
         dispatcher.forward(request, response);

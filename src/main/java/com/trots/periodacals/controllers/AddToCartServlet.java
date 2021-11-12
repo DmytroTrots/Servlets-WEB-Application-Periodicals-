@@ -1,8 +1,6 @@
 package com.trots.periodacals.controllers;
 
-import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
-import com.trots.periodacals.entity.User;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,7 +12,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 
 @WebServlet(name = "cartPage", urlPatterns = "/cart")

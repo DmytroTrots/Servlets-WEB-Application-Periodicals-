@@ -1,8 +1,8 @@
 package com.trots.periodacals.daoimpl;
 
-import com.trots.periodacals.dao.PeriodicalsDao;
 import com.trots.periodacals.dbconnection.ConnectionPool;
 import com.trots.periodacals.entity.Cart;
+import com.trots.periodacals.entity.DBManager;
 import com.trots.periodacals.entity.Periodical;
 
 import java.sql.Connection;
@@ -13,11 +13,22 @@ import java.util.List;
 
 public class PeriodicalsDaoImpl {
 
-    private PeriodicalsDao periodicalsDao = new PeriodicalsDao();
+    private static PeriodicalsDaoImpl instance;
+
+    public static synchronized PeriodicalsDaoImpl getInstance() {
+        if (instance == null) {
+            instance = new PeriodicalsDaoImpl();
+        }
+        return instance;
+    }
+
+    private DBManager dbManager = DBManager.getInstance();
+
+    private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public List<Periodical> getAllPeriodicals() {
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
-            return periodicalsDao.getAll(con);
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.getAll(con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -25,37 +36,35 @@ public class PeriodicalsDaoImpl {
     }
 
     public List<Cart> getAllCartPeriodical(List<Cart> list){
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
-            list = periodicalsDao.getCartPeriodical(list, con);
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.getCartPeriodical(list, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return list;
+        return Collections.emptyList();
     }
 
     public double getTotalPriceOfCart(ArrayList<Cart> list){
-        double summa = 0;
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
-            summa = periodicalsDao.getTotalCartPrice(list, con);
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.getTotalCartPrice(list, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return summa;
+        return 0;
     }
 
     public double getPriceById(Integer id){
-        double summa = 0;
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
-            summa = periodicalsDao.getPriceOfOnePeriodical(id, con);
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.getPriceOfOnePeriodical(id, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return summa;
+        return 0;
     }
 
     public Integer insertPeriodicalIntoDB(Periodical periodical){
-        try (Connection connection = ConnectionPool.getInstance().getConnection()){
-            return periodicalsDao.insertPeriodical(periodical, connection);
+        try (Connection con = connectionPool.getConnection()){
+            return dbManager.insertPeriodical(periodical, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -63,8 +72,8 @@ public class PeriodicalsDaoImpl {
     }
 
     public boolean deletePeriodicalFromAdminPage(Integer id){
-        try(Connection con = ConnectionPool.getInstance().getConnection()){
-            return periodicalsDao.deletePeriodicalAdmin(id, con);
+        try(Connection con = connectionPool.getConnection()){
+            return dbManager.deletePeriodicalAdmin(id, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -72,8 +81,8 @@ public class PeriodicalsDaoImpl {
     }
 
     public Periodical getPeriodicalById(Integer id) {
-        try (Connection con = ConnectionPool.getInstance().getConnection()) {
-            return periodicalsDao.getOnePeriod(id, con);
+        try (Connection con = connectionPool.getConnection()) {
+            return dbManager.getOnePeriod(id, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -81,8 +90,8 @@ public class PeriodicalsDaoImpl {
     }
 
     public boolean updatePeriodicalAdmin(Periodical periodical, String newImage, String oldImage, Integer id){
-        try(Connection connection = ConnectionPool.getInstance().getConnection()) {
-            return periodicalsDao.updatePeriodical(periodical, id, newImage, oldImage, connection);
+        try(Connection con = connectionPool.getConnection()) {
+            return dbManager.updatePeriodical(periodical, id, newImage, oldImage, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -90,8 +99,8 @@ public class PeriodicalsDaoImpl {
     }
 
     public List<Periodical> getRecordsForPagination(){
-        try(Connection connection = ConnectionPool.getInstance().getConnection()){
-            return periodicalsDao.getRecords(connection);
+        try(Connection con = connectionPool.getConnection()){
+            return dbManager.getRecords(con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -99,8 +108,8 @@ public class PeriodicalsDaoImpl {
     }
 
     public List<Periodical> getRecordsForPaginationBySubject(int subject){
-        try(Connection connection = ConnectionPool.getInstance().getConnection()){
-            return periodicalsDao.getRecordsWithSubject(subject, connection);
+        try(Connection con = connectionPool.getConnection()){
+            return dbManager.getRecordsWithSubject(subject, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -108,8 +117,8 @@ public class PeriodicalsDaoImpl {
     }
 
     public Periodical getRecordPeriodicalByName(String title){
-        try(Connection connection = ConnectionPool.getInstance().getConnection()){
-            return periodicalsDao.getPeriodicalByName(title, connection);
+        try(Connection con = connectionPool.getConnection()){
+            return dbManager.getPeriodicalByName(title, con);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

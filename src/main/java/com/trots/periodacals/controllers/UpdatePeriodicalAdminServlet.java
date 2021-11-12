@@ -27,17 +27,12 @@ import java.util.Map;
 public class UpdatePeriodicalAdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        SubjectPeriodicalsDaoImpl subjectPeriodicalsDao = new SubjectPeriodicalsDaoImpl();
-        PeriodicalsDaoImpl periodicalsDao = new PeriodicalsDaoImpl();
-        PublisherDaoImpl publisherDao = new PublisherDaoImpl();
-        SubjectDaoImpl subjectDao = new SubjectDaoImpl();
-
-        req.getSession().setAttribute("publisherMap", publisherDao.findAllPublishersWithoutTelephone());
-        req.getSession().setAttribute("subjectMap", subjectDao.findAllSubjectsFromDB());
+        req.getSession().setAttribute("publisherMap", PublisherDaoImpl.getInstance().findAllPublishersWithoutTelephone());
+        req.getSession().setAttribute("subjectMap", SubjectDaoImpl.getInstance().findAllSubjectsFromDB());
         Integer id = Integer.valueOf(req.getParameter("id"));
         req.getSession().setAttribute("sellId", id);
-        req.getSession().setAttribute("periodicalInf", periodicalsDao.getPeriodicalById(id));
-        req.getSession().setAttribute("existedSubject", subjectPeriodicalsDao.findAllSubjectOfPeriodicalById(id));
+        req.getSession().setAttribute("periodicalInf", PeriodicalsDaoImpl.getInstance().getPeriodicalById(id));
+        req.getSession().setAttribute("existedSubject", SubjectPeriodicalsDaoImpl.getInstance().findAllSubjectOfPeriodicalById(id));
 
         List<String> list = (List<String>) req.getSession().getAttribute("existedSubject");
 
@@ -52,10 +47,6 @@ public class UpdatePeriodicalAdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Periodical periodical = new Periodical();
-        SubjectDaoImpl subjectDao = new SubjectDaoImpl();
-        PublisherDaoImpl publisherDao = new PublisherDaoImpl();
-        SubjectPeriodicalsDaoImpl subjectPeriodicalsDao = new SubjectPeriodicalsDaoImpl();
-        PeriodicalsDaoImpl periodicalsDao = new PeriodicalsDaoImpl();
         Periodical periodicalOld = (Periodical) request.getSession().getAttribute("periodicalInf");
         Map<String, Integer> publisherMap = (Map<String, Integer>) request.getSession().getAttribute("publisherMap");
         Map<String, Integer> subjectMap = (Map<String, Integer>) request.getSession().getAttribute("subjectMap");
@@ -90,23 +81,24 @@ public class UpdatePeriodicalAdminServlet extends HttpServlet {
         ///check publisher -> add(and get generated key)
         Integer publisherId = publisherMap.get(publisher);
         if (publisherId == null) {
-            publisherId = publisherDao.insertPublisherIntoDB(publisher, telephone);
+            publisherId = PublisherDaoImpl.getInstance().insertPublisherIntoDB(publisher, telephone);
         }
         periodical.setPublisherId(publisherId);
 
         ///update periodical
-        periodicalsDao.updatePeriodicalAdmin(periodical, image, oldImage, sellId);
+        PeriodicalsDaoImpl.getInstance().updatePeriodicalAdmin(periodical, image, oldImage, sellId);
 
         ///check subject -> add(and get generated key)
         List<String> existedSubj = (List<String>) request.getSession().getAttribute("existedSubject");
         for (String s : subject) {
             Integer subjectsId = subjectMap.get(subject.get(subject.indexOf(s)));
             if (subjectsId == null && !subject.get(subject.indexOf(s)).equals("")) {
-                subjectsId = subjectDao.insertSubjectIntoDB(subject.get(subject.indexOf(s)));
+
+                subjectsId = SubjectDaoImpl.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));
             }
 
             if (!subject.get(subject.indexOf(s)).equals("") && !existedSubj.contains(subject.get(subject.indexOf(s)))) {
-                subjectPeriodicalsDao.insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, sellId);
+                SubjectPeriodicalsDaoImpl.getInstance().insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, sellId);
             }
         }
 

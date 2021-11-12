@@ -14,7 +14,6 @@ import java.io.IOException;
 
 @WebServlet("/registration")
 public class UserServlet extends HttpServlet {
-    private UserDaoImpl userDaoImpl = new UserDaoImpl();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/registrationPage.jsp");
@@ -40,7 +39,7 @@ public class UserServlet extends HttpServlet {
         user.setSurname(surname);
         user.setAddress(address);
 
-        userDaoImpl.registerUser(user);
+        UserDaoImpl.getInstance().registerUser(user);
 
         response.sendRedirect(request.getContextPath() + "/login");
     }
