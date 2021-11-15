@@ -2,6 +2,8 @@ package com.trots.periodacals.controllers;
 
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -15,8 +17,8 @@ import java.util.List;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    public LoginServlet() {
-    }
+
+    private static final Logger log = LogManager.getLogger(LoginServlet.class);
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Login#doGet");
@@ -25,10 +27,11 @@ public class LoginServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+
+        log.trace("login --> " + username );
 
         User user = new User();
 
@@ -52,7 +55,9 @@ public class LoginServlet extends HttpServlet {
                         session.setAttribute("ID", u.getId());
                     }
                 }
-                request.setAttribute("userName", username);
+                request.getSession().setAttribute("userName", username);
+
+                log.trace("Success user validation, user --> " + username + ", role --> admin");
 
                 response.sendRedirect(request.getContextPath() + "/shop?currentPage=1&category=0");
             }
@@ -67,7 +72,9 @@ public class LoginServlet extends HttpServlet {
                         session.setAttribute("ID", u.getId());
                     }
                 }
-                request.setAttribute("userName", username);
+                request.getSession().setAttribute("userName", username);
+
+                log.trace("Success user validation, user --> " + username + ", role --> manager");
 
                 response.sendRedirect(request.getContextPath() + "/shop?currentPage=1&category=0");
             }
@@ -82,20 +89,26 @@ public class LoginServlet extends HttpServlet {
                         session.setAttribute("ID", u.getId());
                     }
                 }
-                request.setAttribute("userName", username);
+                request.getSession().setAttribute("userName", username);
+
+                log.trace("Success user validation, user --> " + username + ", role --> customer");
 
                 response.sendRedirect(request.getContextPath() + "/shop?currentPage=1&category=0");
             }
             else
             {
                 System.out.println("Error message = "+userValidate);
-                request.setAttribute("errMessage", userValidate);
+                request.setAttribute("ex", userValidate);
+
+                log.trace("Can not validate user --> " + username);
 
                 request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
             }
-        } catch (Exception e1)
+        } catch (IOException e1)
         {
-            e1.printStackTrace();
+            log.error("Cannot enter to the shop page");
+        } catch (ServletException e) {
+            log.error(e);
         }
     } //End of doPost()
 }

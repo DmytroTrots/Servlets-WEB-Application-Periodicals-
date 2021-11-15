@@ -14,23 +14,23 @@
         <table style="width: 80%">
             <tr>
                 <td>Title</td>
-                <td><input type="text" name="title" value="${periodicalInf.getTitle()}" required/></td>
+                <td><input type="text" name="title" value="${periodicalInf.getTitle()}" pattern="[A-Za-z]{2,64}" title="Title should start with upper case letter and it should be 2-64 symbols size" required/></td>
             </tr>
             <tr>
                 <td>Number of pages</td>
-                <td><input type="number" value="${periodicalInf.getNumberOfPages()}" name="numberOfPages" autocomplete="off" required/></td>
+                <td><input type="number" value="${periodicalInf.getNumberOfPages()}" name="numberOfPages" autocomplete="off" min="1" required/></td>
             </tr>
             <tr>
                 <td>Periodicity per year</td>
-                <td><input type="number" value="${periodicalInf.getPeriodicityPerYear()}" name="periodicityPerYear" autocomplete="off" required/></td>
+                <td><input type="number" value="${periodicalInf.getPeriodicityPerYear()}" name="periodicityPerYear" autocomplete="off" min="1" required/></td>
             </tr>
             <tr>
                 <td>Percentage of advertising</td>
-                <td><input type="number" value="${periodicalInf.getPercentageOfAdvertising()}" name="percentageOfAdvertising" autocomplete="off" required/></td>
+                <td><input type="number" value="${periodicalInf.getPercentageOfAdvertising()}" name="percentageOfAdvertising" autocomplete="off" min="0" required/></td>
             </tr>
             <tr>
                 <td>Price per Month</td>
-                <td><input type="number" value="${periodicalInf.getPricePerMonth()}" name="pricePerMonth" autocomplete="off" required/></td>
+                <td><input type="number" value="${periodicalInf.getPricePerMonth()}" name="pricePerMonth" autocomplete="off" min="1" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1,2}" title="Example: 16.10" required/></td>
             </tr>
             <tr>
                 <td>Description</td>
@@ -38,7 +38,7 @@
             </tr>
             <tr>
                 <td>Rating</td>
-                <td><input type="text" value="${periodicalInf.getRating()}" name="rating" autocomplete="off" required/></td>
+                <td><input type="number" value="${periodicalInf.getRating()}" name="rating" autocomplete="off" min="0" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1}" title="Example: 4.1" required/></td>
             </tr>
             <tr>
                 <td>Language</td>
@@ -51,7 +51,7 @@
             </tr>
             <tr>
                 <td>Publisher</td>
-                <td><input type="text" value="${periodicalInf.getPublisher()}" name="publisher" list="publisherList" autocomplete="off" required>
+                <td><input type="text" value="${periodicalInf.getPublisher()}" name="publisher" list="publisherList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" title="Shoud be 1-25 symbols" autocomplete="off" required>
                 </td>
             </tr>
             <tr>

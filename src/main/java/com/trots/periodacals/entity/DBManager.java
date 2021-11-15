@@ -1,6 +1,8 @@
 package com.trots.periodacals.entity;
 
 import com.trots.periodacals.dbconnection.SQLQuery;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -9,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public class DBManager implements DBManagerInterface {
+
+    private static final Logger log = LogManager.getLogger(DBManager.class);
+
     private static DBManager instance;
 
     public static synchronized DBManager getInstance() {
@@ -72,23 +77,6 @@ public class DBManager implements DBManagerInterface {
             }
         }
         return users;
-    }
-
-    ///method for registering user by User(connect with next method)
-    @Override
-    public boolean registrationMethod(User user, Connection con) throws SQLException {
-        try (PreparedStatement preparedStatement = con.prepareStatement(SQLQuery.INSERT_USER_REGISTRATION)) {
-            preparedStatement.setString(1, user.getUsername());
-            preparedStatement.setString(2, user.getEmail());
-            preparedStatement.setString(3, user.getPassword());
-            preparedStatement.setString(4, "customer");
-            preparedStatement.setString(5, user.getTelephone());
-            preparedStatement.setString(6, user.getName());
-            preparedStatement.setString(7, user.getSurname());
-            preparedStatement.setString(8, user.getAddress());
-            preparedStatement.executeUpdate();
-        }
-        return true;
     }
 
     ///method for registering user by Admin(connect with previous method)
@@ -379,23 +367,24 @@ public class DBManager implements DBManagerInterface {
     }
 
     @Override
-    public Periodical getPeriodicalByName(String title, Connection connection) throws SQLException {
-        Periodical periodical = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement("select periodical.sell_id, periodical.rating, periodical.title, periodical.price_per_month, periodical.images, publisher.name from periodical, publisher WHERE publisher.id = publisher_id and periodical.title = ?")) {
-            preparedStatement.setString(1, title);
+    public List<Periodical> getPeriodicalByName(String title, Connection connection) throws SQLException {
+        List<Periodical> periodicals = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement("select periodical.sell_id, periodical.rating, periodical.title, periodical.price_per_month, periodical.images, publisher.name from periodical, publisher WHERE publisher.id = publisher_id and periodical.title like ?")) {
+            preparedStatement.setString(1, "%" + title + "%");
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
-                    periodical = new Periodical();
+                    Periodical periodical = new Periodical();
                     periodical.setSellId(resultSet.getInt("sell_id"));
                     periodical.setTitle(resultSet.getString("title"));
                     periodical.setPricePerMonth(resultSet.getDouble("price_per_month"));
                     periodical.setPublisher(resultSet.getString("name"));
                     periodical.setImage(resultSet.getString("images"));
                     periodical.setRating(resultSet.getDouble("rating"));
+                    periodicals.add(periodical);
                 }
             }
         }
-        return periodical;
+        return periodicals;
     }
     ///END OF PERIODICAL DAO
 

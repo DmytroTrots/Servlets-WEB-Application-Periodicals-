@@ -95,7 +95,13 @@
                         <h6 class="category">Publisher: ${list.publisher}</h6>
                         <h6 class="rating">Rating: ${list.rating}</h6>
                         <div class="mt-3 d-flex justify-content-between">
-                            <a class="btn btn-dark" href="cart?id=${list.sellId}">Add to Cart</a> <a
+                            <form method="post" action="cart">
+                                <input name="id" type="hidden" value="${list.sellId}">
+                                <input type="hidden" value="${currentPage}" name="currentPage">
+                                <input type="hidden" value="${category}" name="category">
+                                <input class="btn btn-dark" type="submit" value="Add to cart">
+                            </form>
+                             <a
                                 class="btn btn-primary"
                                 href="order-periodical?month=1&id=${list.sellId}&name=${user.getName()}
                                 &surname=${user.getSurname()}&address=${user.getAddress()}&email=${user.getEmail()}

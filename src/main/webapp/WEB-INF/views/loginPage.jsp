@@ -16,7 +16,7 @@
             <td><input type="password" name="password" /></td>
         </tr>
         <tr>
-            <td><span style="color:red"><%=(request.getAttribute("errMessage") == null) ? "" : request.getAttribute("errMessage")%></span></td>
+            <td><span style="color:red"><%=(request.getAttribute("ex") == null) ? "" : request.getAttribute("ex")%></span></td>
         </tr>
         <tr>
             <td></td>

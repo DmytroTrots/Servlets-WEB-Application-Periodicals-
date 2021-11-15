@@ -2,6 +2,8 @@ package com.trots.periodacals.daoimpl;
 
 import com.trots.periodacals.dbconnection.ConnectionPool;
 import com.trots.periodacals.entity.DBManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -9,6 +11,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class SubjectPeriodicalsDaoImpl {
+
+    private static final Logger log = LogManager.getLogger(SubjectPeriodicalsDaoImpl.class);
 
     private static SubjectPeriodicalsDaoImpl instance;
 
@@ -27,7 +31,7 @@ public class SubjectPeriodicalsDaoImpl {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.insertSubjIdAndPeriodicalId(subjId, periodId, con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Cannot insert into DB periodical and subjects");
         }
         return false;
     }
@@ -36,7 +40,7 @@ public class SubjectPeriodicalsDaoImpl {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.getSubjectOfPeriodById(id, con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Cannot get all subjects of periodical by id");
         }
         return Collections.emptyList();
     }

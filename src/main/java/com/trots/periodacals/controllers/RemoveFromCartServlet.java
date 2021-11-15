@@ -1,6 +1,8 @@
 package com.trots.periodacals.controllers;
 
 import com.trots.periodacals.entity.Cart;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +14,9 @@ import java.util.ArrayList;
 
 @WebServlet("/remove-record")
 public class RemoveFromCartServlet extends HttpServlet {
+
+    private static final Logger log = LogManager.getLogger(RemoveFromCartServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String id = request.getParameter("id");
@@ -24,10 +29,10 @@ public class RemoveFromCartServlet extends HttpServlet {
                         break;
                     }
                 }
-                response.sendRedirect("cartPage.jsp");
+                response.sendRedirect(request.getContextPath()+ "/cart");
             }
         } else {
-            response.sendRedirect("cartPage.jsp");
+            response.sendRedirect(request.getContextPath()+ "/cart");
         }
     }
 

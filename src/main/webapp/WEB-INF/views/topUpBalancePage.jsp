@@ -10,7 +10,7 @@
 <div align="center">
     <h1>AddUser</h1>
     <form action="<%= request.getContextPath() %>/top-up" method="post">
-        <input type="number" name="balance"/>
+        <input type="number" name="balance" min="1"/>
         <input type="submit" value="Submit"/>
     </form>
 </div>

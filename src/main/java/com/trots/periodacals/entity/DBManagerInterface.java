@@ -14,9 +14,6 @@ public interface DBManagerInterface {
     ///method for finding all users of DataBase
     List<User> findAll(Connection con) throws SQLException;
 
-    ///method for registering user by User(connect with next method)
-    boolean registrationMethod(User user, Connection con) throws SQLException;
-
     ///method for registering user by Admin(connect with previous method)
     boolean registrationByAdmin(User user, Connection con) throws SQLException;
 
@@ -56,9 +53,9 @@ public interface DBManagerInterface {
 
     List<Periodical> getRecordsWithSubject(int subject, Connection connection) throws SQLException;
 
-    Periodical getPeriodicalByName(String title, Connection connection) throws SQLException;
+    List<Periodical> getPeriodicalByName(String title, Connection connection) throws SQLException;
 
-    ///START OF PERIODICAL DAO
+    ///START OF PUBLSIHER DAO
     Map<String, Integer> findAllPublishers(Connection con) throws SQLException;
 
     Integer insertPublisher(String publisher, String telephone, Connection con) throws SQLException;

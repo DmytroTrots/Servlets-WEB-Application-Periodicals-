@@ -2,6 +2,8 @@ package com.trots.periodacals.controllers;
 
 
 import com.trots.periodacals.entity.Cart;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +15,9 @@ import java.util.ArrayList;
 
 @WebServlet("/inc-dec")
 public class MonthIncDecServlet extends HttpServlet {
+
+    private static final Logger log = LogManager.getLogger(MonthIncDecServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
@@ -29,7 +34,7 @@ public class MonthIncDecServlet extends HttpServlet {
                         int month = c.getMonths();
                         month++;
                         c.setMonths(month);
-                        response.sendRedirect("cartPage.jsp");
+                        response.sendRedirect(request.getContextPath()+"/cart");
                     }
                 }
             }
@@ -42,10 +47,10 @@ public class MonthIncDecServlet extends HttpServlet {
                         break;
                     }
                 }
-                response.sendRedirect("cartPage.jsp");
+                response.sendRedirect(request.getContextPath()+"/cart");
             }
         } else {
-            response.sendRedirect("cartPage.jsp");
+            response.sendRedirect(request.getContextPath()+"/cart");
         }
     }
 }

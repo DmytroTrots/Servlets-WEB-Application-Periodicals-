@@ -3,14 +3,17 @@ package com.trots.periodacals.daoimpl;
 import com.trots.periodacals.dbconnection.ConnectionPool;
 import com.trots.periodacals.entity.DBManager;
 import com.trots.periodacals.entity.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class UserDaoImpl {
+
+    private static final Logger log = LogManager.getLogger(UserDaoImpl.class);
 
     private static UserDaoImpl instance;
 
@@ -29,7 +32,7 @@ public class UserDaoImpl {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.loginCheck(con, user);
         } catch (SQLException e) {
-            e.printStackTrace();
+            log.error("Invalid credentials");
         }
         return "Invalid user credentials";
     }
@@ -38,25 +41,17 @@ public class UserDaoImpl {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.findAll(con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Cannot find any user");
         }
         return Collections.emptyList();
     }
 
-    public boolean registerUser(User user) {
-        try (Connection con = connectionPool.getConnection()) {
-            return dbManager.registrationMethod(user, con);
-        } catch (SQLException e) {
-            Logger.getLogger(e.getMessage());
-        }
-        return false;
-    }
 
     public boolean addUser(User user) {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.registrationByAdmin(user, con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Cannot register user, admin page");
         }
         return false;
     }
@@ -65,7 +60,7 @@ public class UserDaoImpl {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.updateBalanceTopUp(id, balance, con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Cannot top up balance");
         }
         return false;
     }
@@ -74,7 +69,7 @@ public class UserDaoImpl {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.findBalanceOfUserById(id, con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Cannot get balance of user by id");
         }
         return null;
     }
@@ -83,7 +78,7 @@ public class UserDaoImpl {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.findSingleUserById(id, con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Cannot get user by ID");
         }
         return null;
     }
@@ -92,7 +87,7 @@ public class UserDaoImpl {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.setBanStatus(status, id, con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Cannot ban user");
         }
         return false;
     }
@@ -101,7 +96,7 @@ public class UserDaoImpl {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.deleteUserAdmin(id, con);
         } catch (SQLException throwables) {
-            throwables.printStackTrace();
+            log.error("Cannot delete user, admin page");
         }
         return false;
     }

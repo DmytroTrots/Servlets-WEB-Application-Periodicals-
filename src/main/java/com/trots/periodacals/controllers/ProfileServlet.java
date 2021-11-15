@@ -2,6 +2,8 @@ package com.trots.periodacals.controllers;
 
 import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
 import com.trots.periodacals.entity.Receipt;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,6 +16,9 @@ import java.util.List;
 
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
+
+    private static final Logger log = LogManager.getLogger(ProfileServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = (Integer) req.getSession().getAttribute("ID");

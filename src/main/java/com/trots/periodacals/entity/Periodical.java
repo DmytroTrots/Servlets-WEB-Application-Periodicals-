@@ -17,6 +17,21 @@ public class Periodical {
     private String image;
     private String telephonePub;
 
+    public Periodical(String title, int numberOfPages, int periodicityPerYear, int percentageOfAdvertising, Double pricePerMonth, String description, double rating, String language) {
+        this.title = title;
+        this.numberOfPages = numberOfPages;
+        this.periodicityPerYear = periodicityPerYear;
+        this.percentageOfAdvertising = percentageOfAdvertising;
+        this.pricePerMonth = pricePerMonth;
+        this.description = description;
+        this.rating = rating;
+        this.language = language;
+    }
+
+    public Periodical() {
+
+    }
+
     public String getTelephonePub() {
         return telephonePub;
     }

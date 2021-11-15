@@ -4,9 +4,9 @@ import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
-import com.trots.periodacals.entity.Periodical;
 import com.trots.periodacals.entity.Receipt;
-import com.trots.periodacals.entity.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -19,6 +19,9 @@ import java.util.ArrayList;
 
 @WebServlet("/order-periodical")
 public class OrderServlet extends HttpServlet {
+
+    private static final Logger log = LogManager.getLogger(OrderServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try (PrintWriter out = resp.getWriter()) {
@@ -50,6 +53,7 @@ public class OrderServlet extends HttpServlet {
                     receipt.setTelephoneNumber(telephone);
                     receipt.setPeriodicalId(periodicalId);
                     receipt.setUserId(id);
+                    log.trace("User " + req.getSession().getAttribute("userName") + " ordered periodical " + periodicalId);
 
                     actualBalance = actualBalance-(price*numberOfMonths);
                     UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);

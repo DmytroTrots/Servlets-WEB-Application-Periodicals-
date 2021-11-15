@@ -5,6 +5,9 @@ import com.trots.periodacals.daoimpl.PublisherDaoImpl;
 import com.trots.periodacals.daoimpl.SubjectDaoImpl;
 import com.trots.periodacals.daoimpl.SubjectPeriodicalsDaoImpl;
 import com.trots.periodacals.entity.Periodical;
+import com.trots.periodacals.util.CheckRole;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -24,8 +27,13 @@ import java.util.Map;
         maxFileSize = 1024 * 1024 * 10    // 10 MB
 )
 public class AddPeriodicalAdminServlet extends HttpServlet {
+
+    private static final Logger log = LogManager.getLogger(AddPeriodicalAdminServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        CheckRole checkRoleObj = new CheckRole();
+        checkRoleObj.checkRole(request, response, log);
         request.setAttribute("PERIODICAL", PeriodicalsDaoImpl.getInstance().getAllPeriodicals());
         Map<String, Integer> publisherMap = PublisherDaoImpl.getInstance().findAllPublishersWithoutTelephone();
         Map<String, Integer> subjectMap = SubjectDaoImpl.getInstance().findAllSubjectsFromDB();
@@ -38,18 +46,18 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) {
-        Periodical periodical = new Periodical();
         Map<String, Integer> publisherMap = (Map<String, Integer>) request.getSession().getAttribute("publisherMap");
         Map<String, Integer> subjectMap = (Map<String, Integer>) request.getSession().getAttribute("subjectMap");
 
-        periodical.setTitle(request.getParameter("title"));
-        periodical.setNumberOfPages(Integer.parseInt(request.getParameter("numberOfPages")));
-        periodical.setPeriodicityPerYear(Integer.parseInt(request.getParameter("periodicityPerYear")));
-        periodical.setPercentageOfAdvertising(Integer.parseInt(request.getParameter("percentageOfAdvertising")));
-        periodical.setPricePerMonth(Double.parseDouble(request.getParameter("pricePerMonth")));
-        periodical.setRating(Double.parseDouble(request.getParameter("rating")));
-        periodical.setDescription(request.getParameter("description"));
-        periodical.setLanguage(request.getParameter("language"));
+        Periodical periodical = new Periodical(request.getParameter("title"),
+                Integer.parseInt(request.getParameter("numberOfPages")),
+                Integer.parseInt(request.getParameter("periodicityPerYear")),
+                Integer.parseInt(request.getParameter("percentageOfAdvertising")),
+                Double.parseDouble(request.getParameter("pricePerMonth")),
+                request.getParameter("description"),
+                Double.parseDouble(request.getParameter("rating")),
+                request.getParameter("language"));
+
         String publisher = request.getParameter("publisher");
         String telephone = request.getParameter("telephone");
         List<String> subject = Arrays.asList(request.getParameterValues("subject"));
@@ -58,6 +66,7 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
         Integer publisherId = publisherMap.get(publisher);
         if (publisherId == null) {
             publisherId = PublisherDaoImpl.getInstance().insertPublisherIntoDB(publisher, telephone);
+            log.trace("successfully --> inserting publisher into DB");
         }
         periodical.setPublisherId(publisherId);
 
@@ -70,21 +79,24 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
                 ///response possible
             }
         } catch (IOException | ServletException e) {
-            e.printStackTrace();
+            log.error("Error during file inserting");
         }
 
         ///insert periodical into db
         Integer periodicalId = PeriodicalsDaoImpl.getInstance().insertPeriodicalIntoDB(periodical);
+        log.trace("successfully --> inserting periodical into db");
         ///insert subject into db
 
         for (String s : subject) {
             Integer subjectsId = subjectMap.get(subject.get(subject.indexOf(s)));
             if (subjectsId == null && !subject.get(subject.indexOf(s)).equals("")) {
                 subjectsId = SubjectDaoImpl.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));
+                log.trace("successfully --> inserting subject into DB");
             }
             ///insert n:m table con
             if (!subject.get(subject.indexOf(s)).equals("")) {
                 SubjectPeriodicalsDaoImpl.getInstance().insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, periodicalId);
+                log.trace("successfully --> inserting subject and periodical into db");
             }
         }
 

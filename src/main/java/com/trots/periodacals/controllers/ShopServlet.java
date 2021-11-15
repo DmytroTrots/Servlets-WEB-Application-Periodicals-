@@ -7,6 +7,8 @@ import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Periodical;
 import com.trots.periodacals.entity.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -23,6 +25,8 @@ import java.util.Map;
 
 @WebServlet("/shop")
 public class ShopServlet extends HttpServlet {
+
+    private static final Logger log = LogManager.getLogger(ShopServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -45,15 +49,17 @@ public class ShopServlet extends HttpServlet {
 
         if (searchField != null && !searchField.equals("")) {
             paginList.clear();
-            Periodical periodical = PeriodicalsDaoImpl.getInstance().getRecordPeriodicalByName(searchField);
+            List<Periodical> periodical = PeriodicalsDaoImpl.getInstance().getRecordPeriodicalByName(searchField);
             if (periodical != null) {
-                int periodicalId = periodical.getSellId();
-                List<String> listOfPeriodicalSubject = SubjectPeriodicalsDaoImpl.getInstance().findAllSubjectOfPeriodicalById(periodicalId);
-                {
-                    for (String s : listOfPeriodicalSubject) {
-                        if (subjectsMap.get(s) == category || category == 0) {
-                            paginList.add(periodical);
-                            break;
+                for (Periodical p : periodical) {
+                    int periodicalId = p.getSellId();
+                    List<String> listOfPeriodicalSubject = SubjectPeriodicalsDaoImpl.getInstance().findAllSubjectOfPeriodicalById(periodicalId);
+                    {
+                        for (String s : listOfPeriodicalSubject) {
+                            if (subjectsMap.get(s) == category || category == 0) {
+                                paginList.add(p);
+                                break;
+                            }
                         }
                     }
                 }
@@ -85,10 +91,12 @@ public class ShopServlet extends HttpServlet {
             nOfPages++;
         }
 
-        if ((currentPage - 1) == (rows / recordsPerPage)) {
-            paginList = paginList.subList((currentPage * recordsPerPage - recordsPerPage), paginList.size());
-        } else {
-            paginList = paginList.subList((currentPage * recordsPerPage - recordsPerPage), currentPage * recordsPerPage);
+        if (rows >= 12) {
+            if ((currentPage - 1) == (rows / recordsPerPage)) {
+                paginList = paginList.subList((currentPage * recordsPerPage - recordsPerPage), paginList.size());
+            } else {
+                paginList = paginList.subList((currentPage * recordsPerPage - recordsPerPage), currentPage * recordsPerPage);
+            }
         }
 
         request.setAttribute("PERIODICAL", paginList);
@@ -108,8 +116,9 @@ public class ShopServlet extends HttpServlet {
             if (user.getBanStatus() == null) {
                 request.getSession().setAttribute("user", user);
             } else {
-                request.setAttribute("errMessage", "You are banned, sorry");
-                request.getRequestDispatcher("/WEB-INF/views/loginPage.jsp").forward(request, response);
+                request.setAttribute("ex", "You are banned, sorry");
+                request.getSession().invalidate();
+                request.getRequestDispatcher("WEB-INF/views/loginPage.jsp").forward(request, response);
             }
         }
 

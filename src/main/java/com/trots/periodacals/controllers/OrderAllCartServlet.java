@@ -2,8 +2,11 @@ package com.trots.periodacals.controllers;
 
 import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
+import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Receipt;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +18,9 @@ import java.util.ArrayList;
 
 @WebServlet("/order-all")
 public class OrderAllCartServlet extends HttpServlet {
+
+    private static final Logger log = LogManager.getLogger(OrderAllCartServlet.class);
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ArrayList<Cart> cart_list = (ArrayList<Cart>) req.getSession().getAttribute("cart_list");
@@ -43,12 +49,15 @@ public class OrderAllCartServlet extends HttpServlet {
                 receipt.setTelephoneNumber(telephone);
 
                 boolean result = ReceiptDaoImpl.getInstance().insertReceiptAfterPayment(receipt);
+                log.trace("User " + req.getSession().getAttribute("userName") + " ordered periodical " + c.getSellId());
                 if (!result) {
                     break;
                 }
             }
+            actualBalance = actualBalance-totalPrice;
+            UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
             cart_list.clear();
-            resp.sendRedirect("cartPage.jsp");
+            resp.sendRedirect(req.getContextPath()+"/shop?currentPage=1&category=0");
         } else {
             if (id == null) {
                 resp.sendRedirect(req.getContextPath() + "/login");
