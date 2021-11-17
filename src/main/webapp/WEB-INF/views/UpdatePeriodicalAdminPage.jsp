@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="messages"/>
+<html lang="${sessionScope.lang}">
 <head>
     <title>Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
@@ -39,15 +42,6 @@
             <tr>
                 <td>Rating</td>
                 <td><input type="number" value="${periodicalInf.getRating()}" name="rating" autocomplete="off" min="0" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1}" title="Example: 4.1" required/></td>
-            </tr>
-            <tr>
-                <td>Language</td>
-                <td><input type="text" value="${periodicalInf.getLanguage()}" name="language" list="languageList" autocomplete="off" required>
-                    <datalist id="languageList">
-                        <option value="ru">
-                        <option value="ukr">
-                    </datalist>
-                </td>
             </tr>
             <tr>
                 <td>Publisher</td>

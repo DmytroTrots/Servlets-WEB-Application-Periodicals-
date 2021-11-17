@@ -21,6 +21,7 @@ public class TopUpBalanceServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Integer id = (Integer) request.getSession().getAttribute("ID");
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/topUpBalancePage.jsp");
         dispatcher.forward(request, response);
     }
@@ -32,13 +33,12 @@ public class TopUpBalanceServlet extends HttpServlet {
         HttpSession session = request.getSession();
         int id = (int) session.getAttribute("ID");
 
-
-        Double actualBalance = UserDaoImpl.getInstance().getBalanceOfUserById(id);
+        Double actualBalance = (Double) request.getSession().getAttribute("balance");
         if (actualBalance != null) {
             actualBalance += balance;
             UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
             session.setAttribute("balance", actualBalance);
-        } response.sendRedirect("cartPage.jsp");
+        } response.sendRedirect(request.getContextPath() + "/cart");
     }
 
 }

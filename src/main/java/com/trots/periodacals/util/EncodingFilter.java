@@ -1,6 +1,5 @@
 package com.trots.periodacals.util;
 
-import com.trots.periodacals.entity.DBManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,9 +15,9 @@ public class EncodingFilter implements Filter {
 
     private String encoding;
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
         encoding = filterConfig.getInitParameter("encoding");
-        log.trace("Filter was initialized --> " + encoding);
+        log.trace("Filter#Encoding was initialized --> " + encoding);
     }
 
     @Override

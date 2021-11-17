@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <div>
     <div class="header-dark">
         <nav class="navbar navbar-dark navbar-expand-md navigation-clean-search">
@@ -16,10 +17,10 @@
                             <li class="nav-item" role="presentation"><a class="nav-link" href="cart">Cart<span
                                     class="badge badge-danger">${(cart_list.size()>0)?cart_list.size():null}</span></a>
                             </li>
-                            <li class="nav-item" role="presentation"><a class="nav-link" href="/send-message">Send massage</a>
+                            <li class="nav-item" role="presentation"><a class="nav-link" href="send-message">Send massage</a>
                             </li>
                             <a class="btn btn-light action-button" role="button"
-                               href="/top-up">Balance: ${(balance>0)?balance:0}</a>
+                               href="top-up">Balance: ${(balance>0)?balance:0}</a>
                         </c:if>
                         <c:if test="${sessionScope['Role'] == 'admin'}">
                             <li class="nav-item" role="presentation"><a class="nav-link"
@@ -45,6 +46,10 @@
                             <span class="navbar-text"><a href="/logout" class="login">LogOut</a></span>
                         </c:otherwise>
                     </c:choose>
+                    <ul>
+                        <li><a href="?sessionLocale=en"><fmt:message key="label.lang_en"/></a></li>
+                        <li><a href="?sessionLocale=ua"><fmt:message key="label.lang_ua"/> </a></li>
+                    </ul>
                 </div>
             </div>
         </nav>

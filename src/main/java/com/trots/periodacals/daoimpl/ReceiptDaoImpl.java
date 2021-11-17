@@ -28,13 +28,13 @@ public class ReceiptDaoImpl {
 
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
-    public boolean insertReceiptAfterPayment(Receipt receipt){
+    public Integer insertReceiptAfterPayment(Receipt receipt){
         try(Connection con = connectionPool.getConnection()) {
             return dbManager.insertOrder(receipt, con);
         } catch (SQLException throwables) {
             log.error("Cannot insert receipt into DB");
         }
-        return false;
+        return null;
     }
 
     public List<Receipt> getAllOrdersOfUserById(Integer id){
@@ -44,5 +44,30 @@ public class ReceiptDaoImpl {
             log.error("Cannot get all orders of user by ID");
         }
         return Collections.emptyList();
+    }
+
+    public List<Receipt> getAllAcceptedOrder(){
+        try(Connection con = connectionPool.getConnection()) {
+            return dbManager.findAllAcceptedOrdersOfUser(con);
+        } catch (SQLException throwables) {
+            log.error("Cannot get all accepted orders for report");
+        }
+        return Collections.emptyList();
+    }
+
+    public void acceptOrderByAdmin(Integer receiptId){
+        try(Connection connection = connectionPool.getConnection()){
+            dbManager.acceptOrderOfUserByAdmin(receiptId, connection);
+        } catch (SQLException throwables) {
+            log.error("Cannot accept order");
+        }
+    }
+
+    public void discardOrderByAdmin(Integer receiptId){
+        try(Connection connection = connectionPool.getConnection()){
+            dbManager.discardOrderOfUserByAdmin(receiptId, connection);
+        } catch (SQLException throwables) {
+            log.error("Cannot accept order");
+        }
     }
 }

@@ -9,7 +9,6 @@ import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class PeriodicalsDaoImpl {
         return Collections.emptyList();
     }
 
-    public double getTotalPriceOfCart(ArrayList<Cart> list){
+    public double getTotalPriceOfCart(List<Cart> list){
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.getTotalCartPrice(list, con);
         } catch (SQLException e) {

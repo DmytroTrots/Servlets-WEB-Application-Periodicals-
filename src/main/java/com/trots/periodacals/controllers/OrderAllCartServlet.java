@@ -2,6 +2,7 @@ package com.trots.periodacals.controllers;
 
 import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
+import com.trots.periodacals.daoimpl.ReceiptHasPeriodicalDaoImpl;
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Receipt;
@@ -35,22 +36,25 @@ public class OrderAllCartServlet extends HttpServlet {
         Double actualBalance = (Double) req.getSession().getAttribute("balance");
         Double totalPrice = (Double) req.getSession().getAttribute("totalPrice");
         if (cart_list != null && id != null && actualBalance > totalPrice) {
+            Receipt receipt = new Receipt();
+            receipt.setUserId(id);
+            receipt.setName(name);
+            receipt.setAdress(address);
+            receipt.setSurname(surname);
+            receipt.setEmail(email);
+            receipt.setTelephoneNumber(telephone);
+            Integer receiptID = ReceiptDaoImpl.getInstance().insertReceiptAfterPayment(receipt);
             for (Cart c : cart_list) {
-                Receipt receipt = new Receipt();
-                receipt.setPeriodicalId(c.getSellId());
+                receipt.setPeriodicalSellId(c.getSellId());
                 Double price = PeriodicalsDaoImpl.getInstance().getPriceById(c.getSellId()) * c.getMonths();
-                receipt.setUserId(id);
                 receipt.setMonths(c.getMonths());
-                receipt.setPrice(price);
-                receipt.setName(name);
-                receipt.setAdress(address);
-                receipt.setSurname(surname);
-                receipt.setEmail(email);
-                receipt.setTelephoneNumber(telephone);
+                receipt.setPricePerMonth(price);
 
-                boolean result = ReceiptDaoImpl.getInstance().insertReceiptAfterPayment(receipt);
                 log.trace("User " + req.getSession().getAttribute("userName") + " ordered periodical " + c.getSellId());
-                if (!result) {
+                if (receiptID!=null) {
+                    ReceiptHasPeriodicalDaoImpl.getInstance().insertReceiptAndPeriodical(receipt, receiptID);
+                }
+                else{
                     break;
                 }
             }

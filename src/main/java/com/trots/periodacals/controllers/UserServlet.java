@@ -2,6 +2,7 @@ package com.trots.periodacals.controllers;
 
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.util.PBKDF2PasswordHashing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 @WebServlet("/registration")
 public class UserServlet extends HttpServlet {
@@ -30,7 +33,13 @@ public class UserServlet extends HttpServlet {
 
         user.setUsername(request.getParameter("username"));
         user.setEmail(request.getParameter("email"));
-        user.setPassword(request.getParameter("password"));
+        String password = null;
+        try {
+            password = PBKDF2PasswordHashing.generateStorngPasswordHash(request.getParameter("password"));
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            log.error("Cant hash password");
+        }
+        user.setPassword(password);
         user.setTelephone(request.getParameter("telephone"));
         user.setRole(request.getParameter("role"));
         user.setName(request.getParameter("name"));

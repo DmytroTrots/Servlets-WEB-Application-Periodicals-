@@ -7,6 +7,7 @@ import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Periodical;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.util.CreateReportOrders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,12 +17,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @WebServlet("/shop")
 public class ShopServlet extends HttpServlet {
@@ -29,24 +26,38 @@ public class ShopServlet extends HttpServlet {
     private static final Logger log = LogManager.getLogger(ShopServlet.class);
 
     @Override
+    public void init(){
+        Timer timer = new Timer();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY,23);
+        cal.set(Calendar.MINUTE,59);
+
+        Date timeoRun = cal.getTime();
+        CreateReportOrders createReportOrders = new CreateReportOrders();
+        timer.schedule(createReportOrders, timeoRun);
+    }
+
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Integer> subjectsMap = SubjectDaoImpl.getInstance().findAllSubjectsFromDB();
         request.setAttribute("subjectMap", subjectsMap);
+
         int category = Integer.parseInt(request.getParameter("category"));
         int currentPage = Integer.parseInt(request.getParameter("currentPage"));
         int recordsPerPage = 12;
         String searchField = (String) request.getSession().getAttribute("searchField");
-
         String sort = (String) request.getSession().getAttribute("sort");
 
         List<Periodical> paginList;
 
+        ///Choose periodicals according to category
         if (category == 0) {
             paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPagination();
         } else {
             paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPaginationBySubject(category);
         }
 
+        ///Search periodical by name
         if (searchField != null && !searchField.equals("")) {
             paginList.clear();
             List<Periodical> periodical = PeriodicalsDaoImpl.getInstance().getRecordPeriodicalByName(searchField);
@@ -66,31 +77,24 @@ public class ShopServlet extends HttpServlet {
             }
         }
 
+        ///Sorting according to user's choice
         if (!(sort == null)) {
-            if (sort.equals("ws")) {
-                paginList.stream().sorted();
-            } else if (sort.equals("prLtH")) {
-                paginList.sort(Comparator.comparing(Periodical::getPricePerMonth));
-            } else if (sort.equals("prHtL")) {
-                paginList.sort(Comparator.comparing(Periodical::getPricePerMonth).reversed());
-            } else if (sort.equals("nza")) {
-                paginList.sort(Comparator.comparing(Periodical::getTitle).reversed());
-            } else if (sort.equals("naz")) {
-                paginList.sort(Comparator.comparing(Periodical::getTitle));
-            } else if (sort.equals("rating")) {
-                paginList.sort(Comparator.comparing(Periodical::getRating).reversed());
-            }
+            if (sort.equals("ws")) {}
+            else if (sort.equals("prLtH")) {paginList.sort(Comparator.comparing(Periodical::getPricePerMonth));}
+            else if (sort.equals("prHtL")) {paginList.sort(Comparator.comparing(Periodical::getPricePerMonth).reversed());}
+            else if (sort.equals("nza")) {paginList.sort(Comparator.comparing(Periodical::getTitle).reversed());}
+            else if (sort.equals("naz")) {paginList.sort(Comparator.comparing(Periodical::getTitle));}
+            else if (sort.equals("rating")) {paginList.sort(Comparator.comparing(Periodical::getRating).reversed());}
         }
 
+        ///Counting number of pages
         int rows = paginList.size();
-
         int nOfPages = rows / recordsPerPage;
-
         if (nOfPages % recordsPerPage > 0) {
-
             nOfPages++;
         }
 
+        ///If last page -> subList with list.size() to avoid index exception
         if (rows >= 12) {
             if ((currentPage - 1) == (rows / recordsPerPage)) {
                 paginList = paginList.subList((currentPage * recordsPerPage - recordsPerPage), paginList.size());
@@ -99,22 +103,20 @@ public class ShopServlet extends HttpServlet {
             }
         }
 
+        Integer id = (Integer) request.getSession().getAttribute("ID");
         request.setAttribute("PERIODICAL", paginList);
-        HttpSession session = request.getSession();
-        Integer id = (Integer) session.getAttribute("ID");
-
-
         request.getSession().setAttribute("category", category);
         request.setAttribute("noOfPages", nOfPages);
         request.getSession().setAttribute("currentPage", currentPage);
         request.setAttribute("recordsPerPage", recordsPerPage);
 
 
-        User user = null;
+        ///Check if user is banned
         if (id != null) {
-            user = UserDaoImpl.getInstance().getSingleUserById(id);
+            User user = UserDaoImpl.getInstance().getSingleUserById(id);
             if (user.getBanStatus() == null) {
                 request.getSession().setAttribute("user", user);
+                request.getSession().setAttribute("balance", user.getBalance());
             } else {
                 request.setAttribute("ex", "You are banned, sorry");
                 request.getSession().invalidate();
@@ -122,14 +124,10 @@ public class ShopServlet extends HttpServlet {
             }
         }
 
+        List<Cart> cart_list = (List<Cart>) request.getSession().getAttribute("cart-list");
 
-        if (id != null) {
-            Double actualBalance = UserDaoImpl.getInstance().getBalanceOfUserById(id);
-            session.setAttribute("balance", actualBalance);
-        }
-        ArrayList<Cart> cart_list = (ArrayList<Cart>) session.getAttribute("cart-list");
         if (cart_list != null) {
-            session.setAttribute("cart_list", cart_list);
+            request.getSession().setAttribute("cart_list", cart_list);
         }
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/shopPage.jsp");

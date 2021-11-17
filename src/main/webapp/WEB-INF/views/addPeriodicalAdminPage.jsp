@@ -1,6 +1,9 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<fmt:setLocale value="${sessionScope.lang}"/>
+<fmt:setBundle basename="messages"/>
+<html lang="${sessionScope.lang}">
 <head>
     <title>Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
@@ -16,65 +19,61 @@
                 <td>Title</td>
                 <td><input type="text" name="title" pattern="[A-Za-z]{2,64}"
                            title="Title should start with upper case letter and it should be 2-64 symbols size"
-                           required/></td>
+                           required autocomplete="off"/></td>
             </tr>
             <tr>
                 <td>Number of pages</td>
-                <td><input type="number" name="numberOfPages" min="1" required/></td>
+                <td><input type="number" name="numberOfPages" min="1" required autocomplete="off"/></td>
             </tr>
             <tr>
                 <td>Periodicity per year</td>
-                <td><input type="number" name="periodicityPerYear" min="1" required/></td>
+                <td><input type="number" name="periodicityPerYear" min="1" required autocomplete="off"/></td>
             </tr>
             <tr>
                 <td>Percentage of advertising</td>
-                <td><input type="number" name="percentageOfAdvertising" min="0" required/></td>
+                <td><input type="number" name="percentageOfAdvertising" min="0" required autocomplete="off"/></td>
             </tr>
             <tr>
                 <td>Price per Month</td>
                 <td><input type="" name="pricePerMonth" min="1" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1,2}"
-                           title="Example: 16.10" required/></td>
+                           title="Example: 16.10" required autocomplete="off"/></td>
             </tr>
             <tr>
                 <td>Description</td>
-                <td><input type="text" name="description" required/></td>
+                <td><input type="text" name="description" required autocomplete="off"/></td>
             </tr>
             <tr>
                 <td>Rating</td>
                 <td><input type="number" name="rating" min="0" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1}"
-                           title="Example: 4.1" required/></td>
-            </tr>
-            <tr>
-                <td>Language</td>
-                <td><input type="text" name="language" list="languageList" required>
-                    <datalist id="languageList">
-                        <option value="">
-                    </datalist>
-                </td>
+                           title="Example: 4.1" required autocomplete="off"/></td>
             </tr>
             <tr>
                 <td>Publisher</td>
                 <td><input type="text" name="publisher" list="publisherList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
-                           title="Shoud be 1-25 symbols" required>
+                           title="Shoud be 1-25 symbols" required autocomplete="off"/>
                 </td>
             </tr>
             <tr>
                 <td>Telephone(if you cant find publisher in the list)</td>
                 <td><input type="text" name="telephone" pattern="[0-9]{11,12}"
-                           title="Start with code of country. Telephone should not contain letters, use digits from 0 to 9, size should be 11-12 symbols"/>
+                           title="Start with code of country. Telephone should not contain letters, use digits from 0 to 9, size should be 11-12 symbols"
+                           autocomplete="off"/>
                 </td>
             </tr>
             <tr>
                 <td>Subject</td>
-                <td><input type="text" name="subject" list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" required>
+                <td><input type="text" name="subject" list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" required
+                           autocomplete="off">
             </tr>
             <tr>
                 <td>Subject</td>
-                <td><input type="text" name="subject" list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}">
+                <td><input type="text" name="subject" list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                           autocomplete="off">
             </tr>
             <tr>
                 <td>Subject</td>
-                <td><input type="text" name="subject" list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}">
+                <td><input type="text" name="subject" list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                           autocomplete="off">
             </tr>
             <tr>
                 <td>Image</td>
@@ -95,7 +94,6 @@
     <c:forEach items="${publisherMap}" var="publisher">
     <option value="${publisher.key}">
         </c:forEach>
-
 </datalist>
 
 <h3>
@@ -111,7 +109,6 @@
         <th scope="col">Price(1/12)</th>
         <th scope="col">Description</th>
         <th scope="col">Rating</th>
-        <th scope="col">Language</th>
         <th scope="col">Publisher</th>
         <th scope="col">Action</th>
     </tr>
@@ -127,7 +124,6 @@
             <td>${periodical.pricePerMonth}</td>
             <td class="text-table">${periodical.description}</td>
             <td>${periodical.rating}</td>
-            <td>${periodical.language}</td>
             <td>${periodical.publisher}</td>
             <form action="update-periodical" method="get">
                 <input name="id" type="hidden" value="${periodical.sellId}">

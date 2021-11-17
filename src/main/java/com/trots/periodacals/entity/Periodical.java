@@ -1,7 +1,5 @@
 package com.trots.periodacals.entity;
 
-import java.math.BigDecimal;
-
 public class Periodical {
     private int sellId;
     private String title;
@@ -11,13 +9,14 @@ public class Periodical {
     private Double pricePerMonth;
     private String description;
     private double rating;
-    private String language;
     private int publisherId;
-    private String publisher;
     private String image;
+
+    private String publisher;
+
     private String telephonePub;
 
-    public Periodical(String title, int numberOfPages, int periodicityPerYear, int percentageOfAdvertising, Double pricePerMonth, String description, double rating, String language) {
+    public Periodical(String title, int numberOfPages, int periodicityPerYear, int percentageOfAdvertising, Double pricePerMonth, String description, double rating) {
         this.title = title;
         this.numberOfPages = numberOfPages;
         this.periodicityPerYear = periodicityPerYear;
@@ -25,7 +24,6 @@ public class Periodical {
         this.pricePerMonth = pricePerMonth;
         this.description = description;
         this.rating = rating;
-        this.language = language;
     }
 
     public Periodical() {
@@ -118,14 +116,6 @@ public class Periodical {
 
     public void setRating(double rating) {
         this.rating = rating;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
     }
 
     public int getPublisherId() {

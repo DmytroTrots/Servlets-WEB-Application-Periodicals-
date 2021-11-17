@@ -5,7 +5,6 @@ import com.trots.periodacals.daoimpl.PublisherDaoImpl;
 import com.trots.periodacals.daoimpl.SubjectDaoImpl;
 import com.trots.periodacals.daoimpl.SubjectPeriodicalsDaoImpl;
 import com.trots.periodacals.entity.Periodical;
-import com.trots.periodacals.util.CheckRole;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,8 +31,6 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CheckRole checkRoleObj = new CheckRole();
-        checkRoleObj.checkRole(request, response, log);
         request.setAttribute("PERIODICAL", PeriodicalsDaoImpl.getInstance().getAllPeriodicals());
         Map<String, Integer> publisherMap = PublisherDaoImpl.getInstance().findAllPublishersWithoutTelephone();
         Map<String, Integer> subjectMap = SubjectDaoImpl.getInstance().findAllSubjectsFromDB();
@@ -55,8 +52,7 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
                 Integer.parseInt(request.getParameter("percentageOfAdvertising")),
                 Double.parseDouble(request.getParameter("pricePerMonth")),
                 request.getParameter("description"),
-                Double.parseDouble(request.getParameter("rating")),
-                request.getParameter("language"));
+                Double.parseDouble(request.getParameter("rating")));
 
         String publisher = request.getParameter("publisher");
         String telephone = request.getParameter("telephone");

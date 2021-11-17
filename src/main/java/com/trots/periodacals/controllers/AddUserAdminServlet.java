@@ -2,7 +2,7 @@ package com.trots.periodacals.controllers;
 
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
-import com.trots.periodacals.util.CheckRole;
+import com.trots.periodacals.util.PBKDF2PasswordHashing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,8 +27,6 @@ public class AddUserAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        CheckRole checkRoleObj = new CheckRole();
-        checkRoleObj.checkRole(request, response, log);
         UserDaoImpl userDao = new UserDaoImpl();
         List<User> list = userDao.findAllUsers();
         request.setAttribute("USERS_LIST", list);
@@ -44,7 +44,13 @@ public class AddUserAdminServlet extends HttpServlet {
 
         user.setUsername(request.getParameter("username"));
         user.setEmail(request.getParameter("email"));
-        user.setPassword(request.getParameter("password"));
+        String password = null;
+        try {
+            password = PBKDF2PasswordHashing.generateStorngPasswordHash(request.getParameter("password"));
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            log.error("Cant hash password");
+        }
+        user.setPassword(password);
         user.setTelephone(request.getParameter("telephone"));
         user.setName(request.getParameter("name"));
         user.setSurname(request.getParameter("surname"));

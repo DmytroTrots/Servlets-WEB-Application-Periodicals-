@@ -1,27 +1,25 @@
 package com.trots.periodacals.entity;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public interface DBManagerInterface {
     ///USER'S DAO METHODS
     ///method for login
-    String loginCheck(Connection connection, User user) throws SQLException;
+    String loginCheck(Connection connection, User user) throws SQLException, NoSuchAlgorithmException, InvalidKeySpecException;
 
     ///method for finding all users of DataBase
     List<User> findAll(Connection con) throws SQLException;
 
     ///method for registering user by Admin(connect with previous method)
-    boolean registrationByAdmin(User user, Connection con) throws SQLException;
+    boolean userRegistration(User user, Connection con) throws SQLException;
 
     ///method for balance updating
     boolean updateBalanceTopUp(int id, Double balance, Connection con) throws SQLException;
-
-    ///method for finding balance of one user by ID(mb remove and use other method)
-    Double findBalanceOfUserById(Integer id, Connection con) throws SQLException;
 
     ///method for finding one user by id
     User findSingleUserById(Integer id, Connection con) throws SQLException;
@@ -37,7 +35,7 @@ public interface DBManagerInterface {
 
     List<Cart> getCartPeriodical(List<Cart> cartList, Connection con) throws SQLException;
 
-    double getTotalCartPrice(ArrayList<Cart> cartList, Connection con) throws SQLException;
+    double getTotalCartPrice(List<Cart> cartList, Connection con) throws SQLException;
 
     double getPriceOfOnePeriodical(Integer id, Connection con) throws SQLException;
 
@@ -61,9 +59,17 @@ public interface DBManagerInterface {
     Integer insertPublisher(String publisher, String telephone, Connection con) throws SQLException;
 
     ///START OF RECEIPT DAO
-    boolean insertOrder(Receipt receipt, Connection con) throws SQLException;
+    Integer insertOrder(Receipt receipt, Connection con) throws SQLException;
 
     List<Receipt> findOrdersOfOneUser(Integer id, Connection con) throws SQLException;
+
+    List<Receipt> findAllAcceptedOrdersOfUser(Connection connection) throws SQLException;
+
+    boolean insertRecordIntoReceiptHasPeriodicals(Receipt receipt, Integer receiptId, Connection connection) throws SQLException;
+
+    List<Receipt> getAllOrdersForProccess(Connection connection) throws SQLException;
+
+    void acceptOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException;
 
     ///START OF SUBJECT DAO
     Map<String, Integer> findAllSubjects(Connection con) throws SQLException;

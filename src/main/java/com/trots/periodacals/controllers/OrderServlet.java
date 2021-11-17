@@ -2,6 +2,7 @@ package com.trots.periodacals.controllers;
 
 import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
+import com.trots.periodacals.daoimpl.ReceiptHasPeriodicalDaoImpl;
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Receipt;
@@ -47,20 +48,21 @@ public class OrderServlet extends HttpServlet {
                     receipt.setName(name);
                     receipt.setAdress(address);
                     receipt.setMonths(numberOfMonths);
-                    receipt.setPrice(price*numberOfMonths);
+                    receipt.setPricePerMonth(price*numberOfMonths);
                     receipt.setSurname(surname);
                     receipt.setEmail(email);
                     receipt.setTelephoneNumber(telephone);
-                    receipt.setPeriodicalId(periodicalId);
+                    receipt.setPeriodicalSellId(periodicalId);
                     receipt.setUserId(id);
                     log.trace("User " + req.getSession().getAttribute("userName") + " ordered periodical " + periodicalId);
 
                     actualBalance = actualBalance-(price*numberOfMonths);
                     UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
 
-                    boolean result = ReceiptDaoImpl.getInstance().insertReceiptAfterPayment(receipt);
+                    Integer receiptID = ReceiptDaoImpl.getInstance().insertReceiptAfterPayment(receipt);
 
-                    if (result) {
+                    if (receiptID!=null) {
+                        ReceiptHasPeriodicalDaoImpl.getInstance().insertReceiptAndPeriodical(receipt, receiptID);
                         ArrayList<Cart> cart_list = (ArrayList<Cart>) req.getSession().getAttribute("cart-list");
                         if (cart_list != null) {
                             for (Cart c : cart_list) {

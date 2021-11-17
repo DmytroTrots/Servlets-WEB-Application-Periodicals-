@@ -1,6 +1,7 @@
 package com.trots.periodacals.controllers;
 
-import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
+
+import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,10 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/delete-periodical")
-public class DeletePeriodicalServlet extends HttpServlet {
+@WebServlet("/accept-order")
+public class AcceptOrderByAdminServlet extends HttpServlet {
 
-    private static final Logger log = LogManager.getLogger(DeletePeriodicalServlet.class);
+    private static final Logger log = LogManager.getLogger(banUserServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,10 +27,8 @@ public class DeletePeriodicalServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
-        PeriodicalsDaoImpl.getInstance().deletePeriodicalFromAdminPage(id);
-        log.trace("Successfully --> periodical " + id + " deleted");
-
-        resp.sendRedirect(req.getContextPath() + "/fileupload");
-
+        ReceiptDaoImpl.getInstance().acceptOrderByAdmin(id);
+        log.trace("Successfully --> order " + id + " accepted");
+        resp.sendRedirect(req.getContextPath() + "/orders");
     }
 }

@@ -2,19 +2,53 @@ package com.trots.periodacals.entity;
 
 import java.sql.Date;
 
-public class Receipt extends Periodical {
+public class Receipt extends ReceiptHasPeriodical {
     private int id;
-    private int months;
     private String name;
     private String surname;
     private String address;
     private String telephoneNumber;
     private int statusId;
     private int userId;
-    private Double price;
     private String email;
     private Date create_time;
-    private int periodicalId;
+
+    private String statusName;
+    private String publisherName;
+    private String title;
+    private String allPeriodicalsId;
+
+    public String getAllPeriodicalsId() {
+        return allPeriodicalsId;
+    }
+
+    public void setAllPeriodicalsId(String allPeriodicalsId) {
+        this.allPeriodicalsId = allPeriodicalsId;
+    }
+
+    public String getStatusName() {
+        return statusName;
+    }
+
+    public void setStatusName(String statusName) {
+        this.statusName = statusName;
+    }
+
+    public String getPublisherName() {
+        return publisherName;
+    }
+
+    public void setPublisherName(String publisherName) {
+        this.publisherName = publisherName;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getAddress() {
         return address;
@@ -22,39 +56,6 @@ public class Receipt extends Periodical {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public int getPeriodicalId() {
-        return periodicalId;
-    }
-
-    public void setPeriodicalId(int periodicalId) {
-        this.periodicalId = periodicalId;
-    }
-
-    public Receipt(int id, int months, String name, String surname, String address, String telephoneNumber, int statusId, int userId, Double price, String email) {
-        this.id = id;
-        this.months = months;
-        this.name = name;
-        this.surname = surname;
-        this.address = address;
-        this.telephoneNumber = telephoneNumber;
-        this.statusId = statusId;
-        this.userId = userId;
-        this.price = price;
-        this.email = email;
-    }
-
-    public Receipt(int months, String name, String surname, String address, String telephoneNumber, int statusId, int userId, Double price, String email) {
-        this.months = months;
-        this.name = name;
-        this.surname = surname;
-        this.address = address;
-        this.telephoneNumber = telephoneNumber;
-        this.statusId = statusId;
-        this.userId = userId;
-        this.price = price;
-        this.email = email;
     }
 
     public Receipt() {
@@ -74,22 +75,6 @@ public class Receipt extends Periodical {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public int getMonths() {
-        return months;
-    }
-
-    public void setMonths(int months) {
-        this.months = months;
     }
 
     public int getId() {

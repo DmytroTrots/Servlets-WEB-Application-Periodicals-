@@ -29,7 +29,7 @@ public class AddToCartServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DecimalFormat dcf = new DecimalFormat("#.##");
         request.setAttribute("decimalFormat", dcf);
-        ArrayList<Cart> cart_list = (ArrayList<Cart>) request.getSession().getAttribute("cart-list");
+        List<Cart> cart_list = (List<Cart>) request.getSession().getAttribute("cart-list");
         List<Cart> cartPeriodical = null;
         if (cart_list != null) {
             cartPeriodical = PeriodicalsDaoImpl.getInstance().getAllCartPeriodical(cart_list);

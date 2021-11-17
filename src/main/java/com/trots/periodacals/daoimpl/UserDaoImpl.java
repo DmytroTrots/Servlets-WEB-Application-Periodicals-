@@ -6,6 +6,8 @@ import com.trots.periodacals.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collections;
@@ -33,6 +35,8 @@ public class UserDaoImpl {
             return dbManager.loginCheck(con, user);
         } catch (SQLException e) {
             log.error("Invalid credentials");
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
+            log.error("Cant validate password");
         }
         return "Invalid user credentials";
     }
@@ -49,7 +53,7 @@ public class UserDaoImpl {
 
     public boolean addUser(User user) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.registrationByAdmin(user, con);
+            return dbManager.userRegistration(user, con);
         } catch (SQLException throwables) {
             log.error("Cannot register user, admin page");
         }
@@ -63,15 +67,6 @@ public class UserDaoImpl {
             log.error("Cannot top up balance");
         }
         return false;
-    }
-
-    public Double getBalanceOfUserById(Integer id) {
-        try (Connection con = connectionPool.getConnection()) {
-            return dbManager.findBalanceOfUserById(id, con);
-        } catch (SQLException throwables) {
-            log.error("Cannot get balance of user by id");
-        }
-        return null;
     }
 
     public User getSingleUserById(Integer id) {
