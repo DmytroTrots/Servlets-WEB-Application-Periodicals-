@@ -1,7 +1,9 @@
-package com.trots.periodacals.controllers;
+package com.trots.periodacals.controllers.admin;
 
-
+import com.trots.periodacals.controllers.admin.banUserServlet;
 import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
+import com.trots.periodacals.daoimpl.UserDaoImpl;
+import com.trots.periodacals.entity.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,8 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/accept-order")
-public class AcceptOrderByAdminServlet extends HttpServlet {
+@WebServlet("/discard-order")
+public class DiscardOrderByAdminServlet extends HttpServlet {
 
     private static final Logger log = LogManager.getLogger(banUserServlet.class);
 
@@ -27,8 +29,16 @@ public class AcceptOrderByAdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
-        ReceiptDaoImpl.getInstance().acceptOrderByAdmin(id);
-        log.trace("Successfully --> order " + id + " accepted");
+        Integer userId = Integer.parseInt(req.getParameter("userId"));
+        Double price = Double.parseDouble(req.getParameter("price"));
+        ReceiptDaoImpl.getInstance().discardOrderByAdmin(id);
+        User user = UserDaoImpl.getInstance().getSingleUserById(userId);
+        Double actualBalance = user.getBalance();
+        actualBalance = actualBalance + price;
+        UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(userId, actualBalance);
+        log.trace("Successfully --> order " + id + " discarded");
+
         resp.sendRedirect(req.getContextPath() + "/orders");
     }
 }
+

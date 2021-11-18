@@ -17,16 +17,16 @@
 <body>
 <%@include file="header.jsp" %>
 <div class="container">
-    <div class="d-flex py-3"><h3>Total price: $ ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
+    <div class="d-flex py-3"><h3><fmt:message key="label.totalPrice"/> ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
     <form action="/order-all" method="post">
         <table class="table table-loght">
             <thead>
             <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Publisher</th>
-                <th scope="col">Price</th>
-                <th scope="col">Buy now</th>
-                <th scope="col">Cancel</th>
+                <th scope="col"><fmt:message key="label.title"/></th>
+                <th scope="col"><fmt:message key="label.publisher"/></th>
+                <th scope="col"><fmt:message key="label.priceOnly"/></th>
+                <th scope="col"><fmt:message key="label.numberOfMonths"/></th>
+                <th scope="col"><fmt:message key="label.cancel"/></th>
             </tr>
             </thead>
 
@@ -47,37 +47,37 @@
                                     class="fas fa-plus-square"></i> </a>
                         </div>
                     </td>
-                    <td><a class="btn btn-sm btn-danger" href="remove-record?id=${list.sellId}"> Remove </a></td>
+                    <td><a class="btn btn-sm btn-danger" href="remove-record?id=${list.sellId}"> <fmt:message key="label.remove"/> </a></td>
                     </tbody>
                 </c:forEach>
         </table>
         <table style="with: 80%">
             <tr>
-                <td>Name</td>
+                <td><fmt:message key="label.name"/></td>
                 <td><input type="text" name="name" value="${user.getName()}" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
-                           title="Name should be 1-25 size" required/></td>
+                           title="<fmt:message key="label.name"/>" required/></td>
             </tr>
             <tr>
-                <td>Surname</td>
+                <td><fmt:message key="label.surname"/></td>
                 <td><input type="text" name="surname" value="${user.getSurname()}" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
-                           title="Surname should be 1-25 size" required/></td>
+                           title="<fmt:message key="label.surnameValidate"/>" required/></td>
             </tr>
             <tr>
-                <td>Email</td>
+                <td><fmt:message key="label.email"/></td>
                 <td><input type="email" name="email" value="${user.getEmail()}" required/></td>
             </tr>
             <tr>
-                <td>Telephone</td>
+                <td><fmt:message key="label.telephone"/></td>
                 <td><input type="tel" name="telephone" value="${user.getTelephone()}" pattern="[0-9]{11,12}"
-                           title="Start with code of your country. Telephone should not contain letters, use digits from 0 to 9, size should be 11-12 symbols"
+                           title="<fmt:message key="label.telephoneValidate"/>"
                            required/></td>
             </tr>
             <tr>
-                <td>Address</td>
+                <td><fmt:message key="label.address"/></td>
                 <td><input type="text" name="address" value="${user.getAddress()}" required/></td>
             </tr>
         </table>
-        <button type="submit" class="btn btn-primary btn-sm" href="order-all">Buy</button>
+        <button type="submit" class="btn btn-primary btn-sm" href="order-all"><fmt:message key="label.buy"/></button>
             </c:if>
     </form>
 </div>

@@ -1,4 +1,4 @@
-package com.trots.periodacals.controllers;
+package com.trots.periodacals.controllers.user;
 
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.util.Mailer;

@@ -17,7 +17,7 @@
     <table>
         <tr>
             <td>
-                <a href="shop?currentPage=${currentPage}&category=0">All category</a>
+                <a href="shop?currentPage=${currentPage}&category=0"><fmt:message key="label.allCategory"/></a>
             </td>
         </tr>
         <c:forEach var="category" items="${subjectMap}">
@@ -28,64 +28,26 @@
             </tr>
         </c:forEach>
     </table>
-</div>
-
-<div class="container">
     <form action="shop" method="post">
-
-        <table>
-            <tr>
-                <td>
-                    <label for="WithoutSort">WithoutSort</label>
-                    <input type="radio" id="WithoutSort" name="sort" value="ws" checked>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Price(lowToHigh)">Price(lowToHigh)</label>
-                    <input type="radio" id="Price(lowToHigh)" name="sort" value="prLtH">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Price(HighToLow)">Price(HighToLow)</label>
-                    <input type="radio" id="Price(HighToLow)" name="sort" value="prHtL">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Name(Z-A)">Name(Z-A)</label>
-                    <input type="radio" id="Name(Z-A)" name="sort" value="nza">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Name(A-Z)">Name(A-Z)</label>
-                    <input type="radio" id="Name(A-Z)" name="sort" value="naz">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Rating">Rating</label>
-                    <input type="radio" id="Rating" name="sort" value="rating">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <label for="Search">Search</label>
-                    <input type="text" id="Search" name="searchField" value="${searchField}">
-                </td>
-            </tr>
-
         </table>
+        <select name="sort">
+            <option value="ws" ${sessionScope['sort'] == 'ws' ? 'selected':''}><fmt:message key="label.withoutSort"/></option>
+            <option value="prLtH" ${sessionScope['sort'] == 'prLtH' ? 'selected':''}><fmt:message key="label.priceLH"/></option>
+            <option value="prHtL" ${sessionScope['sort'] == 'prHtL' ? 'selected':''}><fmt:message key="label.priceHL"/></option>
+            <option value="nza" ${sessionScope['sort'] == 'nza' ? 'selected':''}><fmt:message key="label.nameZA"/></option>
+            <option value="naz" ${sessionScope['sort'] == 'naz' ? 'selected':''}><fmt:message key="label.nameAZ"/></option>
+            <option value="rating" ${sessionScope['sort'] == 'rating' ? 'selected':''}><fmt:message key="label.rating"/></option>
+        </select>
+        <label for="Search"><fmt:message key="label.search"/></label>
+        <input type="text" id="Search" name="searchField" value="${searchField}">
         <input type="hidden" value="${currentPage}" name="currentPage">
         <input type="hidden" value="${category}" name="category">
-        <input type="submit" value="GO">
+        <input type="submit" value="<fmt:message key="label.go"/>">
     </form>
 </div>
 
 <div class="container">
-    <div class="card-header my-3">All Products</div>
+    <div class="card-header my-3"><fmt:message key="label.periodicals"/></div>
     <div class="row">
         <c:forEach var="list" items="${PERIODICAL}">
             <div class="col-md-3 my-3">
@@ -94,22 +56,19 @@
                          alt="Card image cap">
                     <div class="card-body">
                         <h5 class="card-title">${list.title}</h5>
-                        <h6 class="price">Price: $${list.pricePerMonth}</h6>
-                        <h6 class="category">Publisher: ${list.publisher}</h6>
-                        <h6 class="rating">Rating: ${list.rating}</h6>
+                        <h6 class="price"><fmt:message key="label.totalPrice"/>${list.pricePerMonth}</h6>
+                        <h6 class="category"><fmt:message key="label.publisherShop"/> ${list.publisher}</h6>
+                        <h6 class="rating"><fmt:message key="label.ratingShop"/> ${list.rating}</h6>
                         <div class="mt-3 d-flex justify-content-between">
                             <form method="post" action="cart">
                                 <input name="id" type="hidden" value="${list.sellId}">
                                 <input type="hidden" value="${currentPage}" name="currentPage">
                                 <input type="hidden" value="${category}" name="category">
-                                <input class="btn btn-dark" type="submit" value="Add to cart">
+                                <input class="btn btn-dark" type="image" src="/resources/images/shopping-icon.png">
                             </form>
-                             <a
-                                class="btn btn-primary"
-                                href="order-periodical?month=1&id=${list.sellId}&name=${user.getName()}
+                            <a class="btn-primary a-button" href="order-periodical?month=1&id=${list.sellId}&name=${user.getName()}
                                 &surname=${user.getSurname()}&address=${user.getAddress()}&email=${user.getEmail()}
-                                                                            &telephone=${user.getTelephone()}">Buy
-                            Now</a>
+                                &telephone=${user.getTelephone()}"><img class="image-buy" src="/resources/images/Cash-icon.png"></a>
                         </div>
                     </div>
                 </div>
@@ -122,7 +81,8 @@
     <ul class="pagination">
         <c:if test="${currentPage != 1}">
             <li class="page-item"><a class="page-link"
-                                     href="shop?currentPage=${currentPage-1}&category=${category}">Previous</a>
+                                     href="shop?currentPage=${currentPage-1}&category=${category}"><fmt:message
+                    key="label.previous"/></a>
             </li>
         </c:if>
 
@@ -130,7 +90,7 @@
             <c:choose>
                 <c:when test="${currentPage eq i}">
                     <li class="page-item active"><a class="page-link">
-                            ${i} <span class="sr-only">(current)</span></a>
+                            ${i} <span class="sr-only"><fmt:message key="label.current"/></span></a>
                     </li>
                 </c:when>
                 <c:otherwise>
@@ -143,7 +103,8 @@
 
         <c:if test="${currentPage lt noOfPages}">
             <li class="page-item"><a class="page-link"
-                                     href="shop?currentPage=${currentPage+1}&category=${category}">Next</a>
+                                     href="shop?currentPage=${currentPage+1}&category=${category}"><fmt:message
+                    key="label.next"/></a>
             </li>
         </c:if>
     </ul>

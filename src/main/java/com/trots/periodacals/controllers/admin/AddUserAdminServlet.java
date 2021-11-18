@@ -1,4 +1,4 @@
-package com.trots.periodacals.controllers;
+package com.trots.periodacals.controllers.admin;
 
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;

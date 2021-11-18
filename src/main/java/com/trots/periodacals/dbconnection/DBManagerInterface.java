@@ -1,4 +1,9 @@
-package com.trots.periodacals.entity;
+package com.trots.periodacals.dbconnection;
+
+import com.trots.periodacals.entity.Cart;
+import com.trots.periodacals.entity.Periodical;
+import com.trots.periodacals.entity.Receipt;
+import com.trots.periodacals.entity.User;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -47,11 +52,9 @@ public interface DBManagerInterface {
 
     boolean updatePeriodical(Periodical periodical, Integer id, String newImage, String oldImage, Connection connection) throws SQLException;
 
-    List<Periodical> getRecords(Connection connection) throws SQLException;
+    List<Periodical> getRecords(String query, Connection connection) throws SQLException;
 
-    List<Periodical> getRecordsWithSubject(int subject, Connection connection) throws SQLException;
-
-    List<Periodical> getPeriodicalByName(String title, Connection connection) throws SQLException;
+    Integer getNumberOfRows(Connection connection) throws SQLException;
 
     ///START OF PUBLSIHER DAO
     Map<String, Integer> findAllPublishers(Connection con) throws SQLException;

@@ -1,4 +1,4 @@
-package com.trots.periodacals.controllers;
+package com.trots.periodacals.controllers.user;
 
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import org.apache.logging.log4j.LogManager;

@@ -2,7 +2,7 @@ package com.trots.periodacals.daoimpl;
 
 import com.trots.periodacals.dbconnection.ConnectionPool;
 import com.trots.periodacals.entity.Cart;
-import com.trots.periodacals.entity.DBManager;
+import com.trots.periodacals.dbconnection.DBManager;
 import com.trots.periodacals.entity.Periodical;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,30 +101,22 @@ public class PeriodicalsDaoImpl {
         return false;
     }
 
-    public List<Periodical> getRecordsForPagination(){
+    public List<Periodical> getRecordsForPagination(String query){
         try(Connection con = connectionPool.getConnection()){
-            return dbManager.getRecords(con);
+            return dbManager.getRecords(query, con);
         } catch (SQLException e) {
             log.error("Cannot get limited periodicals for pagination");
         }
         return Collections.emptyList();
     }
 
-    public List<Periodical> getRecordsForPaginationBySubject(int subject){
-        try(Connection con = connectionPool.getConnection()){
-            return dbManager.getRecordsWithSubject(subject, con);
-        } catch (SQLException e) {
-            log.error("Cannot get limited periodicals by subject for pagination");
-        }
-        return Collections.emptyList();
-    }
-
-    public List<Periodical> getRecordPeriodicalByName(String title){
-        try(Connection con = connectionPool.getConnection()){
-            return dbManager.getPeriodicalByName(title, con);
-        } catch (SQLException e) {
-            log.error("Cannot get periodical by title");
+    public Integer getNumbersOfRows(){
+        try(Connection connection = connectionPool.getConnection()){
+            return dbManager.getNumberOfRows(connection);
+        } catch (SQLException throwables) {
+            log.error("Cannot get numbers of records in table periodical");
         }
         return null;
     }
+
 }

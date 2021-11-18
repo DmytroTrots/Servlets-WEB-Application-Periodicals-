@@ -1,4 +1,4 @@
-package com.trots.periodacals.controllers;
+package com.trots.periodacals.controllers.admin;
 
 import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import com.trots.periodacals.daoimpl.PublisherDaoImpl;
@@ -21,30 +21,43 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet(name = "FileUploadServlet", urlPatterns = {"/fileupload"})
-@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 3, // 1 MB
+
+@WebServlet("/update-periodical")
+@MultipartConfig(fileSizeThreshold = 1024 * 1024 * 4, // 1 MB
         maxFileSize = 1024 * 1024 * 10    // 10 MB
 )
-public class AddPeriodicalAdminServlet extends HttpServlet {
+public class UpdatePeriodicalAdminServlet extends HttpServlet {
 
-    private static final Logger log = LogManager.getLogger(AddPeriodicalAdminServlet.class);
+    private static final Logger log = LogManager.getLogger(UpdatePeriodicalAdminServlet.class);
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("PERIODICAL", PeriodicalsDaoImpl.getInstance().getAllPeriodicals());
-        Map<String, Integer> publisherMap = PublisherDaoImpl.getInstance().findAllPublishersWithoutTelephone();
-        Map<String, Integer> subjectMap = SubjectDaoImpl.getInstance().findAllSubjectsFromDB();
-        request.getSession().setAttribute("publisherMap", publisherMap);
-        request.getSession().setAttribute("subjectMap", subjectMap);
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        req.getSession().setAttribute("publisherMap", PublisherDaoImpl.getInstance().findAllPublishersWithoutTelephone());
+        req.getSession().setAttribute("subjectMap", SubjectDaoImpl.getInstance().findAllSubjectsFromDB());
+        String url = req.getRequestURI();
+        req.setAttribute("url", url);
+        Integer id = Integer.valueOf(req.getParameter("id"));
+        req.getSession().setAttribute("sellId", id);
+        req.getSession().setAttribute("periodicalInf", PeriodicalsDaoImpl.getInstance().getPeriodicalById(id));
+        req.getSession().setAttribute("existedSubject", SubjectPeriodicalsDaoImpl.getInstance().findAllSubjectOfPeriodicalById(id));
 
-        RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/addPeriodicalAdminPage.jsp");
-        dispatcher.forward(request, response);
+        List<String> list = (List<String>) req.getSession().getAttribute("existedSubject");
+
+        req.setAttribute("subj1", list.get(0));
+        if (list.size() > 1) req.setAttribute("subj2", list.get(1));
+        if (list.size() > 2) req.setAttribute("subj3", list.get(2));
+
+        RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/views/UpdatePeriodicalAdminPage.jsp");
+        dispatcher.forward(req, resp);
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        Periodical periodicalOld = (Periodical) request.getSession().getAttribute("periodicalInf");
         Map<String, Integer> publisherMap = (Map<String, Integer>) request.getSession().getAttribute("publisherMap");
         Map<String, Integer> subjectMap = (Map<String, Integer>) request.getSession().getAttribute("subjectMap");
+
+        String oldImage = periodicalOld.getImage();
 
         Periodical periodical = new Periodical(request.getParameter("title"),
                 Integer.parseInt(request.getParameter("numberOfPages")),
@@ -56,9 +69,25 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
 
         String publisher = request.getParameter("publisher");
         String telephone = request.getParameter("telephone");
+
         List<String> subject = Arrays.asList(request.getParameterValues("subject"));
 
-        ///add publisher to table/find index of publisher
+        String image = null;
+
+        try {
+            Part filePart = request.getPart("file");
+            String fileName = filePart.getSubmittedFileName();
+            image = fileName;
+            for (Part part : request.getParts()) {
+                part.write("C:\\Users\\Dima\\Desktop\\periodacals\\src\\main\\webapp\\resources\\images\\" + fileName);
+                periodical.setImage(fileName);
+            }
+        } catch (IOException | ServletException e) {
+            log.error("Error during file inserting");
+        }
+        Integer sellId = (Integer) request.getSession().getAttribute("sellId");
+
+        ///check publisher -> add(and get generated key)
         Integer publisherId = publisherMap.get(publisher);
         if (publisherId == null) {
             publisherId = PublisherDaoImpl.getInstance().insertPublisherIntoDB(publisher, telephone);
@@ -66,32 +95,20 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
         }
         periodical.setPublisherId(publisherId);
 
-        try {
-            Part filePart = request.getPart("file");
-            String fileName = filePart.getSubmittedFileName();
-            for (Part part : request.getParts()) {
-                part.write("C:\\Users\\Dima\\Desktop\\periodacals\\src\\main\\webapp\\resources\\images\\" + fileName);
-                periodical.setImage(fileName);
-                ///response possible
-            }
-        } catch (IOException | ServletException e) {
-            log.error("Error during file inserting");
-        }
+        ///update periodical
+        PeriodicalsDaoImpl.getInstance().updatePeriodicalAdmin(periodical, image, oldImage, sellId);
 
-        ///insert periodical into db
-        Integer periodicalId = PeriodicalsDaoImpl.getInstance().insertPeriodicalIntoDB(periodical);
-        log.trace("successfully --> inserting periodical into db");
-        ///insert subject into db
-
+        ///check subject -> add(and get generated key)
+        List<String> existedSubj = (List<String>) request.getSession().getAttribute("existedSubject");
         for (String s : subject) {
             Integer subjectsId = subjectMap.get(subject.get(subject.indexOf(s)));
             if (subjectsId == null && !subject.get(subject.indexOf(s)).equals("")) {
                 subjectsId = SubjectDaoImpl.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));
                 log.trace("successfully --> inserting subject into DB");
             }
-            ///insert n:m table con
-            if (!subject.get(subject.indexOf(s)).equals("")) {
-                SubjectPeriodicalsDaoImpl.getInstance().insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, periodicalId);
+
+            if (!subject.get(subject.indexOf(s)).equals("") && !existedSubj.contains(subject.get(subject.indexOf(s)))) {
+                SubjectPeriodicalsDaoImpl.getInstance().insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, sellId);
                 log.trace("successfully --> inserting subject and periodical into db");
             }
         }
@@ -99,11 +116,12 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
         request.getSession().removeAttribute("subjectMap");
         request.getSession().removeAttribute("publisherMap");
 
+        ///add Subject<->Periodical records
+
         try {
             response.sendRedirect(request.getContextPath() + "/fileupload");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

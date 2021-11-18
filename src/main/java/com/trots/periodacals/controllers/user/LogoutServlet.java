@@ -1,4 +1,4 @@
-package com.trots.periodacals.controllers;
+package com.trots.periodacals.controllers.user;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

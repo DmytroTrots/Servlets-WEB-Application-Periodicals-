@@ -5,83 +5,144 @@
 <fmt:setBundle basename="messages"/>
 <html lang="${sessionScope.lang}">
 <head>
-    <title>Title</title>
+    <title>Add periodical</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/resources/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
+          id="bootstrap-css">
 </head>
 <body>
 <%@include file="header.jsp" %>
-<div align="center">
-    <h1>AddUser</h1>
-    <form action="fileupload" method="post" enctype="multipart/form-data">
-        <table style="width: 80%">
-            <tr>
-                <td>Title</td>
-                <td><input type="text" name="title" pattern="[A-Za-z]{2,64}"
-                           title="Title should start with upper case letter and it should be 2-64 symbols size"
-                           required autocomplete="off"/></td>
-            </tr>
-            <tr>
-                <td>Number of pages</td>
-                <td><input type="number" name="numberOfPages" min="1" required autocomplete="off"/></td>
-            </tr>
-            <tr>
-                <td>Periodicity per year</td>
-                <td><input type="number" name="periodicityPerYear" min="1" required autocomplete="off"/></td>
-            </tr>
-            <tr>
-                <td>Percentage of advertising</td>
-                <td><input type="number" name="percentageOfAdvertising" min="0" required autocomplete="off"/></td>
-            </tr>
-            <tr>
-                <td>Price per Month</td>
-                <td><input type="" name="pricePerMonth" min="1" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1,2}"
-                           title="Example: 16.10" required autocomplete="off"/></td>
-            </tr>
-            <tr>
-                <td>Description</td>
-                <td><input type="text" name="description" required autocomplete="off"/></td>
-            </tr>
-            <tr>
-                <td>Rating</td>
-                <td><input type="number" name="rating" min="0" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1}"
-                           title="Example: 4.1" required autocomplete="off"/></td>
-            </tr>
-            <tr>
-                <td>Publisher</td>
-                <td><input type="text" name="publisher" list="publisherList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
-                           title="Shoud be 1-25 symbols" required autocomplete="off"/>
-                </td>
-            </tr>
-            <tr>
-                <td>Telephone(if you cant find publisher in the list)</td>
-                <td><input type="text" name="telephone" pattern="[0-9]{11,12}"
-                           title="Start with code of country. Telephone should not contain letters, use digits from 0 to 9, size should be 11-12 symbols"
-                           autocomplete="off"/>
-                </td>
-            </tr>
-            <tr>
-                <td>Subject</td>
-                <td><input type="text" name="subject" list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" required
-                           autocomplete="off">
-            </tr>
-            <tr>
-                <td>Subject</td>
-                <td><input type="text" name="subject" list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
-                           autocomplete="off">
-            </tr>
-            <tr>
-                <td>Subject</td>
-                <td><input type="text" name="subject" list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
-                           autocomplete="off">
-            </tr>
-            <tr>
-                <td>Image</td>
-                <td><input type="file" name="file" required/></td>
-            </tr>
-        </table>
-        <input type="submit" value="Submit"/>
-    </form>
+<div class="login-form">
+    <div class="cotainer">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header"><fmt:message key="label.addPeriodical"/></div>
+                    <div class="card-body">
+                        <form action="fileupload" method="post" enctype="multipart/form-data">
+                            <div class="form-group row">
+                                <label for="title"
+                                       class="col-md-4 col-form-label text-md-right"><fmt:message key="label.title"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="title" class="form-control" name="title"
+                                           pattern="[A-Za-z]{2,64}" title="<fmt:message key="label.titleValidate"/>"
+                                           required autocomplete="off" autofocus>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="numberOfPages" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.numberOfPages"/></label>
+                                <div class="col-md-6">
+                                    <input type="number" id="numberOfPages" class="form-control" name="numberOfPages"
+                                           min="1" required autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="periodicityPerYear" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.periodicityPerYear"/></label>
+                                <div class="col-md-6">
+                                    <input type="number" id="periodicityPerYear" class="form-control" name="periodicityPerYear"
+                                           min="1" required autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="percentageOfAdvertising" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.percentageOfAdvertising"/></label>
+                                <div class="col-md-6">
+                                    <input type="number" id="percentageOfAdvertising" class="form-control" name="percentageOfAdvertising"
+                                           min="0" max="100" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="pricePerMonth" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.pricePerMonth"/></label>
+                                <div class="col-md-6">
+                                    <input type="number" id="pricePerMonth" class="form-control" name="pricePerMonth"
+                                           min="1" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1,2}"
+                                           title="<fmt:message key="label.priceValidate"/>" required autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="description" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.description"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="description" class="form-control" name="description"
+                                           required autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="rating" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.rating"/></label>
+                                <div class="col-md-6">
+                                    <input type="number" id="rating" class="form-control" name="rating"
+                                           min="0" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1}"
+                                           title="<fmt:message key="label.ratingValidate"/>" autocomplete="off"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="publisher" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.publisher"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="publisher" class="form-control" name="publisher"
+                                           list="publisherList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                                           title="<fmt:message key="label.publisherValidate"/>" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="telephone" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.telephonePublisher"/></label>
+                                <div class="col-md-6">
+                                    <input type="tel" id="telephone" class="form-control" name="telephone"
+                                           pattern="[0-9]{11,12}" title="<fmt:message key="label.telephoneValidate"/>"
+                                           autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="subject" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.subject"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="subject" class="form-control" name="subject"
+                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" autocomplete="off" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="subject2" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.subject"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="subject2" class="form-control" name="subject"
+                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="subject3" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.subject"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="subject3" class="form-control" name="subject"
+                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" autocomplete="off">
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="file" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.image"/></label>
+                                <div class="col-md-6">
+                                    <input type="file" id="file" class="form-control" name="file" required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <fmt:message key="label.submit"/>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <datalist id="subjectList">
@@ -96,21 +157,20 @@
         </c:forEach>
 </datalist>
 
-<h3>
-    Book Information From Database</h3>
-<table class="table" style="table-layout: fixed">
+<h3><fmt:message key="label.periodicalsInfoForTable"/></h3>
+<table class="table" style="table-layout: auto">
     <thead class="bg-light">
     <tr>
-        <th scope="col">Sell_Id</th>
-        <th scope="col">Title</th>
-        <th scope="col">Pages</th>
-        <th scope="col">Periodicity</th>
-        <th scope="col">Advertising(%)</th>
-        <th scope="col">Price(1/12)</th>
-        <th scope="col">Description</th>
-        <th scope="col">Rating</th>
-        <th scope="col">Publisher</th>
-        <th scope="col">Action</th>
+        <th scope="col"><fmt:message key="label.sellId"/></th>
+        <th scope="col"><fmt:message key="label.title"/></th>
+        <th scope="col"><fmt:message key="label.pages"/></th>
+        <th scope="col"><fmt:message key="label.periodicity"/></th>
+        <th scope="col"><fmt:message key="label.advertising"/></th>
+        <th scope="col"><fmt:message key="label.price"/></th>
+        <th scope="col"><fmt:message key="label.description"/></th>
+        <th scope="col"><fmt:message key="label.rating"/></th>
+        <th scope="col"><fmt:message key="label.publisher"/></th>
+        <th scope="col"><fmt:message key="label.action"/></th>
     </tr>
     </thead>
     <tbody>
@@ -127,16 +187,15 @@
             <td>${periodical.publisher}</td>
             <form action="update-periodical" method="get">
                 <input name="id" type="hidden" value="${periodical.sellId}">
-                <td><input type="submit" value="Update"/>
+                <td><input type="submit" value="<fmt:message key="label.update"/>">
             </form>
             <form action="delete-periodical" method="post">
                 <input name="id" type="hidden" value="${periodical.sellId}">
-                <input type="submit" value="Delete"/></td>
+                <input type="submit" value="<fmt:message key="label.delete"/>"></td>
             </form>
         </tr>
     </c:forEach>
     </tbody>
-
 </table>
 </body>
 </html>

@@ -5,7 +5,7 @@
 <fmt:setBundle basename="messages"/>
 <html lang="${sessionScope.lang}">
 <head>
-    <title>Title</title>
+    <title>Top up balance</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/resources/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
@@ -14,10 +14,10 @@
 <body>
 <%@include file="header.jsp" %>
 <div align="center">
-    <h1>AddUser</h1>
+    <h1><fmt:message key="label.topUpBalance"/></h1>
     <form action="top-up" method="post">
         <input type="number" name="balance" min="1"/>
-        <input type="submit" value="Submit"/>
+        <input type="submit" value="<fmt:message key="label.submit"/>"/>
     </form>
 </div>
 </body>

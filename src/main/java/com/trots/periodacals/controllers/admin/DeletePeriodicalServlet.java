@@ -1,7 +1,6 @@
-package com.trots.periodacals.controllers;
+package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.daoimpl.UserDaoImpl;
-import com.trots.periodacals.entity.User;
+import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/ban-user")
-public class banUserServlet extends HttpServlet {
+@WebServlet("/delete-periodical")
+public class DeletePeriodicalServlet extends HttpServlet {
 
-    private static final Logger log = LogManager.getLogger(banUserServlet.class);
+    private static final Logger log = LogManager.getLogger(DeletePeriodicalServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -27,15 +26,10 @@ public class banUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
-        User user = UserDaoImpl.getInstance().getSingleUserById(id);
-        String banStatus = user.getBanStatus();
-        if (banStatus == null) {
-            UserDaoImpl.getInstance().updateBanStatusOfUser("banned", id);
-            log.trace("Successfully --> user " + id + " banned");
-        } else {
-            UserDaoImpl.getInstance().updateBanStatusOfUser(null, id);
-            log.trace("Successfully --> user " + id + " unbanned");
-        }
-        resp.sendRedirect(req.getContextPath() + "/addUser");
+        PeriodicalsDaoImpl.getInstance().deletePeriodicalFromAdminPage(id);
+        log.trace("Successfully --> periodical " + id + " deleted");
+
+        resp.sendRedirect(req.getContextPath() + "/fileupload");
+
     }
 }

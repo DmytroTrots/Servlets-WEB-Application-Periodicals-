@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@WebFilter(urlPatterns = {"/addUser", "/fileupload", "/update-periodical", "/delete-periodical", "/ban-user", "/order"}, initParams = @WebInitParam(name = "role", value = "admin"))
+@WebFilter(urlPatterns = {"/addUser", "/fileupload", "/update-periodical", "/delete-periodical", "/ban-user", "/orders"}, initParams = @WebInitParam(name = "role", value = "admin"))
 public class AuthenticationFilter implements Filter {
 
     private static final Logger log = LogManager.getLogger(AuthenticationFilter.class);

@@ -5,76 +5,142 @@
 <fmt:setBundle basename="messages"/>
 <html lang="${sessionScope.lang}">
 <head>
-    <title>AddUser</title>
+    <title>Add user</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/resources/css/style.css">
 </head>
 <body>
 <%@include file="header.jsp"%>
-<div align="center">
-    <h1>AddUser</h1>
-    <form action="<%= request.getContextPath() %>/addUser" method="post">
-        <table style="with: 80%">
-            <tr>
-                <td>Username</td>
-                <td><input type="text" name="username" required pattern="[a-zA-Z0-9]{6,18}"
-                           title="Username should contain only Aa-Zz letters and 0-9 number, size should be from 6 to 18 symbols" /></td>
-            </tr>
-            <tr>
-                <td>Email</td>
-                <td><input type="email" name="email" required/></td>
-            </tr>
-            <tr>
-                <td>Password</td>
-                <td><input type="password" name="password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,16}$" title="Password should be 8-16 symbols, with at least 1 upper case, 1 lower case, 1 special symbol, 1 number" required/></td>
-            </tr>
-            <tr>
-                <td>Surname</td>
-                <td><input type="text" name="surname" required pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" title="Surname should be 1-25 size"/></td>
-            </tr>
-            <tr>
-                <td>Name</td>
-                <td><input type="text" name="name" required pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" title="Surname should be 1-25 size"/></td>
-            </tr>
-            <tr>
-                <td>Telephone</td>
-                <td><input type="text" name="telephone" pattern="[0-9]{11,12}" title="Start with code of your country. Telephone should not contain letters, use digits from 0 to 9, size should be 11-12 symbols" required/></td>
-            </tr>
-            <tr>
-                <td>Address</td>
-                <td><input type="text" name="address" required/></td>
-            </tr>
-            <tr>
-                <td>Role</td>
-                <td><select id="inputState" class="form-control" name="nameOfRole" required>
-                    <option selected disabled>Choose Category</option>
-                    <c:forEach var="roleList" items="${ROLE_LIST}">
-                        <option value="${roleList.toString()}">${roleList.toString()}</option>
-                    </c:forEach>
-                </select>
-                </td>
-            </tr>
-        </table>
-        <input type="submit" value="Submit"/>
-    </form>
+<div class="login-form">
+    <div class="cotainer">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header"><fmt:message key="label.addUser"/></div>
+                    <div class="card-body">
+                        <form action="addUser" method="post">
+                            <div class="form-group row">
+                                <label for="username"
+                                       class="col-md-4 col-form-label text-md-right"><fmt:message
+                                        key="label.username"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="username" class="form-control" name="username"
+                                           pattern="[a-zA-Z0-9]{6,18}"
+                                           title="<fmt:message key="label.usernameValidate"/>" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="email"
+                                       class="col-md-4 col-form-label text-md-right"><fmt:message
+                                        key="label.email"/></label>
+                                <div class="col-md-6">
+                                    <input type="email" id="email" class="form-control" name="email"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="password"
+                                       class="col-md-4 col-form-label text-md-right"><fmt:message
+                                        key="label.password"/></label>
+                                <div class="col-md-6">
+                                    <input type="password" id="password" class="form-control"
+                                           name="password"
+                                           pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,16}$"
+                                           title="<fmt:message key="label.passwordValidate"/>" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="surname"
+                                       class="col-md-4 col-form-label text-md-right"><fmt:message
+                                        key="label.surname"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="surname" class="form-control" name="surname"
+                                           pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                                           title="<fmt:message key="label.nameValidate"/>" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="name" class="col-md-4 col-form-label text-md-right"><fmt:message
+                                        key="label.name"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="name" class="form-control" name="name"
+                                           pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                                           title="<fmt:message key="label.nameValidate"/>" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="telephone"
+                                       class="col-md-4 col-form-label text-md-right"><fmt:message
+                                        key="label.telephone"/></label>
+                                <div class="col-md-6">
+                                    <input type="tel" id="telephone" class="form-control" name="telephone"
+                                           pattern="[0-9]{11,12}"
+                                           title="<fmt:message key="label.telephoneValidate"/>" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="address"
+                                       class="col-md-4 col-form-label text-md-right"><fmt:message
+                                        key="label.address"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="address" class="form-control" name="address"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="nameOfRole"
+                                       class="col-md-4 col-form-label text-md-right"><fmt:message key="label.role"/></label>
+                                <div class="col-md-6">
+                                    <select id="nameOfRole" class="form-control" name="nameOfRole" required>
+                                        <option selected disabled><fmt:message key="label.chooseCategory"/></option>
+                                        <c:forEach var="roleList" items="${ROLE_LIST}">
+                                            <option value="${roleList.toString()}">${roleList.toString()}</option>
+                                        </c:forEach>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-md-4">
+                                    <fmt:message key="label.allFieldsValidate"/>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <fmt:message key="label.submit"/>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 </form>
 </div>
-<h3>
-    Book Information From Database</h3>
+<h3><fmt:message key="label.userInfoForTable"/></h3>
 <table class="table">
     <thead class="bg-light">
     <tr>
-        <th scope="col">Username</th>
-        <th scope="col">Email</th>
-        <th scope="col">Name</th>
-        <th scope="col">Surname</th>
-        <th scope="col">Role</th>
-        <th scope="col">Telephone</th>
-        <th scope="col">Balance</th>
-        <th scope="col">BanStatus</th>
-        <th scope="col">Action</th>
+        <th scope="col"><fmt:message key="label.username"/></th>
+        <th scope="col"><fmt:message key="label.email"/></th>
+        <th scope="col"><fmt:message key="label.name"/></th>
+        <th scope="col"><fmt:message key="label.surname"/></th>
+        <th scope="col"><fmt:message key="label.role"/></th>
+        <th scope="col"><fmt:message key="label.telephone"/></th>
+        <th scope="col"><fmt:message key="label.balance"/></th>
+        <th scope="col"><fmt:message key="label.banStatus"/></th>
+        <th scope="col"><fmt:message key="label.action"/></th>
     </tr>
     </thead>
     <tbody>
@@ -88,21 +154,23 @@
             <td>${tempBook.telephone}</td>
             <td>${tempBook.balance}</td>
             <td>${tempBook.banStatus}</td>
+            <c:if test="${tempBook.role != 'admin'}">
             <form action="ban-user" method="post">
                 <td><input type="hidden" name="id" value="${tempBook.id}">
                 <c:choose>
                     <c:when test="${tempBook.banStatus == 'banned'}">
-                        <input type="submit" value="Unban">
+                    <input type="submit" value="<fmt:message key="label.unban"/>">
                     </c:when>
                     <c:otherwise>
-                        <input type="submit" value="Ban">
+                    <input type="submit" value="<fmt:message key="label.ban"/>">
                     </c:otherwise>
                 </c:choose>
             </form>
             <form action="delete-user" method="post">
                 <input type="hidden" name="id" value="${tempBook.id}">
-                <input type="submit" value="Delete"></td>
+                <input type="submit" value="<fmt:message key="label.delete"/>"></td>
             </form>
+            </c:if>
         </tr>
     </c:forEach>
     </tbody>

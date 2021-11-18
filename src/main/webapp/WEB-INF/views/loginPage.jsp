@@ -7,30 +7,77 @@
 <html lang="${sessionScope.lang}">
 <head>
     <title>Login</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="/resources/css/style.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet"
+          id="bootstrap-css">
 </head>
 <body>
-<%@include file="header.jsp"%>
-<form name="form" action="<%=request.getContextPath()%>/login" method="post">
+<nav class="navbar navbar-expand-lg navbar-light navbar-laravel">
+    <div class="container">
+        <a class="navbar-brand" href="/shop?currentPage=1&category=0">Periodicals</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <table align="center">
-        <tr>
-            <td>Username</td>
-            <td><input type="text" name="username" /></td>
-        </tr>
-        <tr>
-            <td>Password</td>
-            <td><input type="password" name="password" /></td>
-        </tr>
-        <tr>
-            <td><span style="color:red"><%=(request.getAttribute("ex") == null) ? "" : request.getAttribute("ex")%></span></td>
-        </tr>
-        <tr>
-            <td></td>
-            <td><input type="submit" value="<fmt:message key="label.login"/>"></td>
-        </tr>
-    </table>
-</form>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/login"><fmt:message key="label.logIn"/></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/registration"><fmt:message key="label.signUp"/></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="?sessionLocale=en"><img src="/resources/images/flag.png"></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="?sessionLocale=ua"><img src="/resources/images/UA-Ukraine-Flag-icon.png"></a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="login-form">
+    <div class="cotainer">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header"><fmt:message key="label.login"/></div>
+                    <div class="card-body">
+                        <form action="login" method="post">
+                            <div class="form-group row">
+                                <label for="login"
+                                       class="col-md-4 col-form-label text-md-right"><fmt:message
+                                        key="label.username"/></label>
+                                <div class="col-md-6">
+                                    <input type="text" id="login" class="form-control" name="username"
+                                           required autofocus>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="password" class="col-md-4 col-form-label text-md-right"><fmt:message
+                                        key="label.password"/></label>
+                                <div class="col-md-6">
+                                    <input type="password" id="password" class="form-control" name="password"
+                                           required>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 offset-md-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <fmt:message key="label.logIn"/>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

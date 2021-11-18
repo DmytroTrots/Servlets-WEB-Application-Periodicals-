@@ -1,6 +1,6 @@
-package com.trots.periodacals.controllers;
+package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
+import com.trots.periodacals.daoimpl.UserDaoImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,10 +12,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/delete-periodical")
-public class DeletePeriodicalServlet extends HttpServlet {
+@WebServlet("/delete-user")
+public class deleteUserServlet extends HttpServlet {
 
-    private static final Logger log = LogManager.getLogger(DeletePeriodicalServlet.class);
+    private static final Logger log = LogManager.getLogger(deleteUserServlet.class);
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -26,10 +26,10 @@ public class DeletePeriodicalServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
-        PeriodicalsDaoImpl.getInstance().deletePeriodicalFromAdminPage(id);
-        log.trace("Successfully --> periodical " + id + " deleted");
+        UserDaoImpl.getInstance().deleteUserFromAdminPage(id);
+        log.trace("Successfully --> user " + id + " deleted");
 
-        resp.sendRedirect(req.getContextPath() + "/fileupload");
+        resp.sendRedirect(req.getContextPath() + "/addUser");
 
     }
 }

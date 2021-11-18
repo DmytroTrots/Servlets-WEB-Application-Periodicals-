@@ -1,4 +1,4 @@
-package com.trots.periodacals.controllers;
+package com.trots.periodacals.controllers.user;
 
 import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import com.trots.periodacals.daoimpl.SubjectDaoImpl;
@@ -45,65 +45,63 @@ public class ShopServlet extends HttpServlet {
         int category = Integer.parseInt(request.getParameter("category"));
         int currentPage = Integer.parseInt(request.getParameter("currentPage"));
         int recordsPerPage = 12;
+        String url = request.getRequestURI();
         String searchField = (String) request.getSession().getAttribute("searchField");
         String sort = (String) request.getSession().getAttribute("sort");
 
-        List<Periodical> paginList;
+        StringBuilder query = new StringBuilder("SELECT `periodical`.`sell_id`, periodical.rating, `periodical`.`title`, `periodical`.`price_per_month`,`periodical`.`images`, `publisher`.`name` FROM periodical_has_subject JOIN periodical ON periodical_has_subject.periodical_id = periodical.sell_id JOIN publisher ON periodical.publisher_id = publisher.id JOIN `subject` ON periodical_has_subject.subject_id = `subject`.id");
 
-        ///Choose periodicals according to category
-        if (category == 0) {
-            paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPagination();
-        } else {
-            paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPaginationBySubject(category);
+        ///Choose periodicals according to category and title
+        if (category != 0 && searchField != null && !searchField.equals("")) {
+            query.append(" WHERE `subject`.id = ").append(category).append(" and `periodical`.`title` like").append(" '%").append(searchField).append("%'");
+        }
+        else if(category != 0 && (searchField == null || searchField.equals(""))){
+            query.append(" WHERE `subject`.id = ").append(category);
+        }
+        else if(category == 0 && searchField != null && !searchField.equals("")){
+            query.append(" WHERE `periodical`.`title` like").append(" '%").append(searchField).append("%'");
         }
 
-        ///Search periodical by name
-        if (searchField != null && !searchField.equals("")) {
-            paginList.clear();
-            List<Periodical> periodical = PeriodicalsDaoImpl.getInstance().getRecordPeriodicalByName(searchField);
-            if (periodical != null) {
-                for (Periodical p : periodical) {
-                    int periodicalId = p.getSellId();
-                    List<String> listOfPeriodicalSubject = SubjectPeriodicalsDaoImpl.getInstance().findAllSubjectOfPeriodicalById(periodicalId);
-                    {
-                        for (String s : listOfPeriodicalSubject) {
-                            if (subjectsMap.get(s) == category || category == 0) {
-                                paginList.add(p);
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
+        query.append(" group by periodical.sell_id");
         ///Sorting according to user's choice
         if (!(sort == null)) {
             if (sort.equals("ws")) {}
-            else if (sort.equals("prLtH")) {paginList.sort(Comparator.comparing(Periodical::getPricePerMonth));}
-            else if (sort.equals("prHtL")) {paginList.sort(Comparator.comparing(Periodical::getPricePerMonth).reversed());}
-            else if (sort.equals("nza")) {paginList.sort(Comparator.comparing(Periodical::getTitle).reversed());}
-            else if (sort.equals("naz")) {paginList.sort(Comparator.comparing(Periodical::getTitle));}
-            else if (sort.equals("rating")) {paginList.sort(Comparator.comparing(Periodical::getRating).reversed());}
+            else if (sort.equals("prLtH")) {query.append(" order by price_per_month asc");}
+            else if (sort.equals("prHtL")) {query.append(" order by price_per_month desc");}
+            else if (sort.equals("nza")) {query.append(" order by title desc");}
+            else if (sort.equals("naz")) {query.append(" order by title asc");}
+            else if (sort.equals("rating")) {query.append(" order by rating desc");}
         }
 
-        ///Counting number of pages
-        int rows = paginList.size();
+        int rows = PeriodicalsDaoImpl.getInstance().getNumbersOfRows();
+
         int nOfPages = rows / recordsPerPage;
         if (nOfPages % recordsPerPage > 0) {
             nOfPages++;
         }
-
         ///If last page -> subList with list.size() to avoid index exception
+        List<Periodical> paginList = new ArrayList<>();
         if (rows >= 12) {
             if ((currentPage - 1) == (rows / recordsPerPage)) {
-                paginList = paginList.subList((currentPage * recordsPerPage - recordsPerPage), paginList.size());
+                query.append(" limit ").append(currentPage * recordsPerPage - recordsPerPage).append(",").append(rows);
+                System.out.println(query);
+                paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPagination(String.valueOf(query));
             } else {
-                paginList = paginList.subList((currentPage * recordsPerPage - recordsPerPage), currentPage * recordsPerPage);
+                query.append(" limit ").append(currentPage * recordsPerPage - recordsPerPage).append(",").append(currentPage*recordsPerPage);
+                System.out.println(query);
+                paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPagination(String.valueOf(query));
             }
         }
 
+        if (paginList.size() != 12){
+            nOfPages = currentPage;
+        }
+        else if(paginList.size()==0){
+            nOfPages = 0;
+        }
+
         Integer id = (Integer) request.getSession().getAttribute("ID");
+        request.setAttribute("url", url);
         request.setAttribute("PERIODICAL", paginList);
         request.getSession().setAttribute("category", category);
         request.setAttribute("noOfPages", nOfPages);

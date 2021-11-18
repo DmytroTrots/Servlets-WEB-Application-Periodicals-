@@ -1,6 +1,9 @@
-package com.trots.periodacals.entity;
+package com.trots.periodacals.dbconnection;
 
-import com.trots.periodacals.dbconnection.SQLQuery;
+import com.trots.periodacals.entity.Cart;
+import com.trots.periodacals.entity.Periodical;
+import com.trots.periodacals.entity.Receipt;
+import com.trots.periodacals.entity.User;
 import com.trots.periodacals.util.PBKDF2PasswordHashing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -314,9 +317,10 @@ public class DBManager implements DBManagerInterface {
     }
 
     @Override
-    public List<Periodical> getRecords(Connection connection) throws SQLException {
+    public List<Periodical> getRecords(String query, Connection connection) throws SQLException {
         List<Periodical> list = new ArrayList<>();
-        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("select periodical.sell_id, periodical.rating, periodical.title, periodical.price_per_month, periodical.images, publisher.name from periodical, publisher WHERE publisher.id = publisher_id")) {
+        try (PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 Periodical periodical = new Periodical();
                 periodical.setSellId(resultSet.getInt("sell_id"));
@@ -327,51 +331,19 @@ public class DBManager implements DBManagerInterface {
                 periodical.setRating(resultSet.getDouble("rating"));
                 list.add(periodical);
             }
-        }
-        return list;
-    }
-
-
-    @Override
-    public List<Periodical> getRecordsWithSubject(int subject, Connection connection) throws SQLException {
-        List<Periodical> periodicalsList = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT `periodical`.`sell_id`, periodical.rating, `periodical`.`title`, " + "`periodical`.`price_per_month`,`periodical`.`images`, `publisher`.`name`\n" + "FROM periodical_has_subject\n" + "    " + "JOIN periodical ON periodical_has_subject.periodical_id = periodical.sell_id\n" + "    " + "JOIN publisher ON periodical.publisher_id = publisher.id\n" + "    " + "JOIN `subject` ON periodical_has_subject.subject_id = `subject`.id \n" + "WHERE `subject`.id = ?")) {
-            preparedStatement.setInt(1, subject);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    Periodical periodical = new Periodical();
-                    periodical.setSellId(resultSet.getInt("sell_id"));
-                    periodical.setTitle(resultSet.getString("title"));
-                    periodical.setPricePerMonth(resultSet.getDouble("price_per_month"));
-                    periodical.setPublisher(resultSet.getString("name"));
-                    periodical.setImage(resultSet.getString("images"));
-                    periodical.setRating(resultSet.getDouble("rating"));
-                    periodicalsList.add(periodical);
-                }
-            }
-        }
-        return periodicalsList;
+        } return list;
     }
 
     @Override
-    public List<Periodical> getPeriodicalByName(String title, Connection connection) throws SQLException {
-        List<Periodical> periodicals = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement("select periodical.sell_id, periodical.rating, periodical.title, periodical.price_per_month, periodical.images, publisher.name from periodical, publisher WHERE publisher.id = publisher_id and periodical.title like ?")) {
-            preparedStatement.setString(1, "%" + title + "%");
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    Periodical periodical = new Periodical();
-                    periodical.setSellId(resultSet.getInt("sell_id"));
-                    periodical.setTitle(resultSet.getString("title"));
-                    periodical.setPricePerMonth(resultSet.getDouble("price_per_month"));
-                    periodical.setPublisher(resultSet.getString("name"));
-                    periodical.setImage(resultSet.getString("images"));
-                    periodical.setRating(resultSet.getDouble("rating"));
-                    periodicals.add(periodical);
-                }
+    public Integer getNumberOfRows(Connection connection) throws SQLException {
+        Integer numOfRows = 0;
+        try(Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT COUNT(sell_id) FROM periodical")) {
+            if (resultSet.next()){
+                numOfRows = resultSet.getInt(1);
             }
         }
-        return periodicals;
+        return numOfRows;
     }
     ///END OF PERIODICAL DAO
 
@@ -430,7 +402,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public List<Receipt> findOrdersOfOneUser(Integer id, Connection con) throws SQLException {
         List<Receipt> list = new ArrayList<>();
-        try (PreparedStatement preparedStatement = con.prepareStatement("select periodical_has_receipt.price_per_month, periodical_has_receipt.number_of_month, `status`.`status_name`, periodical.title, receipt.create_time, publisher.`name`\n" + "from ((((periodical_has_receipt\n" + "inner join receipt on  periodical_has_receipt.receipt_id = receipt.id)\n" + "inner join `periodical` on periodical_has_receipt.periodical_sell_id = periodical.sell_id)\n" + "inner join `status` on receipt.status_id = `status`.id)\n" + "inner join publisher on periodical.publisher_id = publisher.id)\n" + "where receipt.user_id = ?")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement("select periodical_has_receipt.price_per_month, periodical_has_receipt.number_of_month, `status`.`status_name`, periodical.title, receipt.create_time, publisher.`name`\n" + "from ((((periodical_has_receipt\n" + "inner join receipt on  periodical_has_receipt.receipt_id = receipt.id)\n" + "inner join `periodical` on periodical_has_receipt.periodical_sell_id = periodical.sell_id)\n" + "inner join `status` on receipt.status_id = `status`.id)\n" + "inner join publisher on periodical.publisher_id = publisher.id)\n" + "where receipt.user_id = ? order by status_name asc")) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery();) {
                 while (resultSet.next()) {
@@ -450,7 +422,7 @@ public class DBManager implements DBManagerInterface {
 
     public List<Receipt> findAllAcceptedOrdersOfUser(Connection connection) throws SQLException {
         List<Receipt> list = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement("select periodical_has_receipt.price_per_month, periodical_has_receipt.number_of_month, periodical.title, receipt.user_id\n" + "from periodical_has_receipt \n" + "inner join receipt on  periodical_has_receipt.receipt_id = receipt.id\n" + "inner join `periodical` on periodical_has_receipt.periodical_sell_id = periodical.sell_id\n" + "where cast(receipt.create_time as date) = ? and receipt.status_id = 3;")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("select periodical_has_receipt.price_per_month, periodical_has_receipt.number_of_month, periodical.title, receipt.user_id\n" + "from periodical_has_receipt \n" + "inner join receipt on  periodical_has_receipt.receipt_id = receipt.id\n" + "inner join `periodical` on periodical_has_receipt.periodical_sell_id = periodical.sell_id\n" + "where cast(receipt.create_time as date) = ? and receipt.status_id = 2;")) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDateTime now = LocalDateTime.now();
             preparedStatement.setDate(1, Date.valueOf(dtf.format(now)));
@@ -483,13 +455,8 @@ public class DBManager implements DBManagerInterface {
 
     public List<Receipt> getAllOrdersForProccess(Connection connection) throws SQLException {
         List<Receipt> receiptList = new ArrayList<>();
-        try(Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("select receipt.id, receipt.adress, receipt.`name`, receipt.surname, MAX(`status`.`status_name`) as s, " +
-                "receipt.user_id, receipt.telephone_number, receipt.email, receipt.create_time, " +
-                "sum(periodical_has_receipt.price_per_month) as sum, " +
-                "group_concat(periodical_sell_id) as conc from periodical_has_receipt, receipt, status " +
-                "where receipt.status_id = `status`.`id`  and receipt_id = receipt.id  group by receipt_id order by s DESC")){
-            while(resultSet.next()){
+        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("select receipt.id, receipt.adress, receipt.`name`, receipt.surname, MAX(`status`.`status_name`) as s, " + "receipt.user_id, receipt.telephone_number, receipt.email, receipt.create_time, " + "sum(periodical_has_receipt.price_per_month) as sum, " + "group_concat(periodical_sell_id) as conc from periodical_has_receipt, receipt, status " + "where receipt.status_id = `status`.`id`  and receipt_id = receipt.id  group by receipt_id order by s DESC")) {
+            while (resultSet.next()) {
                 Receipt receipt = new Receipt();
                 receipt.setId(resultSet.getInt("id"));
                 receipt.setAdress(resultSet.getString("adress"));
@@ -509,15 +476,15 @@ public class DBManager implements DBManagerInterface {
     }
 
     public void acceptOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException {
-        try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `dbperiodicals`.`receipt` SET `status_id` = '3' WHERE (`id` = ?)")){
-            preparedStatement.setInt(1,receiptId);
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `dbperiodicals`.`receipt` SET `status_id` = '3' WHERE (`id` = ?)")) {
+            preparedStatement.setInt(1, receiptId);
             preparedStatement.executeUpdate();
         }
     }
 
     public void discardOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException {
-        try(PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `dbperiodicals`.`receipt` SET `status_id` = '2' WHERE (`id` = ?)")){
-            preparedStatement.setInt(1,receiptId);
+        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `dbperiodicals`.`receipt` SET `status_id` = '2' WHERE (`id` = ?)")) {
+            preparedStatement.setInt(1, receiptId);
             preparedStatement.executeUpdate();
         }
     }

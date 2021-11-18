@@ -1,7 +1,7 @@
 package com.trots.periodacals.daoimpl;
 
 import com.trots.periodacals.dbconnection.ConnectionPool;
-import com.trots.periodacals.entity.DBManager;
+import com.trots.periodacals.dbconnection.DBManager;
 import com.trots.periodacals.entity.Receipt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

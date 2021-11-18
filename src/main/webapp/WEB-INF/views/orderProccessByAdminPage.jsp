@@ -14,18 +14,18 @@
 <table class="table">
     <thead class="bg-light">
     <tr>
-        <th scope="col">ReceiptId</th>
-        <th scope="col">User_id</th>
-        <th scope="col">Name</th>
-        <th scope="col">Surname</th>
-        <th scope="col">Email</th>
-        <th scope="col">Telephone</th>
-        <th scope="col">Address</th>
-        <th scope="col">Order(ID OF PERIODICAL)</th>
-        <th scope="col">Price</th>
-        <th scope="col">Create date</th>
-        <th scope="col">Status</th>
-        <th scope="col">Action</th>
+        <th scope="col"><fmt:message key="label.receiptId"/></th>
+        <th scope="col"><fmt:message key="label.userId"/></th>
+        <th scope="col"><fmt:message key="label.name"/></th>
+        <th scope="col"><fmt:message key="label.surname"/></th>
+        <th scope="col"><fmt:message key="label.email"/></th>
+        <th scope="col"><fmt:message key="label.telephone"/></th>
+        <th scope="col"><fmt:message key="label.address"/></th>
+        <th scope="col"><fmt:message key="label.orderIdOfPeriodicals"/></th>
+        <th scope="col"><fmt:message key="label.price"/></th>
+        <th scope="col"><fmt:message key="label.createDate"/></th>
+        <th scope="col"><fmt:message key="label.status"/></th>
+        <th scope="col"><fmt:message key="label.action"/></th>
     </tr>
     </thead>
     <tbody>
@@ -45,13 +45,13 @@
             <c:if test="${list.statusName == 'payed'}">
             <form action="accept-order" method="post">
                 <td><input type="hidden" name="id" value="${list.id}">
-                <input type="submit" value="Accept">
+                <input type="submit" value="<fmt:message key="label.accept"/>">
             </form>
             <form action="discard-order" method="post">
                 <input type="hidden" name="id" value="${list.id}">
                 <input type="hidden" name="userId" value="${list.userId}">
                 <input type="hidden" name="price" value="${list.pricePerMonth}">
-                <input type="submit" value="Discard"></td>
+                <input type="submit" value="<fmt:message key="label.discard"/>"></td>
             </form>
             </c:if>
         </tr>
