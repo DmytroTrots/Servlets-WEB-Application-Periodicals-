@@ -2,12 +2,10 @@ package com.trots.periodacals.controllers.user;
 
 import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import com.trots.periodacals.daoimpl.SubjectDaoImpl;
-import com.trots.periodacals.daoimpl.SubjectPeriodicalsDaoImpl;
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Periodical;
 import com.trots.periodacals.entity.User;
-import com.trots.periodacals.util.CreateReportOrders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,18 +24,6 @@ public class ShopServlet extends HttpServlet {
     private static final Logger log = LogManager.getLogger(ShopServlet.class);
 
     @Override
-    public void init(){
-        Timer timer = new Timer();
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.HOUR_OF_DAY,23);
-        cal.set(Calendar.MINUTE,59);
-
-        Date timeoRun = cal.getTime();
-        CreateReportOrders createReportOrders = new CreateReportOrders();
-        timer.schedule(createReportOrders, timeoRun);
-    }
-
-    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, Integer> subjectsMap = SubjectDaoImpl.getInstance().findAllSubjectsFromDB();
         request.setAttribute("subjectMap", subjectsMap);
@@ -48,33 +34,38 @@ public class ShopServlet extends HttpServlet {
         String url = request.getRequestURI();
         String searchField = (String) request.getSession().getAttribute("searchField");
         String sort = (String) request.getSession().getAttribute("sort");
+        log.debug("category --> " + category + "; current page --> " + currentPage + "; url --> " + url + "; searchField -->" + searchField + "; sort --> " + sort + ".");
 
         StringBuilder query = new StringBuilder("SELECT `periodical`.`sell_id`, periodical.rating, `periodical`.`title`, `periodical`.`price_per_month`,`periodical`.`images`, `publisher`.`name` FROM periodical_has_subject JOIN periodical ON periodical_has_subject.periodical_id = periodical.sell_id JOIN publisher ON periodical.publisher_id = publisher.id JOIN `subject` ON periodical_has_subject.subject_id = `subject`.id");
 
         ///Choose periodicals according to category and title
         if (category != 0 && searchField != null && !searchField.equals("")) {
             query.append(" WHERE `subject`.id = ").append(category).append(" and `periodical`.`title` like").append(" '%").append(searchField).append("%'");
-        }
-        else if(category != 0 && (searchField == null || searchField.equals(""))){
+        } else if (category != 0 && (searchField == null || searchField.equals(""))) {
             query.append(" WHERE `subject`.id = ").append(category);
-        }
-        else if(category == 0 && searchField != null && !searchField.equals("")){
+        } else if (category == 0 && searchField != null && !searchField.equals("")) {
             query.append(" WHERE `periodical`.`title` like").append(" '%").append(searchField).append("%'");
         }
 
         query.append(" group by periodical.sell_id");
         ///Sorting according to user's choice
         if (!(sort == null)) {
-            if (sort.equals("ws")) {}
-            else if (sort.equals("prLtH")) {query.append(" order by price_per_month asc");}
-            else if (sort.equals("prHtL")) {query.append(" order by price_per_month desc");}
-            else if (sort.equals("nza")) {query.append(" order by title desc");}
-            else if (sort.equals("naz")) {query.append(" order by title asc");}
-            else if (sort.equals("rating")) {query.append(" order by rating desc");}
+            if (sort.equals("ws")) {
+            } else if (sort.equals("prLtH")) {
+                query.append(" order by price_per_month asc");
+            } else if (sort.equals("prHtL")) {
+                query.append(" order by price_per_month desc");
+            } else if (sort.equals("nza")) {
+                query.append(" order by title desc");
+            } else if (sort.equals("naz")) {
+                query.append(" order by title asc");
+            } else if (sort.equals("rating")) {
+                query.append(" order by rating desc");
+            }
         }
 
         int rows = PeriodicalsDaoImpl.getInstance().getNumbersOfRows();
-
+        log.trace("Successfully --> get numbers of rows of periodicals --> " + rows);
         int nOfPages = rows / recordsPerPage;
         if (nOfPages % recordsPerPage > 0) {
             nOfPages++;
@@ -84,19 +75,16 @@ public class ShopServlet extends HttpServlet {
         if (rows >= 12) {
             if ((currentPage - 1) == (rows / recordsPerPage)) {
                 query.append(" limit ").append(currentPage * recordsPerPage - recordsPerPage).append(",").append(rows);
-                System.out.println(query);
-                paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPagination(String.valueOf(query));
             } else {
-                query.append(" limit ").append(currentPage * recordsPerPage - recordsPerPage).append(",").append(currentPage*recordsPerPage);
-                System.out.println(query);
-                paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPagination(String.valueOf(query));
+                query.append(" limit ").append(currentPage * recordsPerPage - recordsPerPage).append(",").append(currentPage * recordsPerPage);
             }
+            paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPagination(String.valueOf(query));
+            log.trace("Successfully --> get list of periodicals --> " + paginList.size());
         }
 
-        if (paginList.size() != 12){
+        if (paginList.size() != 12) {
             nOfPages = currentPage;
-        }
-        else if(paginList.size()==0){
+        } else if (paginList.size() == 0) {
             nOfPages = 0;
         }
 

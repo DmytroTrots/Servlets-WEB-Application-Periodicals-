@@ -51,13 +51,13 @@ public class UserDaoImpl {
     }
 
 
-    public boolean addUser(User user) {
+    public Integer addUser(User user) {
         try (Connection con = connectionPool.getConnection()) {
             return dbManager.userRegistration(user, con);
         } catch (SQLException throwables) {
             log.error("Cannot register user, admin page");
         }
-        return false;
+        return null;
     }
 
     public boolean updateFieldBalanceAfterTopUp(int id, Double balance) {

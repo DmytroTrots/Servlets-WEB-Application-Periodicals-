@@ -26,7 +26,7 @@ public class AddToCartServlet extends HttpServlet {
 
     private static final Logger log = LogManager.getLogger(AddToCartServlet.class);
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DecimalFormat dcf = new DecimalFormat("#.##");
         request.setAttribute("decimalFormat", dcf);
         List<Cart> cart_list = (List<Cart>) request.getSession().getAttribute("cart-list");

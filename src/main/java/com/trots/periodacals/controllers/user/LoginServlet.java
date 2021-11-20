@@ -2,6 +2,7 @@ package com.trots.periodacals.controllers.user;
 
 import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.util.CreateReportOrders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,12 +14,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Timer;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
     private static final Logger log = LogManager.getLogger(LoginServlet.class);
+
+    @Override
+    public void init(){
+        Timer timer = new Timer();
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY,23);
+        cal.set(Calendar.MINUTE,59);
+
+        Date timeoRun = cal.getTime();
+        CreateReportOrders createReportOrders = new CreateReportOrders();
+        timer.schedule(createReportOrders, timeoRun);
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         System.out.println("Login#doGet");

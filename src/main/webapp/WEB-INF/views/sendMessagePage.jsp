@@ -14,7 +14,7 @@
 <body>
 <%@include file="header.jsp" %>
 <form class="send-message"action="/send-message" method="post">
-    <input type="hidden" name="to" value="dtrots27@gmail.com"/><br/>
+    <input type="hidden" name="to" value="headerperiodicalsiteepam@gmail.com"/><br/>
     <input type="hidden" name="subject" value="<fmt:message key="label.username"/> -> ${sessionScope['userName']}, ID -> ${sessionScope['ID']}, <fmt:message key="label.messageFromCustomer"/>" ><br/>
     <label for="message"><fmt:message key="label.sendMessageLabel"/></label></br>
     <textarea class="textarea" rows="10" cols="70" id="message" name="message"></textarea><br/>

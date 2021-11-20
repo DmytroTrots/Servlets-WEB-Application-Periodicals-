@@ -21,7 +21,7 @@ public interface DBManagerInterface {
     List<User> findAll(Connection con) throws SQLException;
 
     ///method for registering user by Admin(connect with previous method)
-    boolean userRegistration(User user, Connection con) throws SQLException;
+    Integer userRegistration(User user, Connection con) throws SQLException;
 
     ///method for balance updating
     boolean updateBalanceTopUp(int id, Double balance, Connection con) throws SQLException;
@@ -54,7 +54,7 @@ public interface DBManagerInterface {
 
     List<Periodical> getRecords(String query, Connection connection) throws SQLException;
 
-    Integer getNumberOfRows(Connection connection) throws SQLException;
+    int getNumberOfRows(Connection connection) throws SQLException;
 
     ///START OF PUBLSIHER DAO
     Map<String, Integer> findAllPublishers(Connection con) throws SQLException;

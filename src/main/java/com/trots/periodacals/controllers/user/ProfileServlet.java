@@ -24,13 +24,13 @@ public class ProfileServlet extends HttpServlet {
         Integer id = (Integer) req.getSession().getAttribute("ID");
         if (id != null) {
             List<Receipt> receiptList = ReceiptDaoImpl.getInstance().getAllOrdersOfUserById(id);
+            log.trace("Successfully --> get orders of user for profile page");
             if (!receiptList.isEmpty()) {
                 req.setAttribute("receiptList", receiptList);
             }
         }
         RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/views/profilePage.jsp");
         dispatcher.forward(req, resp);
-
     }
 
     @Override

@@ -10,8 +10,9 @@ import java.util.Properties;
 
 public class Mailer {
 
-    final static String user="roiten27@gmail.com";//change accordingly
-    final static String pass="27052k17800";
+    final static String user="periodicalsiteepam@gmail.com";//change accordingly
+    final static String pass="passwordEPAM";
+    public static final String ORDER_REPORT_PDF = "C:\\Users\\Dima\\Desktop\\periodacals\\src\\main\\webapp\\resources\\images\\order_report.pdf";
 
     public static void send(String to, String subject, String message) throws MessagingException {
         Session session = getSession(user, pass);
@@ -57,7 +58,7 @@ public class Mailer {
             Multipart emailContent = new MimeMultipart();
 
             MimeBodyPart pdfAttachment = new MimeBodyPart();
-            pdfAttachment.attachFile("C:\\Users\\Dima\\Desktop\\periodacals\\src\\main\\webapp\\resources\\images\\order_report.pdf");
+            pdfAttachment.attachFile(ORDER_REPORT_PDF);
 
             emailContent.addBodyPart(pdfAttachment);
 

@@ -18,10 +18,12 @@ import java.util.TimerTask;
 
 public class CreateReportOrders extends TimerTask {
 
+    public static final String ORDER_REPORT_PDF = "C:\\Users\\Dima\\Desktop\\periodacals\\src\\main\\webapp\\resources\\images\\order_report.pdf";
+
     @Override
     public void run() {
         Date date = new Date();
-        String file = "C:\\Users\\Dima\\Desktop\\periodacals\\src\\main\\webapp\\resources\\images\\order_report.pdf";
+        String file = ORDER_REPORT_PDF;
         {
             try {
                 PdfWriter writer = new PdfWriter(file);
@@ -55,7 +57,7 @@ public class CreateReportOrders extends TimerTask {
             }
         }
         try {
-            Mailer.sendMailToAdminReportOrders("dtrots27@gmail.com", "Daily report about orders", "Daily report");
+            Mailer.sendMailToAdminReportOrders("headerperiodicalsiteepam@gmail.com", "Daily report about orders", "Daily report");
         } catch (MessagingException e) {
             e.printStackTrace();
         }

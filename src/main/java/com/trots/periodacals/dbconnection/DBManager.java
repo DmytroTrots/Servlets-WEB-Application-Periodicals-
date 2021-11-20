@@ -5,8 +5,6 @@ import com.trots.periodacals.entity.Periodical;
 import com.trots.periodacals.entity.Receipt;
 import com.trots.periodacals.entity.User;
 import com.trots.periodacals.util.PBKDF2PasswordHashing;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
@@ -18,9 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DBManager implements DBManagerInterface {
-
-    private static final Logger log = LogManager.getLogger(DBManager.class);
+public class DBManager implements DBManagerInterface, SQLQuery {
 
     private static DBManager instance;
 
@@ -44,7 +40,7 @@ public class DBManager implements DBManagerInterface {
         String passwordDB;
         String roleDB;
         String userNameDB;
-        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(SQLQuery.SELECT_CREDENTIALS_LOGIN)) {
+        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(SELECT_CREDENTIALS_LOGIN)) {
             while (resultSet.next()) {
                 userNameDB = resultSet.getString("username");
                 passwordDB = resultSet.getString("password");
@@ -52,8 +48,6 @@ public class DBManager implements DBManagerInterface {
 
                 if (username.equals(userNameDB) && PBKDF2PasswordHashing.validatePassword(password, passwordDB) && roleDB.equals("admin"))
                     return "admin";
-                else if (username.equals(userNameDB) && PBKDF2PasswordHashing.validatePassword(password, passwordDB) && roleDB.equals("manager"))
-                    return "manager";
                 else if (username.equals(userNameDB) && PBKDF2PasswordHashing.validatePassword(password, passwordDB) && roleDB.equals("customer"))
                     return "customer";
             }
@@ -66,7 +60,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public List<User> findAll(Connection con) throws SQLException {
         List<User> users = new ArrayList<>();
-        try (Statement statement = con.createStatement(); ResultSet resultSet = statement.executeQuery(SQLQuery.SELECT_ALL_USERS)) {
+        try (Statement statement = con.createStatement(); ResultSet resultSet = statement.executeQuery(SELECT_ALL_USERS)) {
             while (resultSet.next()) {
                 User user = new User();
                 user.setId(resultSet.getInt(1));
@@ -89,8 +83,9 @@ public class DBManager implements DBManagerInterface {
 
     ///method for registering user by Admin(connect with previous method)
     @Override
-    public boolean userRegistration(User user, Connection con) throws SQLException {
-        try (PreparedStatement preparedStatement = con.prepareStatement(SQLQuery.INSERT_USER_BY_ADMIN)) {
+    public Integer userRegistration(User user, Connection con) throws SQLException {
+        Integer userId = null;
+        try (PreparedStatement preparedStatement = con.prepareStatement(INSERT_USER_BY_ADMIN, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, user.getUsername());
             preparedStatement.setString(2, user.getEmail());
             preparedStatement.setString(3, user.getPassword());
@@ -100,14 +95,19 @@ public class DBManager implements DBManagerInterface {
             preparedStatement.setString(7, user.getSurname());
             preparedStatement.setString(8, user.getAddress());
             preparedStatement.executeUpdate();
-            return true;
+            try(ResultSet resultSet = preparedStatement.getGeneratedKeys()){
+                if (resultSet.next()){
+                    userId = resultSet.getInt(1);
+                }
+            }
+            return userId;
         }
     }
 
     ///method for balance updating
     @Override
     public boolean updateBalanceTopUp(int id, Double balance, Connection con) throws SQLException {
-        try (PreparedStatement preparedStatement = con.prepareStatement("UPDATE `dbperiodicals`.`user` SET `balance` = ? WHERE (`id` = ?)")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(UPDATE_BALANCE_AFTER_TOP_UP)) {
             preparedStatement.setDouble(1, balance);
             preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
@@ -119,7 +119,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public User findSingleUserById(Integer id, Connection con) throws SQLException {
         User user = null;
-        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT * FROM user WHERE (`id` = ?)")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(GET_SINGLE_USER_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -127,6 +127,9 @@ public class DBManager implements DBManagerInterface {
                     user.setName(resultSet.getString("name"));
                     user.setSurname(resultSet.getString("surname"));
                     user.setEmail(resultSet.getString("email"));
+                    user.setUsername(resultSet.getString("username"));
+                    user.setPassword(resultSet.getString("password"));
+                    user.setRole(resultSet.getString("role"));
                     user.setTelephone(resultSet.getString("telephone"));
                     user.setAddress(resultSet.getString("address"));
                     user.setBalance(resultSet.getDouble("balance"));
@@ -140,7 +143,7 @@ public class DBManager implements DBManagerInterface {
     ///method for ban user
     @Override
     public boolean setBanStatus(String status, Integer id, Connection con) throws SQLException {
-        try (PreparedStatement preparedStatement = con.prepareStatement("UPDATE `dbperiodicals`.`user` " + "SET `ban_status` = ? WHERE (`id` = ?)")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(SET_BAN_STATUS)) {
             preparedStatement.setString(1, status);
             preparedStatement.setInt(2, id);
             preparedStatement.executeUpdate();
@@ -151,7 +154,7 @@ public class DBManager implements DBManagerInterface {
     ///method for deleting user
     @Override
     public boolean deleteUserAdmin(Integer id, Connection con) throws SQLException {
-        try (PreparedStatement preparedStatement = con.prepareStatement("DELETE FROM `dbperiodicals`.`user` WHERE (`id` = ?)")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(DELETE_USER_FROM_ADMIN_PAGE)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         }
@@ -163,7 +166,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public List<Periodical> getAll(Connection con) throws SQLException {
         List<Periodical> list = new ArrayList<>();
-        try (Statement statement = con.createStatement(); ResultSet resultSet = statement.executeQuery(SQLQuery.SELECT_ALL_PERIODICALS)) {
+        try (Statement statement = con.createStatement(); ResultSet resultSet = statement.executeQuery(SELECT_ALL_PERIODICALS)) {
             while (resultSet.next()) {
                 Periodical periodical = new Periodical();
                 periodical.setSellId(resultSet.getInt("sell_id"));
@@ -185,7 +188,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public List<Cart> getCartPeriodical(List<Cart> cartList, Connection con) throws SQLException {
         List<Cart> periodicalsListInCart = new ArrayList<>();
-        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT `sell_id`, `title`, `price_per_month`, `name` FROM periodical, publisher WHERE sell_id=? AND  `publisher`.`id` = periodical.publisher_id")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(GET_PERIODICALS_FOR_CART)) {
             if (cartList.size() > 0) {
                 for (Cart item : cartList) {
                     preparedStatement.setInt(1, item.getSellId());
@@ -209,7 +212,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public double getTotalCartPrice(List<Cart> cartList, Connection con) throws SQLException {
         double summa = 0;
-        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT price_per_month FROM periodical WHERE sell_id = ?")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(GET_TOTAL_CART_PRICE)) {
             if (cartList.size() > 0) {
                 for (Cart item : cartList) {
                     preparedStatement.setInt(1, item.getSellId());
@@ -227,7 +230,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public double getPriceOfOnePeriodical(Integer id, Connection con) throws SQLException {
         double summa = 0;
-        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT price_per_month FROM periodical WHERE sell_id = ?")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(GET_PRICE_OF_ONE_PERIODICAL_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
@@ -241,7 +244,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public Integer insertPeriodical(Periodical periodical, Connection connection) throws SQLException {
         Integer periodicalId = null;
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `dbperiodicals`.`periodical` " + "(`title`, `number_of_pages`, `periodicity_per_year`, `percentage_of_advertising`, `price_per_month`, " + "`description`, `rating`, `publisher_id`, `images`) " + "VALUES (?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_PERIODICAL, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, periodical.getTitle());
             preparedStatement.setInt(2, periodical.getNumberOfPages());
             preparedStatement.setInt(3, periodical.getPeriodicityPerYear());
@@ -263,7 +266,7 @@ public class DBManager implements DBManagerInterface {
 
     @Override
     public boolean deletePeriodicalAdmin(Integer id, Connection con) throws SQLException {
-        try (PreparedStatement preparedStatement = con.prepareStatement("DELETE FROM `dbperiodicals`.`periodical` WHERE (`sell_id` = ?)")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(DELETE_PERIODICAL_FROM_ADMIN_PAGE)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         }
@@ -273,7 +276,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public Periodical getOnePeriod(Integer id, Connection con) throws SQLException {
         Periodical periodical = new Periodical();
-        try (PreparedStatement preparedStatement = con.prepareStatement("SELECT `sell_id`, `title`, `number_of_pages`, `periodicity_per_year`, `percentage_of_advertising`, `price_per_month`, `description`, `rating`, `publisher`.`name`, `publisher`.`telephone_number`, `images` FROM periodical, publisher WHERE sell_id = ?")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(GET_ONE_PERIODICAL_BY_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
@@ -295,7 +298,7 @@ public class DBManager implements DBManagerInterface {
 
     @Override
     public boolean updatePeriodical(Periodical periodical, Integer id, String newImage, String oldImage, Connection connection) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `dbperiodicals`.`periodical` " + "SET `title` = ?, `number_of_pages` = ?, `periodicity_per_year` = ?, `percentage_of_advertising` = ?, " + "`price_per_month` = ?, `description` = ?, `rating` = ?, `publisher_id` = ?, `images` = ? " + "WHERE (`sell_id` = ?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_PERIODICAL_FROM_ADMIN_PAGE)) {
             preparedStatement.setString(1, periodical.getTitle());
             preparedStatement.setInt(2, periodical.getNumberOfPages());
             preparedStatement.setInt(3, periodical.getPeriodicityPerYear());
@@ -335,10 +338,10 @@ public class DBManager implements DBManagerInterface {
     }
 
     @Override
-    public Integer getNumberOfRows(Connection connection) throws SQLException {
-        Integer numOfRows = 0;
+    public int getNumberOfRows(Connection connection) throws SQLException {
+        int numOfRows = 0;
         try(Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery("SELECT COUNT(sell_id) FROM periodical")) {
+        ResultSet resultSet = statement.executeQuery(GET_NUMBER_OF_ALL_PERIODICALS)) {
             if (resultSet.next()){
                 numOfRows = resultSet.getInt(1);
             }
@@ -351,7 +354,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public Map<String, Integer> findAllPublishers(Connection con) throws SQLException {
         Map<String, Integer> publisherMap = new HashMap<>();
-        try (Statement statement = con.createStatement(); ResultSet resultSet = statement.executeQuery("SELECT * FROM publisher")) {
+        try (Statement statement = con.createStatement(); ResultSet resultSet = statement.executeQuery(GET_ALL_PUBLISHERS)) {
             while (resultSet.next()) {
                 publisherMap.put(resultSet.getString("name"), resultSet.getInt("id"));
             }
@@ -362,7 +365,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public Integer insertPublisher(String publisher, String telephone, Connection con) throws SQLException {
         Integer publisherId = null;
-        try (PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `dbperiodicals`.`publisher` " + "(`name`, `telephone_number`) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(INSERT_PUBLISHER, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, publisher);
             preparedStatement.setString(2, telephone);
             preparedStatement.executeUpdate();
@@ -380,7 +383,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public Integer insertOrder(Receipt receipt, Connection con) throws SQLException {
         Integer receiptId = null;
-        try (PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `dbperiodicals`.`receipt` (`name`, " + "`surname`, `adress`, `telephone_number`, `status_id`, `user_id`, `email`)" + "VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(INSERT_ORDER_INTO_DB, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, receipt.getName());
             preparedStatement.setString(2, receipt.getSurname());
             preparedStatement.setString(3, receipt.getAdress());
@@ -402,9 +405,9 @@ public class DBManager implements DBManagerInterface {
     @Override
     public List<Receipt> findOrdersOfOneUser(Integer id, Connection con) throws SQLException {
         List<Receipt> list = new ArrayList<>();
-        try (PreparedStatement preparedStatement = con.prepareStatement("select periodical_has_receipt.price_per_month, periodical_has_receipt.number_of_month, `status`.`status_name`, periodical.title, receipt.create_time, publisher.`name`\n" + "from ((((periodical_has_receipt\n" + "inner join receipt on  periodical_has_receipt.receipt_id = receipt.id)\n" + "inner join `periodical` on periodical_has_receipt.periodical_sell_id = periodical.sell_id)\n" + "inner join `status` on receipt.status_id = `status`.id)\n" + "inner join publisher on periodical.publisher_id = publisher.id)\n" + "where receipt.user_id = ? order by status_name asc")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(FIND_ORDERS_OF_ONE_USER)) {
             preparedStatement.setInt(1, id);
-            try (ResultSet resultSet = preparedStatement.executeQuery();) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Receipt receipt = new Receipt();
                     receipt.setPricePerMonth(resultSet.getDouble("price_per_month"));
@@ -422,11 +425,11 @@ public class DBManager implements DBManagerInterface {
 
     public List<Receipt> findAllAcceptedOrdersOfUser(Connection connection) throws SQLException {
         List<Receipt> list = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement("select periodical_has_receipt.price_per_month, periodical_has_receipt.number_of_month, periodical.title, receipt.user_id\n" + "from periodical_has_receipt \n" + "inner join receipt on  periodical_has_receipt.receipt_id = receipt.id\n" + "inner join `periodical` on periodical_has_receipt.periodical_sell_id = periodical.sell_id\n" + "where cast(receipt.create_time as date) = ? and receipt.status_id = 2;")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_ALL_ACCEPTED_ORDERS_FOR_ADMIN_REPORT)) {
             DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDateTime now = LocalDateTime.now();
             preparedStatement.setDate(1, Date.valueOf(dtf.format(now)));
-            try (ResultSet resultSet = preparedStatement.executeQuery();) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
                     Receipt receipt = new Receipt();
                     receipt.setPricePerMonth(resultSet.getDouble("price_per_month"));
@@ -443,7 +446,7 @@ public class DBManager implements DBManagerInterface {
 
     ///START OF RECEIPT-PERIODICALS DAO
     public boolean insertRecordIntoReceiptHasPeriodicals(Receipt receipt, Integer receiptId, Connection connection) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO `dbperiodicals`.`periodical_has_receipt` (`periodical_sell_id`, `receipt_id`, `price_per_month`, `number_of_month`) VALUES (?, ?, ?, ?);")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_RECORD_INTO_RECEIPT_HAS_PERIODICALS_TABLE)) {
             preparedStatement.setInt(1, receipt.getPeriodicalSellId());
             preparedStatement.setInt(2, receiptId);
             preparedStatement.setDouble(3, receipt.getPricePerMonth());
@@ -455,7 +458,7 @@ public class DBManager implements DBManagerInterface {
 
     public List<Receipt> getAllOrdersForProccess(Connection connection) throws SQLException {
         List<Receipt> receiptList = new ArrayList<>();
-        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery("select receipt.id, receipt.adress, receipt.`name`, receipt.surname, MAX(`status`.`status_name`) as s, " + "receipt.user_id, receipt.telephone_number, receipt.email, receipt.create_time, " + "sum(periodical_has_receipt.price_per_month) as sum, " + "group_concat(periodical_sell_id) as conc from periodical_has_receipt, receipt, status " + "where receipt.status_id = `status`.`id`  and receipt_id = receipt.id  group by receipt_id order by s DESC")) {
+        try (Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(GET_ALL_ORDERS_FOR_ADMIN_PAGE)) {
             while (resultSet.next()) {
                 Receipt receipt = new Receipt();
                 receipt.setId(resultSet.getInt("id"));
@@ -476,14 +479,14 @@ public class DBManager implements DBManagerInterface {
     }
 
     public void acceptOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `dbperiodicals`.`receipt` SET `status_id` = '3' WHERE (`id` = ?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(ACCEPT_ORDER_OF_USER_FROM_ADMIN_PAGE)) {
             preparedStatement.setInt(1, receiptId);
             preparedStatement.executeUpdate();
         }
     }
 
     public void discardOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("UPDATE `dbperiodicals`.`receipt` SET `status_id` = '2' WHERE (`id` = ?)")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DISCARD_ORDER_OF_USER_FROM_ADMIN_PAGE)) {
             preparedStatement.setInt(1, receiptId);
             preparedStatement.executeUpdate();
         }
@@ -493,7 +496,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public Map<String, Integer> findAllSubjects(Connection con) throws SQLException {
         Map<String, Integer> subjectMap = new HashMap<>();
-        try (Statement statement = con.createStatement(); ResultSet resultSet = statement.executeQuery("SELECT * FROM subject")) {
+        try (Statement statement = con.createStatement(); ResultSet resultSet = statement.executeQuery(GET_ALL_SUBJECTS)) {
             while (resultSet.next()) {
                 subjectMap.put(resultSet.getString("themes_of_books"), resultSet.getInt("id"));
             }
@@ -504,7 +507,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public Integer insertSubject(String subj, Connection con) throws SQLException {
         Integer subjectId = null;
-        try (PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO `dbperiodicals`.`subject` " + "(`themes_of_books`) VALUES (?)", Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(INSERT_SUBJECT_INTO_DB, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, subj);
             preparedStatement.executeUpdate();
 
@@ -522,7 +525,7 @@ public class DBManager implements DBManagerInterface {
     ///START OF PERIODICAL<->SUBJECT DAO
     @Override
     public boolean insertSubjIdAndPeriodicalId(Integer subjId, Integer periodId, Connection con) throws SQLException {
-        try (PreparedStatement preparedStatement = con.prepareStatement("INSERT INTO periodical_has_subject " + "(periodical_id, subject_id) VALUES (?,?)")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(INSERT_RECORD_INTO_PERIODICAL_HAS_SUBJECT)) {
             preparedStatement.setInt(1, periodId);
             preparedStatement.setInt(2, subjId);
             preparedStatement.executeUpdate();
@@ -533,7 +536,7 @@ public class DBManager implements DBManagerInterface {
     @Override
     public List<String> getSubjectOfPeriodById(Integer id, Connection con) throws SQLException {
         List<String> list = new ArrayList<>();
-        try (PreparedStatement preparedStatement = con.prepareStatement("Select `subject`.`themes_of_books` " + "from periodical_has_subject\n" + "Inner join `subject` on subject_id=`subject`.id\n" + "where periodical_has_subject.periodical_id = ?")) {
+        try (PreparedStatement preparedStatement = con.prepareStatement(GET_SUBJECT_OF_ONE_PERIODICAL_BY_ITS_ID)) {
             preparedStatement.setInt(1, id);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {

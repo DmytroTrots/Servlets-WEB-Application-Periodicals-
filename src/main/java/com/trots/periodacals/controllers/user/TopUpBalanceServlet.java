@@ -20,8 +20,7 @@ public class TopUpBalanceServlet extends HttpServlet {
     private static final Logger log = LogManager.getLogger(TopUpBalanceServlet.class);
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Integer id = (Integer) request.getSession().getAttribute("ID");
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/topUpBalancePage.jsp");
         dispatcher.forward(request, response);
     }
