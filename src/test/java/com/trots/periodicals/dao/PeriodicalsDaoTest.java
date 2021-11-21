@@ -2,7 +2,6 @@ package com.trots.periodicals.dao;
 
 import com.trots.periodacals.dbconnection.DBManager;
 import com.trots.periodacals.entity.Periodical;
-import com.trots.periodacals.entity.User;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -124,4 +123,46 @@ public class PeriodicalsDaoTest {
         Assert.assertEquals(periodical.getTitle(), periodical1.getTitle());
         Assert.assertEquals(periodical.getPricePerMonth(), periodical1.getPricePerMonth());
     }
+
+    @Test
+    public void updatePeriodicalByAdmin() {
+        boolean result = false;
+        try {
+            connection.setAutoCommit(false);
+            Integer periodicalId = DBManager.getInstance().insertPeriodical(periodical, connection);
+            result = DBManager.getInstance().updatePeriodical(periodical, periodicalId, "java.png", periodical.getImage(), connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void getRecordsForPaginSortSearchTest(){
+        List<Periodical> list = null;
+        try {
+            list = DBManager.getInstance().getRecords("SELECT `periodical`.`sell_id`, periodical.rating, `periodical`.`title`, `periodical`.`price_per_month`,`periodical`.`images`, `publisher`.`name` FROM periodical_has_subject JOIN periodical ON periodical_has_subject.periodical_id = periodical.sell_id JOIN publisher ON periodical.publisher_id = publisher.id JOIN `subject` ON periodical_has_subject.subject_id = `subject`.id group by periodical.sell_id", connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Assert.assertNotNull(list);
+    }
+
+    @Test
+    public void getNumberOfRowsOfPeriodicalTableTest(){
+        int result = 0;
+        try {
+            result = DBManager.getInstance().getNumberOfRows(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Assert.assertNotEquals(0, result);
+    }
+
 }

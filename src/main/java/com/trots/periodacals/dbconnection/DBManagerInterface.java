@@ -56,7 +56,7 @@ public interface DBManagerInterface {
 
     int getNumberOfRows(Connection connection) throws SQLException;
 
-    ///START OF PUBLSIHER DAO
+    ///START OF PUBLISHER DAO
     Map<String, Integer> findAllPublishers(Connection con) throws SQLException;
 
     Integer insertPublisher(String publisher, String telephone, Connection con) throws SQLException;

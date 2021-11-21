@@ -350,7 +350,7 @@ public class DBManager implements DBManagerInterface, SQLQuery {
     }
     ///END OF PERIODICAL DAO
 
-    ///START OF PERIODICAL DAO
+    ///START OF PUBLISHER DAO
     @Override
     public Map<String, Integer> findAllPublishers(Connection con) throws SQLException {
         Map<String, Integer> publisherMap = new HashMap<>();
@@ -377,9 +377,9 @@ public class DBManager implements DBManagerInterface, SQLQuery {
         }
         return publisherId;
     }
-    ///END OF PERIODICAL DAO
+    ///END OF PUBLISHER DAO
 
-    ///START OF RECEIPT DAO
+    ///START OF RECE8IPT DAO
     @Override
     public Integer insertOrder(Receipt receipt, Connection con) throws SQLException {
         Integer receiptId = null;
