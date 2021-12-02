@@ -1,10 +1,10 @@
 package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
-import com.trots.periodacals.daoimpl.PublisherDaoImpl;
-import com.trots.periodacals.daoimpl.SubjectDaoImpl;
-import com.trots.periodacals.daoimpl.SubjectPeriodicalsDaoImpl;
 import com.trots.periodacals.entity.Periodical;
+import com.trots.periodacals.service.PeriodicalService;
+import com.trots.periodacals.service.PublisherService;
+import com.trots.periodacals.service.SubjectPeriodicalService;
+import com.trots.periodacals.service.SubjectService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,9 +31,9 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("PERIODICAL", PeriodicalsDaoImpl.getInstance().getAllPeriodicals());
-        Map<String, Integer> publisherMap = PublisherDaoImpl.getInstance().findAllPublishersWithoutTelephone();
-        Map<String, Integer> subjectMap = SubjectDaoImpl.getInstance().findAllSubjectsFromDB();
+        request.setAttribute("PERIODICAL", PeriodicalService.getInstance().getAllPeriodicals());
+        Map<String, Integer> publisherMap = PublisherService.getInstance().findAllPublishersWithoutTelephone();
+        Map<String, Integer> subjectMap = SubjectService.getInstance().findAllSubjectsFromDB();
         request.getSession().setAttribute("publisherMap", publisherMap);
         request.getSession().setAttribute("subjectMap", subjectMap);
 
@@ -61,7 +61,7 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
         ///add publisher to table/find index of publisher
         Integer publisherId = publisherMap.get(publisher);
         if (publisherId == null) {
-            publisherId = PublisherDaoImpl.getInstance().insertPublisherIntoDB(publisher, telephone);
+            publisherId = PublisherService.getInstance().insertPublisherIntoDB(publisher, telephone);
             log.trace("successfully --> inserting publisher into DB");
         }
         periodical.setPublisherId(publisherId);
@@ -79,19 +79,19 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
         }
 
         ///insert periodical into db
-        Integer periodicalId = PeriodicalsDaoImpl.getInstance().insertPeriodicalIntoDB(periodical);
+        Integer periodicalId = PeriodicalService.getInstance().insertPeriodicalIntoDB(periodical);
         log.trace("successfully --> inserting periodical into db");
         ///insert subject into db
 
         for (String s : subject) {
             Integer subjectsId = subjectMap.get(subject.get(subject.indexOf(s)));
             if (subjectsId == null && !subject.get(subject.indexOf(s)).equals("")) {
-                subjectsId = SubjectDaoImpl.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));
+                subjectsId = SubjectService.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));
                 log.trace("successfully --> inserting subject into DB");
             }
             ///insert n:m table con
             if (!subject.get(subject.indexOf(s)).equals("")) {
-                SubjectPeriodicalsDaoImpl.getInstance().insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, periodicalId);
+                SubjectPeriodicalService.getInstance().insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, periodicalId);
                 log.trace("successfully --> inserting subject and periodical into db");
             }
         }

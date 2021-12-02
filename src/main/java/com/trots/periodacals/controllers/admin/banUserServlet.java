@@ -1,7 +1,7 @@
 package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,13 +27,13 @@ public class banUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
-        User user = UserDaoImpl.getInstance().getSingleUserById(id);
+        User user = UserService.getInstance().getSingleUserById(id);
         String banStatus = user.getBanStatus();
         if (banStatus == null) {
-            UserDaoImpl.getInstance().updateBanStatusOfUser("banned", id);
+            UserService.getInstance().updateBanStatusOfUser("banned", id);
             log.trace("Successfully --> user " + id + " banned");
         } else {
-            UserDaoImpl.getInstance().updateBanStatusOfUser(null, id);
+            UserService.getInstance().updateBanStatusOfUser(null, id);
             log.trace("Successfully --> user " + id + " unbanned");
         }
         resp.sendRedirect(req.getContextPath() + "/addUser");

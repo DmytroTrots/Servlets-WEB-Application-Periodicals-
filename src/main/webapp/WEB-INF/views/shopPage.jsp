@@ -77,7 +77,7 @@
     </div>
 </div>
 
-<nav aria-label="pagination" style="">
+<nav aria-label="pagination">
     <ul class="pagination">
         <c:if test="${currentPage != 1}">
             <li class="page-item"><a class="page-link"

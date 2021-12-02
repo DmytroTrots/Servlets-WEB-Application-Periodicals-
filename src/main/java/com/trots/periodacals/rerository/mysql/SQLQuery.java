@@ -1,7 +1,6 @@
-package com.trots.periodacals.dbconnection;
+package com.trots.periodacals.rerository.mysql;
 
-interface SQLQuery {
-
+public interface SQLQuery {
     String INSERT_USER_BY_ADMIN = "INSERT INTO `dbperiodicals`.`user` " + "(`username`, `email`, `password`, `role`, `telephone`, `name`, `surname`, `address`)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     String SELECT_ALL_USERS = "SELECT * FROM user";
     String SELECT_CREDENTIALS_LOGIN = "SELECT `username`, `password`, `role` FROM `user`";
@@ -31,4 +30,5 @@ interface SQLQuery {
     String INSERT_SUBJECT_INTO_DB = "INSERT INTO `dbperiodicals`.`subject` " + "(`themes_of_books`) VALUES (?)";
     String INSERT_RECORD_INTO_PERIODICAL_HAS_SUBJECT = "INSERT INTO periodical_has_subject " + "(periodical_id, subject_id) VALUES (?,?)";
     String GET_SUBJECT_OF_ONE_PERIODICAL_BY_ITS_ID = "Select `subject`.`themes_of_books` " + "from periodical_has_subject\n" + "Inner join `subject` on subject_id=`subject`.id\n" + "where periodical_has_subject.periodical_id = ?";
+
 }

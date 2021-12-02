@@ -67,6 +67,12 @@
                                 </div>
                             </div>
 
+                            <div class="form-group row">
+                                <div class="col-md-6 offset-md-4">
+                                    <span style="color:red"><%=(request.getAttribute("ex") == null) ? "" : request.getAttribute("ex")%></span>
+                                </div>
+                            </div>
+
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
                                     <fmt:message key="label.logIn"/>

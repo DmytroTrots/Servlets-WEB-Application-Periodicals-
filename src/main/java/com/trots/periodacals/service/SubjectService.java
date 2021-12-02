@@ -1,7 +1,9 @@
-package com.trots.periodacals.daoimpl;
+package com.trots.periodacals.service;
 
 import com.trots.periodacals.dbconnection.ConnectionPool;
-import com.trots.periodacals.dbconnection.DBManager;
+import com.trots.periodacals.rerository.SubjectDao;
+import com.trots.periodacals.rerository.UserDao;
+import com.trots.periodacals.rerository.mysql.MySQLDaoFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,26 +12,25 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
 
-public class SubjectDaoImpl {
+public class SubjectService {
+    private static final Logger log = LogManager.getLogger(SubjectService.class);
 
-    private static final Logger log = LogManager.getLogger(SubjectDaoImpl.class);
+    private static SubjectService instance;
 
-    private static SubjectDaoImpl instance;
-
-    public static synchronized SubjectDaoImpl getInstance() {
+    public static synchronized SubjectService getInstance() {
         if (instance == null) {
-            instance = new SubjectDaoImpl();
+            instance = new SubjectService();
         }
         return instance;
     }
 
-    private DBManager dbManager = DBManager.getInstance();
+    SubjectDao repository = new MySQLDaoFactory().getSubjectDao();
 
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public Map<String, Integer> findAllSubjectsFromDB(){
         try(Connection con = connectionPool.getConnection()) {
-            return dbManager.findAllSubjects(con);
+            return repository.findAllSubjects(con);
         } catch (SQLException throwables) {
             log.error("Cannot get all subjects");
         }
@@ -38,12 +39,10 @@ public class SubjectDaoImpl {
 
     public Integer insertSubjectIntoDB(String subj){
         try(Connection con = connectionPool.getConnection()) {
-            return dbManager.insertSubject(subj, con);
+            return repository.insertSubject(subj, con);
         } catch (SQLException throwables) {
             log.error("Cannot insert subject into DB");
         }
         return null;
     }
-
-
 }

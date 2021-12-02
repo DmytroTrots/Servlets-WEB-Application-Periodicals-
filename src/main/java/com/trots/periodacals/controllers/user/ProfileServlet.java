@@ -1,7 +1,7 @@
 package com.trots.periodacals.controllers.user;
 
-import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
 import com.trots.periodacals.entity.Receipt;
+import com.trots.periodacals.service.ReceiptService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,7 +23,7 @@ public class ProfileServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = (Integer) req.getSession().getAttribute("ID");
         if (id != null) {
-            List<Receipt> receiptList = ReceiptDaoImpl.getInstance().getAllOrdersOfUserById(id);
+            List<Receipt> receiptList = ReceiptService.getInstance().getAllOrdersOfUserById(id);
             log.trace("Successfully --> get orders of user for profile page");
             if (!receiptList.isEmpty()) {
                 req.setAttribute("receiptList", receiptList);

@@ -1,6 +1,6 @@
 package com.trots.periodacals.controllers.user;
 
-import com.trots.periodacals.daoimpl.UserDaoImpl;
+import com.trots.periodacals.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +35,7 @@ public class TopUpBalanceServlet extends HttpServlet {
         Double actualBalance = (Double) request.getSession().getAttribute("balance");
         if (actualBalance != null) {
             actualBalance += balance;
-            UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
+            UserService.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
             session.setAttribute("balance", actualBalance);
         } response.sendRedirect(request.getContextPath() + "/cart");
     }

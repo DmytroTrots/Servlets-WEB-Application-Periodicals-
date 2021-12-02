@@ -1,7 +1,8 @@
-package com.trots.periodacals.daoimpl;
+package com.trots.periodacals.service;
 
 import com.trots.periodacals.dbconnection.ConnectionPool;
-import com.trots.periodacals.dbconnection.DBManager;
+import com.trots.periodacals.rerository.PublisherDao;
+import com.trots.periodacals.rerository.mysql.MySQLDaoFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,26 +11,25 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.Map;
 
-public class PublisherDaoImpl {
+public class PublisherService {
+    private static final Logger log = LogManager.getLogger(PublisherService.class);
 
-    private static final Logger log = LogManager.getLogger(PublisherDaoImpl.class);
+    private static PublisherService instance;
 
-    private static PublisherDaoImpl instance;
-
-    public static synchronized PublisherDaoImpl getInstance() {
+    public static synchronized PublisherService getInstance() {
         if (instance == null) {
-            instance = new PublisherDaoImpl();
+            instance = new PublisherService();
         }
         return instance;
     }
 
-    private DBManager dbManager = DBManager.getInstance();
+    PublisherDao repository = new MySQLDaoFactory().getPublisherDao();
 
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public Map<String, Integer> findAllPublishersWithoutTelephone(){
         try(Connection con = connectionPool.getConnection()) {
-            return dbManager.findAllPublishers(con);
+            return repository.findAllPublishers(con);
         } catch (SQLException e) {
             log.error("Cannot find all publisher without telephone");
         }
@@ -38,7 +38,7 @@ public class PublisherDaoImpl {
 
     public Integer insertPublisherIntoDB(String publisher, String telephone){
         try(Connection con = connectionPool.getConnection()) {
-            return dbManager.insertPublisher(publisher, telephone, con);
+            return repository.insertPublisher(publisher, telephone, con);
         } catch (SQLException e) {
             log.error("Cannot insert publisher into DB");
         }

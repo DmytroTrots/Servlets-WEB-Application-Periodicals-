@@ -1,6 +1,6 @@
 package com.trots.periodicals.dao;
 
-import com.trots.periodacals.dbconnection.DBManager;
+import com.trots.periodacals.rerository.mysql.MySQLSubjectPeriodicalsDao;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,10 +22,11 @@ public class SubjectPeriodicalDaoImpl {
 
     @Test
     public void insertSubjIdAndPeriodicalIdTest(){
+        MySQLSubjectPeriodicalsDao mySQLSubjectPeriodicalsDao = new MySQLSubjectPeriodicalsDao();
         boolean result = false;
         try{
             connection.setAutoCommit(false);
-            result = DBManager.getInstance().insertSubjIdAndPeriodicalId(22, 53, connection);
+            result = mySQLSubjectPeriodicalsDao.insertSubjIdAndPeriodicalId(22, 53, connection);
 
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -41,9 +42,10 @@ public class SubjectPeriodicalDaoImpl {
 
     @Test
     public void getSubjectOfPeriodByIdTest(){
+        MySQLSubjectPeriodicalsDao mySQLSubjectPeriodicalsDao = new MySQLSubjectPeriodicalsDao();
         List<String> list = null;
         try{
-            list = DBManager.getInstance().getSubjectOfPeriodById(17, connection);
+            list = mySQLSubjectPeriodicalsDao.getSubjectOfPeriodById(17, connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

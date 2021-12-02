@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @WebFilter(urlPatterns = {"/addUser", "/fileupload", "/update-periodical", "/delete-periodical", "/ban-user", "/orders"}, initParams = @WebInitParam(name = "role", value = "admin"))
 public class AuthenticationFilter implements Filter {
@@ -25,21 +26,30 @@ public class AuthenticationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         String roleRequest = (String) ((HttpServletRequest) servletRequest).getSession().getAttribute("Role");
+        Integer id = (Integer) ((HttpServletRequest) servletRequest).getSession().getAttribute("ID");
+        String lang = (String) ((HttpServletRequest) servletRequest).getSession().getAttribute("lang");
+        servletResponse.setCharacterEncoding("UTF-16");
+        PrintWriter out = servletResponse.getWriter();
 
-        if(roleRequest == null){
-            System.out.println("U r't logged in");
-            servletRequest.setAttribute("ex", "U r't logged in");
-            RequestDispatcher rd= servletRequest.getRequestDispatcher("error.jsp");
-            rd.include(servletRequest, servletResponse);
+
+        if(id == null){
+            if(lang == null || lang.equals("en")){
+                out.println("You are not logged in");
+            }
+            else{
+                out.println("Ви не уввійшли у систему");
+            }
         }
-        else if(roleRequest.equals(role)){
+        if(roleRequest.equals(role)){
             filterChain.doFilter(servletRequest, servletResponse);//sends request to next resource
         }
         else{
-            System.out.println("Access problem");
-            servletRequest.setAttribute("ex", "U are not allowed to visit this page");
-            RequestDispatcher rd= servletRequest.getRequestDispatcher("error.jsp");
-            rd.include(servletRequest, servletResponse);
+            if(lang == null || lang.equals("en")){
+                out.println("U are not allowed to visit this page");
+            }
+            else{
+                out.println("Вам заборонено відвідувати цю сторінку");
+            }
         }
     }
 

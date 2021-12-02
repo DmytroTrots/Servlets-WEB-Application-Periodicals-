@@ -35,7 +35,7 @@
                     <tbody>
                     <td>${list.title}</td>
                     <td>${list.publisher}</td>
-                    <td>${list.pricePerMonth}</td>
+                    <td>${sessionScope['decimalFormat'].format(list.pricePerMonth)}</td>
                     <td>
                         <input type="hidden" name="id" value="${list.sellId}" class="form-input">
                         <div class="form-group d-flex justify-content-between w-50">

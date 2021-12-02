@@ -7,8 +7,8 @@ import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Cell;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
-import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
 import com.trots.periodacals.entity.Receipt;
+import com.trots.periodacals.service.ReceiptService;
 
 import javax.mail.MessagingException;
 import java.io.FileNotFoundException;
@@ -40,7 +40,7 @@ public class CreateReportOrders extends TimerTask {
                 table.addCell(new Cell().add("Title"));
                 table.addCell(new Cell().add("Total price"));
                 table.addCell(new Cell().add("Months"));
-                List<Receipt> list = ReceiptDaoImpl.getInstance().getAllAcceptedOrder();
+                List<Receipt> list = ReceiptService.getInstance().getAllAcceptedOrder();
                 for (Receipt r: list){
                     table.addCell(new Cell().add(String.valueOf(r.getUserId())));
                     table.addCell(new Cell().add(r.getTitle()));

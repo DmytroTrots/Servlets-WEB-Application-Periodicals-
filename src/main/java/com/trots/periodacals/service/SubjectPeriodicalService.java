@@ -1,7 +1,9 @@
-package com.trots.periodacals.daoimpl;
+package com.trots.periodacals.service;
 
 import com.trots.periodacals.dbconnection.ConnectionPool;
-import com.trots.periodacals.dbconnection.DBManager;
+import com.trots.periodacals.rerository.SubjectPeriodicalsDao;
+import com.trots.periodacals.rerository.UserDao;
+import com.trots.periodacals.rerository.mysql.MySQLDaoFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,26 +12,25 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class SubjectPeriodicalsDaoImpl {
+public class SubjectPeriodicalService {
+    private static final Logger log = LogManager.getLogger(SubjectPeriodicalService.class);
 
-    private static final Logger log = LogManager.getLogger(SubjectPeriodicalsDaoImpl.class);
+    private static SubjectPeriodicalService instance;
 
-    private static SubjectPeriodicalsDaoImpl instance;
-
-    public static synchronized SubjectPeriodicalsDaoImpl getInstance() {
+    public static synchronized SubjectPeriodicalService getInstance() {
         if (instance == null) {
-            instance = new SubjectPeriodicalsDaoImpl();
+            instance = new SubjectPeriodicalService();
         }
         return instance;
     }
 
-    private DBManager dbManager = DBManager.getInstance();
+    SubjectPeriodicalsDao repository = new MySQLDaoFactory().getSubjectPeriodicalDao();
 
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public boolean insertSubjectIdAndPeriodicalIdIntoDB(Integer subjId, Integer periodId) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.insertSubjIdAndPeriodicalId(subjId, periodId, con);
+            return repository.insertSubjIdAndPeriodicalId(subjId, periodId, con);
         } catch (SQLException throwables) {
             log.error("Cannot insert into DB periodical and subjects");
         }
@@ -38,7 +39,7 @@ public class SubjectPeriodicalsDaoImpl {
 
     public List<String> findAllSubjectOfPeriodicalById(Integer id){
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.getSubjectOfPeriodById(id, con);
+            return repository.getSubjectOfPeriodById(id, con);
         } catch (SQLException throwables) {
             log.error("Cannot get all subjects of periodical by id");
         }

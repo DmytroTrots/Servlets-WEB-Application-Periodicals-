@@ -1,6 +1,6 @@
 package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.daoimpl.ReceiptHasPeriodicalDaoImpl;
+import com.trots.periodacals.service.ReceiptHasPeriodicalService;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,7 +14,7 @@ import java.io.IOException;
 public class OrderProccessByAdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("receiptList",ReceiptHasPeriodicalDaoImpl.getInstance().getAllReceipts());
+        req.setAttribute("receiptList", ReceiptHasPeriodicalService.getInstance().getAllReceipts());
         RequestDispatcher dispatcher = req.getRequestDispatcher("WEB-INF/views/orderProccessByAdminPage.jsp");
         dispatcher.forward(req, resp);
     }

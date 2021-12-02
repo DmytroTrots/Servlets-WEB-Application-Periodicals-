@@ -1,11 +1,11 @@
 package com.trots.periodacals.controllers.user;
 
-import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
-import com.trots.periodacals.daoimpl.SubjectDaoImpl;
-import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Periodical;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.service.PeriodicalService;
+import com.trots.periodacals.service.SubjectService;
+import com.trots.periodacals.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +25,7 @@ public class ShopServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Map<String, Integer> subjectsMap = SubjectDaoImpl.getInstance().findAllSubjectsFromDB();
+        Map<String, Integer> subjectsMap = SubjectService.getInstance().findAllSubjectsFromDB();
         request.setAttribute("subjectMap", subjectsMap);
 
         int category = Integer.parseInt(request.getParameter("category"));
@@ -64,7 +64,7 @@ public class ShopServlet extends HttpServlet {
             }
         }
 
-        int rows = PeriodicalsDaoImpl.getInstance().getNumbersOfRows();
+        int rows = PeriodicalService.getInstance().getNumbersOfRows();
         log.trace("Successfully --> get numbers of rows of periodicals --> " + rows);
         int nOfPages = rows / recordsPerPage;
         if (nOfPages % recordsPerPage > 0) {
@@ -78,7 +78,7 @@ public class ShopServlet extends HttpServlet {
             } else {
                 query.append(" limit ").append(currentPage * recordsPerPage - recordsPerPage).append(",").append(currentPage * recordsPerPage);
             }
-            paginList = PeriodicalsDaoImpl.getInstance().getRecordsForPagination(String.valueOf(query));
+            paginList = PeriodicalService.getInstance().getRecordsForPagination(String.valueOf(query));
             log.trace("Successfully --> get list of periodicals --> " + paginList.size());
         }
 
@@ -99,7 +99,7 @@ public class ShopServlet extends HttpServlet {
 
         ///Check if user is banned
         if (id != null) {
-            User user = UserDaoImpl.getInstance().getSingleUserById(id);
+            User user = UserService.getInstance().getSingleUserById(id);
             if (user.getBanStatus() == null) {
                 request.getSession().setAttribute("user", user);
                 request.getSession().setAttribute("balance", user.getBalance());

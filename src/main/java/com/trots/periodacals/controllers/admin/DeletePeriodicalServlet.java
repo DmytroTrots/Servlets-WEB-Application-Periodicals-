@@ -1,6 +1,6 @@
 package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
+import com.trots.periodacals.service.PeriodicalService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,7 +26,7 @@ public class DeletePeriodicalServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
-        PeriodicalsDaoImpl.getInstance().deletePeriodicalFromAdminPage(id);
+        PeriodicalService.getInstance().deletePeriodicalFromAdminPage(id);
         log.trace("Successfully --> periodical " + id + " deleted");
 
         resp.sendRedirect(req.getContextPath() + "/fileupload");

@@ -1,8 +1,9 @@
-package com.trots.periodacals.daoimpl;
+package com.trots.periodacals.service;
 
 import com.trots.periodacals.dbconnection.ConnectionPool;
-import com.trots.periodacals.dbconnection.DBManager;
 import com.trots.periodacals.entity.Receipt;
+import com.trots.periodacals.rerository.ReceiptHasPeriodicalDao;
+import com.trots.periodacals.rerository.mysql.MySQLDaoFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,26 +12,25 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class ReceiptHasPeriodicalDaoImpl {
+public class ReceiptHasPeriodicalService {
+    private static final Logger log = LogManager.getLogger(ReceiptHasPeriodicalService.class);
 
-    private static final Logger log = LogManager.getLogger(ReceiptHasPeriodicalDaoImpl.class);
+    private static ReceiptHasPeriodicalService instance;
 
-    private static ReceiptHasPeriodicalDaoImpl instance;
-
-    public static synchronized ReceiptHasPeriodicalDaoImpl getInstance() {
+    public static synchronized ReceiptHasPeriodicalService getInstance() {
         if (instance == null) {
-            instance = new ReceiptHasPeriodicalDaoImpl();
+            instance = new ReceiptHasPeriodicalService();
         }
         return instance;
     }
 
-    private DBManager dbManager = DBManager.getInstance();
+    ReceiptHasPeriodicalDao repository = new MySQLDaoFactory().getReceiptHasPeriodicalDao();
 
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public boolean insertReceiptAndPeriodical(Receipt receipt, Integer receiptID){
         try(Connection con = connectionPool.getConnection()) {
-            return dbManager.insertRecordIntoReceiptHasPeriodicals(receipt, receiptID, con);
+            return repository.insertRecordIntoReceiptHasPeriodicals(receipt, receiptID, con);
         } catch (SQLException throwables) {
             log.error("Cannot insert receipt into DB");
         }
@@ -38,12 +38,10 @@ public class ReceiptHasPeriodicalDaoImpl {
     }
     public List<Receipt> getAllReceipts(){
         try(Connection con = connectionPool.getConnection()) {
-            return dbManager.getAllOrdersForProccess(con);
+            return repository.getAllOrdersForProccess(con);
         } catch (SQLException throwables) {
             log.error("Cannot select receipts for proccess");
         }
         return Collections.emptyList();
     }
-
-
 }

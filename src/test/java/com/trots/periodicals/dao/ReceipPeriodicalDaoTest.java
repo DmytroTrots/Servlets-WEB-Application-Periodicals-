@@ -1,7 +1,7 @@
 package com.trots.periodicals.dao;
 
-import com.trots.periodacals.dbconnection.DBManager;
 import com.trots.periodacals.entity.Receipt;
+import com.trots.periodacals.rerository.mysql.MySQLReceiptHasPeriodicalsDao;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,6 +23,7 @@ public class ReceipPeriodicalDaoTest {
 
     @Test
     public void insertRecordIntoReceiptHasPeriodicalsTest(){
+        MySQLReceiptHasPeriodicalsDao mySQLReceiptHasPeriodicalsDao = new MySQLReceiptHasPeriodicalsDao();
         boolean result = false;
         try{
             Receipt receipt = new Receipt();
@@ -35,7 +36,7 @@ public class ReceipPeriodicalDaoTest {
             receipt.setPeriodicalSellId(57);
             receipt.setStatusId(1);
             connection.setAutoCommit(false);
-            result = DBManager.getInstance().insertRecordIntoReceiptHasPeriodicals(receipt, 72, connection);
+            result = mySQLReceiptHasPeriodicalsDao.insertRecordIntoReceiptHasPeriodicals(receipt, 72, connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }finally {
@@ -50,9 +51,10 @@ public class ReceipPeriodicalDaoTest {
 
     @Test
     public void getAllOrdersForProccessTest(){
+        MySQLReceiptHasPeriodicalsDao mySQLReceiptHasPeriodicalsDao = new MySQLReceiptHasPeriodicalsDao();
         List<Receipt> list = null;
         try{
-            list = DBManager.getInstance().getAllOrdersForProccess(connection);
+            list = mySQLReceiptHasPeriodicalsDao.getAllOrdersForProccess(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

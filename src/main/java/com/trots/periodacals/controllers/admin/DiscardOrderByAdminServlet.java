@@ -1,9 +1,8 @@
 package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.controllers.admin.banUserServlet;
-import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
-import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.service.ReceiptService;
+import com.trots.periodacals.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,11 +30,11 @@ public class DiscardOrderByAdminServlet extends HttpServlet {
         Integer id = Integer.parseInt(req.getParameter("id"));
         Integer userId = Integer.parseInt(req.getParameter("userId"));
         Double price = Double.parseDouble(req.getParameter("price"));
-        ReceiptDaoImpl.getInstance().discardOrderByAdmin(id);
-        User user = UserDaoImpl.getInstance().getSingleUserById(userId);
+        ReceiptService.getInstance().discardOrderByAdmin(id);
+        User user = UserService.getInstance().getSingleUserById(userId);
         Double actualBalance = user.getBalance();
         actualBalance = actualBalance + price;
-        UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(userId, actualBalance);
+        UserService.getInstance().updateFieldBalanceAfterTopUp(userId, actualBalance);
         log.trace("Successfully --> order " + id + " discarded");
 
         resp.sendRedirect(req.getContextPath() + "/orders");

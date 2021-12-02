@@ -1,7 +1,7 @@
 package com.trots.periodacals.controllers.user;
 
-import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.service.UserService;
 import com.trots.periodacals.util.CreateReportOrders;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,11 +54,11 @@ public class LoginServlet extends HttpServlet {
         user.setUsername(username);
         user.setPassword(password);
 
-        List<User> userList = UserDaoImpl.getInstance().findAllUsers();
+        List<User> userList = UserService.getInstance().findAllUsers();
 
         try
         {
-            String userValidate = UserDaoImpl.getInstance().authenticateUser(user);
+            String userValidate = UserService.getInstance().authenticateUser(user);
 
             if(userValidate.equals("admin"))
             {

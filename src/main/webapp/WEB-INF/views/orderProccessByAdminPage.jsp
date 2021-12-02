@@ -11,6 +11,7 @@
 </head>
 <body>
 <%@include file="header.jsp"%>
+<span style="color:red"><%=(request.getSession().getAttribute("ex") == null) ? "" : request.getSession().getAttribute("ex")%></span>
 <table class="table">
     <thead class="bg-light">
     <tr>

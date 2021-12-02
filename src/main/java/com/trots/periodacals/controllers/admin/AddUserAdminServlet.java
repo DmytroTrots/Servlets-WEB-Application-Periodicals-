@@ -1,7 +1,7 @@
 package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.service.UserService;
 import com.trots.periodacals.util.PBKDF2PasswordHashing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,8 +27,7 @@ public class AddUserAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        UserDaoImpl userDao = new UserDaoImpl();
-        List<User> list = userDao.findAllUsers();
+        List<User> list = UserService.getInstance().findAllUsers();
         request.setAttribute("USERS_LIST", list);
 
         Set<String> uniqueList = list.stream().map(User::getRole).collect(Collectors.toCollection(LinkedHashSet::new));
@@ -57,7 +56,7 @@ public class AddUserAdminServlet extends HttpServlet {
         user.setRole(request.getParameter("nameOfRole"));
         user.setAddress(request.getParameter("address"));
 
-        UserDaoImpl.getInstance().addUser(user);
+        UserService.getInstance().addUser(user);
         log.trace("Successfully --> adding new user --> " + user.getUsername());
 
         response.sendRedirect(request.getContextPath() + "/addUser");

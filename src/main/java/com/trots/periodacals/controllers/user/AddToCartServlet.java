@@ -1,7 +1,7 @@
 package com.trots.periodacals.controllers.user;
 
-import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
 import com.trots.periodacals.entity.Cart;
+import com.trots.periodacals.service.PeriodicalService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,7 +11,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,14 +27,14 @@ public class AddToCartServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         DecimalFormat dcf = new DecimalFormat("#.##");
-        request.setAttribute("decimalFormat", dcf);
+        request.getSession().setAttribute("decimalFormat", dcf);
         List<Cart> cart_list = (List<Cart>) request.getSession().getAttribute("cart-list");
-        List<Cart> cartPeriodical = null;
+        List<Cart> cartPeriodical;
         if (cart_list != null) {
-            cartPeriodical = PeriodicalsDaoImpl.getInstance().getAllCartPeriodical(cart_list);
+            cartPeriodical = PeriodicalService.getInstance().getAllCartPeriodical(cart_list);
             request.getSession().setAttribute("cartPeriodical", cartPeriodical);
             request.setAttribute("cart_list", cart_list);
-            double total = PeriodicalsDaoImpl.getInstance().getTotalPriceOfCart(cart_list);
+            double total = PeriodicalService.getInstance().getTotalPriceOfCart(cart_list);
             request.getSession().setAttribute("totalPrice", total);
         }
 
@@ -47,7 +46,7 @@ public class AddToCartServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            ArrayList<Cart> cartList = new ArrayList<>();
+            List<Cart> cartList = new ArrayList<>();
 
             int id = Integer.parseInt(request.getParameter("id"));
             Integer currentPage = (Integer) request.getSession().getAttribute("currentPage");
@@ -56,12 +55,12 @@ public class AddToCartServlet extends HttpServlet {
             cm.setSellId(id);
             cm.setMonths(1);
 
-            HttpSession session = request.getSession();
-            ArrayList<Cart> cart_list = (ArrayList<Cart>) session.getAttribute("cart-list");
+
+            List<Cart> cart_list = (List<Cart>) request.getSession().getAttribute("cart-list");
 
             if (cart_list == null) {
                 cartList.add(cm);
-                session.setAttribute("cart-list", cartList);
+                request.getSession().setAttribute("cart-list", cartList);
                 response.sendRedirect(request.getContextPath()+"/shop?currentPage="+currentPage+"&category="+request.getSession().getAttribute("category"));
             } else {
                 cartList = cart_list;
@@ -69,7 +68,7 @@ public class AddToCartServlet extends HttpServlet {
                 for (Cart c : cartList) {
                     if (c.getSellId()==id){
                         exist = true;
-                        out.println("Item already exist in <a href='cartPage.jsp'></a>");
+                        out.println("Item already exist in your cart");
                     }
                 }
                 if(!exist){

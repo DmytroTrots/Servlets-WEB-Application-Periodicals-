@@ -1,9 +1,10 @@
-package com.trots.periodacals.daoimpl;
+package com.trots.periodacals.service;
 
 import com.trots.periodacals.dbconnection.ConnectionPool;
 import com.trots.periodacals.entity.Cart;
-import com.trots.periodacals.dbconnection.DBManager;
 import com.trots.periodacals.entity.Periodical;
+import com.trots.periodacals.rerository.PeriodicalsDao;
+import com.trots.periodacals.rerository.mysql.MySQLDaoFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,26 +13,25 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
-public class PeriodicalsDaoImpl {
+public class PeriodicalService {
+    private static final Logger log = LogManager.getLogger(PeriodicalService.class);
 
-    private static final Logger log = LogManager.getLogger(PeriodicalsDaoImpl.class);
+    private static PeriodicalService instance;
 
-    private static PeriodicalsDaoImpl instance;
-
-    public static synchronized PeriodicalsDaoImpl getInstance() {
+    public static synchronized PeriodicalService getInstance() {
         if (instance == null) {
-            instance = new PeriodicalsDaoImpl();
+            instance = new PeriodicalService();
         }
         return instance;
     }
 
-    private DBManager dbManager = DBManager.getInstance();
+    PeriodicalsDao repository = new MySQLDaoFactory().getPeriodicalDao();
 
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
     public List<Periodical> getAllPeriodicals() {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.getAll(con);
+            return repository.getAll(con);
         } catch (SQLException e) {
             log.error("Cannot get all periodicals");
         }
@@ -40,7 +40,7 @@ public class PeriodicalsDaoImpl {
 
     public List<Cart> getAllCartPeriodical(List<Cart> list) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.getCartPeriodical(list, con);
+            return repository.getCartPeriodical(list, con);
         } catch (SQLException e) {
             log.error("Cannot get cart's periodicals");
         }
@@ -49,7 +49,7 @@ public class PeriodicalsDaoImpl {
 
     public double getTotalPriceOfCart(List<Cart> list) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.getTotalCartPrice(list, con);
+            return repository.getTotalCartPrice(list, con);
         } catch (SQLException e) {
             log.error("Cannot get total price of cart");
         }
@@ -58,7 +58,7 @@ public class PeriodicalsDaoImpl {
 
     public double getPriceById(Integer id) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.getPriceOfOnePeriodical(id, con);
+            return repository.getPriceOfOnePeriodical(id, con);
         } catch (SQLException e) {
             log.error("Cannot get price of periodical by id");
         }
@@ -67,7 +67,7 @@ public class PeriodicalsDaoImpl {
 
     public Integer insertPeriodicalIntoDB(Periodical periodical) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.insertPeriodical(periodical, con);
+            return repository.insertPeriodical(periodical, con);
         } catch (SQLException e) {
             log.error("Cannot insert periodical into DB, admin page");
         }
@@ -76,7 +76,7 @@ public class PeriodicalsDaoImpl {
 
     public boolean deletePeriodicalFromAdminPage(Integer id) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.deletePeriodicalAdmin(id, con);
+            return repository.deletePeriodicalAdmin(id, con);
         } catch (SQLException e) {
             log.error("Cannot delete periodical, admin page");
         }
@@ -85,7 +85,7 @@ public class PeriodicalsDaoImpl {
 
     public Periodical getPeriodicalById(Integer id) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.getOnePeriod(id, con);
+            return repository.getOnePeriod(id, con);
         } catch (SQLException e) {
             log.error("Cannot get periodical by sell_id");
         }
@@ -94,7 +94,7 @@ public class PeriodicalsDaoImpl {
 
     public boolean updatePeriodicalAdmin(Periodical periodical, String newImage, String oldImage, Integer id) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.updatePeriodical(periodical, id, newImage, oldImage, con);
+            return repository.updatePeriodical(periodical, id, newImage, oldImage, con);
         } catch (SQLException e) {
             log.error("Cannot change info about periodical, admin page");
         }
@@ -103,7 +103,7 @@ public class PeriodicalsDaoImpl {
 
     public List<Periodical> getRecordsForPagination(String query) {
         try (Connection con = connectionPool.getConnection()) {
-            return dbManager.getRecords(query, con);
+            return repository.getRecords(query, con);
         } catch (SQLException e) {
             log.error("Cannot get limited periodicals for pagination");
         }
@@ -112,11 +112,10 @@ public class PeriodicalsDaoImpl {
 
     public int getNumbersOfRows() {
         try (Connection connection = connectionPool.getConnection()) {
-            return dbManager.getNumberOfRows(connection);
+            return repository.getNumberOfRows(connection);
         } catch (SQLException e) {
             log.error("Cannot get numbers of records in table periodical");
         }
         return 0;
     }
-
 }

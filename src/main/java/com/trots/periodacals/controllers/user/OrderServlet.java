@@ -1,11 +1,11 @@
 package com.trots.periodacals.controllers.user;
 
-import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
-import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
-import com.trots.periodacals.daoimpl.ReceiptHasPeriodicalDaoImpl;
-import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Receipt;
+import com.trots.periodacals.service.PeriodicalService;
+import com.trots.periodacals.service.ReceiptHasPeriodicalService;
+import com.trots.periodacals.service.ReceiptService;
+import com.trots.periodacals.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +41,7 @@ public class OrderServlet extends HttpServlet {
 
                 Integer currentPage = (Integer) req.getSession().getAttribute("currentPage");
 
-                Double price = PeriodicalsDaoImpl.getInstance().getPriceById(periodicalId);
+                Double price = PeriodicalService.getInstance().getPriceById(periodicalId);
                 Double actualBalance = (Double) req.getSession().getAttribute("balance");
                 if (actualBalance > price * numberOfMonths) {
                     Receipt receipt = new Receipt();
@@ -57,12 +57,12 @@ public class OrderServlet extends HttpServlet {
                     log.trace("User " + req.getSession().getAttribute("userName") + " ordered periodical " + periodicalId);
 
                     actualBalance = actualBalance-(price*numberOfMonths);
-                    UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
+                    UserService.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
 
-                    Integer receiptID = ReceiptDaoImpl.getInstance().insertReceiptAfterPayment(receipt);
+                    Integer receiptID = ReceiptService.getInstance().insertReceiptAfterPayment(receipt);
 
                     if (receiptID!=null) {
-                        ReceiptHasPeriodicalDaoImpl.getInstance().insertReceiptAndPeriodical(receipt, receiptID);
+                        ReceiptHasPeriodicalService.getInstance().insertReceiptAndPeriodical(receipt, receiptID);
                         ArrayList<Cart> cart_list = (ArrayList<Cart>) req.getSession().getAttribute("cart-list");
                         if (cart_list != null) {
                             for (Cart c : cart_list) {

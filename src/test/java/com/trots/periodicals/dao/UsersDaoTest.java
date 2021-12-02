@@ -1,7 +1,7 @@
 package com.trots.periodicals.dao;
 
-import com.trots.periodacals.dbconnection.DBManager;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.rerository.mysql.MySQLUserDao;
 import com.trots.periodacals.util.PBKDF2PasswordHashing;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -24,9 +24,10 @@ public class UsersDaoTest {
 
     @Test
     public void findAllUsersTest() {
+        MySQLUserDao mySQLUserDao = new MySQLUserDao();
         List<User> users = null;
         try {
-            users = DBManager.getInstance().findAll(connection);
+            users = mySQLUserDao.findAll(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -35,6 +36,7 @@ public class UsersDaoTest {
 
     @Test
     public void registerUserTest() {
+        MySQLUserDao mySQLUserDao = new MySQLUserDao();
         Integer userId = null;
         User user = new User();
         user.setName("testName");
@@ -48,7 +50,7 @@ public class UsersDaoTest {
         user.setRole("customer");
         try {
             connection.setAutoCommit(false);
-            userId = DBManager.getInstance().userRegistration(user, connection);
+            userId = mySQLUserDao.userRegistration(user, connection);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -63,6 +65,7 @@ public class UsersDaoTest {
 
     @Test(expected = AssertionError.class)
     public void registerUserExceptionTest() {
+        MySQLUserDao mySQLUserDao = new MySQLUserDao();
         Integer userId = null;
         User user = new User();
         user.setName("testName");
@@ -76,7 +79,7 @@ public class UsersDaoTest {
         user.setRole("customer");
         try {
             connection.setAutoCommit(false);
-            userId = DBManager.getInstance().userRegistration(user, connection);
+            userId = mySQLUserDao.userRegistration(user, connection);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -91,9 +94,10 @@ public class UsersDaoTest {
 
     @Test
     public void findUserById() {
+        MySQLUserDao mySQLUserDao = new MySQLUserDao();
         User user = new User();
         try {
-            user = DBManager.getInstance().findSingleUserById(43, connection);
+            user = mySQLUserDao.findSingleUserById(43, connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -106,10 +110,11 @@ public class UsersDaoTest {
 
     @Test
     public void topUpBalanceOfUserTest() {
+        MySQLUserDao mySQLUserDao = new MySQLUserDao();
         boolean result = false;
         try {
             connection.setAutoCommit(false);
-            result = DBManager.getInstance().updateBalanceTopUp(43, 1000.0, connection);
+            result = mySQLUserDao.updateBalanceTopUp(43, 1000.0, connection);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -124,10 +129,11 @@ public class UsersDaoTest {
 
     @Test
     public void setBanStatusTest() {
+        MySQLUserDao mySQLUserDao = new MySQLUserDao();
         boolean result = false;
         try {
             connection.setAutoCommit(false);
-            result = DBManager.getInstance().setBanStatus("banned", 43, connection);
+            result = mySQLUserDao.setBanStatus("banned", 43, connection);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -142,10 +148,11 @@ public class UsersDaoTest {
 
     @Test
     public void deleteUserByAdmin() {
+        MySQLUserDao mySQLUserDao = new MySQLUserDao();
         boolean result = false;
         try {
             connection.setAutoCommit(false);
-            result = DBManager.getInstance().deleteUserAdmin(43, connection);
+            result = mySQLUserDao.deleteUserAdmin(43, connection);
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
@@ -160,6 +167,7 @@ public class UsersDaoTest {
 
     @Test
     public void loginCheckTest() {
+        MySQLUserDao mySQLUserDao = new MySQLUserDao();
         User user = new User();
         user.setName("testName");
         user.setBalance(16.1);
@@ -177,9 +185,9 @@ public class UsersDaoTest {
         String check = null;
         try {
             connection.setAutoCommit(false);
-            Integer userId = DBManager.getInstance().userRegistration(user, connection);
+            Integer userId = mySQLUserDao.userRegistration(user, connection);
             user.setPassword("testPassword");
-            check = DBManager.getInstance().loginCheck(connection, user);
+            check = mySQLUserDao.loginCheck(connection, user);
         } catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
         } finally {

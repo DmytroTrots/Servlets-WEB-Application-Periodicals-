@@ -1,6 +1,6 @@
 package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.daoimpl.UserDaoImpl;
+import com.trots.periodacals.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,7 +26,7 @@ public class deleteUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
-        UserDaoImpl.getInstance().deleteUserFromAdminPage(id);
+        UserService.getInstance().deleteUserFromAdminPage(id);
         log.trace("Successfully --> user " + id + " deleted");
 
         resp.sendRedirect(req.getContextPath() + "/addUser");

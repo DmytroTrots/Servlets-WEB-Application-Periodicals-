@@ -1,7 +1,7 @@
 package com.trots.periodicals.dao;
 
-import com.trots.periodacals.dbconnection.DBManager;
 import com.trots.periodacals.entity.Receipt;
+import com.trots.periodacals.rerository.mysql.MySQLReceiptDao;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,6 +23,7 @@ public class ReceiptDaoTest {
 
     @Test
     public void insertOrderTest(){
+        MySQLReceiptDao mySQLReceiptDao = new MySQLReceiptDao();
         Integer result = null;
         try{
             Receipt receipt = new Receipt();
@@ -34,7 +35,7 @@ public class ReceiptDaoTest {
             receipt.setUserId(46);
             receipt.setStatusId(1);
             connection.setAutoCommit(false);
-            result = DBManager.getInstance().insertOrder(receipt, connection);
+            result = mySQLReceiptDao.insertOrder(receipt, connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }finally {
@@ -48,9 +49,10 @@ public class ReceiptDaoTest {
 
     @Test
     public void findOrdersOfOneOrdersTest(){
+        MySQLReceiptDao mySQLReceiptDao = new MySQLReceiptDao();
         List<Receipt> list = null;
         try{
-            list = DBManager.getInstance().findOrdersOfOneUser(46, connection);
+            list = mySQLReceiptDao.findOrdersOfOneUser(46, connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -59,9 +61,10 @@ public class ReceiptDaoTest {
 
     @Test
     public void findAllAcceptedOrdersTest(){
+        MySQLReceiptDao mySQLReceiptDao = new MySQLReceiptDao();
         List<Receipt> list = null;
         try{
-            list = DBManager.getInstance().findAllAcceptedOrdersOfUser(connection);
+            list = mySQLReceiptDao.findAllAcceptedOrdersOfUser(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

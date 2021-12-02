@@ -1,10 +1,10 @@
 package com.trots.periodacals.controllers.admin;
 
-import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
-import com.trots.periodacals.daoimpl.PublisherDaoImpl;
-import com.trots.periodacals.daoimpl.SubjectDaoImpl;
-import com.trots.periodacals.daoimpl.SubjectPeriodicalsDaoImpl;
 import com.trots.periodacals.entity.Periodical;
+import com.trots.periodacals.service.PeriodicalService;
+import com.trots.periodacals.service.PublisherService;
+import com.trots.periodacals.service.SubjectPeriodicalService;
+import com.trots.periodacals.service.SubjectService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,14 +32,14 @@ public class UpdatePeriodicalAdminServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getSession().setAttribute("publisherMap", PublisherDaoImpl.getInstance().findAllPublishersWithoutTelephone());
-        req.getSession().setAttribute("subjectMap", SubjectDaoImpl.getInstance().findAllSubjectsFromDB());
+        req.getSession().setAttribute("publisherMap", PublisherService.getInstance().findAllPublishersWithoutTelephone());
+        req.getSession().setAttribute("subjectMap", SubjectService.getInstance().findAllSubjectsFromDB());
         String url = req.getRequestURI();
         req.setAttribute("url", url);
         Integer id = Integer.valueOf(req.getParameter("id"));
         req.getSession().setAttribute("sellId", id);
-        req.getSession().setAttribute("periodicalInf", PeriodicalsDaoImpl.getInstance().getPeriodicalById(id));
-        req.getSession().setAttribute("existedSubject", SubjectPeriodicalsDaoImpl.getInstance().findAllSubjectOfPeriodicalById(id));
+        req.getSession().setAttribute("periodicalInf", PeriodicalService.getInstance().getPeriodicalById(id));
+        req.getSession().setAttribute("existedSubject", SubjectPeriodicalService.getInstance().findAllSubjectOfPeriodicalById(id));
 
         List<String> list = (List<String>) req.getSession().getAttribute("existedSubject");
 
@@ -90,25 +90,25 @@ public class UpdatePeriodicalAdminServlet extends HttpServlet {
         ///check publisher -> add(and get generated key)
         Integer publisherId = publisherMap.get(publisher);
         if (publisherId == null) {
-            publisherId = PublisherDaoImpl.getInstance().insertPublisherIntoDB(publisher, telephone);
+            publisherId = PublisherService.getInstance().insertPublisherIntoDB(publisher, telephone);
             log.trace("successfully --> inserting publisher into DB");
         }
         periodical.setPublisherId(publisherId);
 
         ///update periodical
-        PeriodicalsDaoImpl.getInstance().updatePeriodicalAdmin(periodical, image, oldImage, sellId);
+        PeriodicalService.getInstance().updatePeriodicalAdmin(periodical, image, oldImage, sellId);
 
         ///check subject -> add(and get generated key)
         List<String> existedSubj = (List<String>) request.getSession().getAttribute("existedSubject");
         for (String s : subject) {
             Integer subjectsId = subjectMap.get(subject.get(subject.indexOf(s)));
             if (subjectsId == null && !subject.get(subject.indexOf(s)).equals("")) {
-                subjectsId = SubjectDaoImpl.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));
+                subjectsId = SubjectService.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));
                 log.trace("successfully --> inserting subject into DB");
             }
 
             if (!subject.get(subject.indexOf(s)).equals("") && !existedSubj.contains(subject.get(subject.indexOf(s)))) {
-                SubjectPeriodicalsDaoImpl.getInstance().insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, sellId);
+                SubjectPeriodicalService.getInstance().insertSubjectIdAndPeriodicalIdIntoDB(subjectsId, sellId);
                 log.trace("successfully --> inserting subject and periodical into db");
             }
         }

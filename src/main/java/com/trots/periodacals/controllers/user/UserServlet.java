@@ -1,7 +1,7 @@
 package com.trots.periodacals.controllers.user;
 
-import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.User;
+import com.trots.periodacals.service.UserService;
 import com.trots.periodacals.util.PBKDF2PasswordHashing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -46,7 +46,7 @@ public class UserServlet extends HttpServlet {
         user.setSurname(request.getParameter("surname"));
         user.setAddress(request.getParameter("address"));
 
-        UserDaoImpl.getInstance().addUser(user);
+        UserService.getInstance().addUser(user);
 
         log.trace("User " + request.getParameter("username") + " registered");
 

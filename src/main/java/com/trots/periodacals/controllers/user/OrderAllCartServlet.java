@@ -1,11 +1,11 @@
 package com.trots.periodacals.controllers.user;
 
-import com.trots.periodacals.daoimpl.PeriodicalsDaoImpl;
-import com.trots.periodacals.daoimpl.ReceiptDaoImpl;
-import com.trots.periodacals.daoimpl.ReceiptHasPeriodicalDaoImpl;
-import com.trots.periodacals.daoimpl.UserDaoImpl;
 import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Receipt;
+import com.trots.periodacals.service.PeriodicalService;
+import com.trots.periodacals.service.ReceiptHasPeriodicalService;
+import com.trots.periodacals.service.ReceiptService;
+import com.trots.periodacals.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,23 +43,23 @@ public class OrderAllCartServlet extends HttpServlet {
             receipt.setSurname(surname);
             receipt.setEmail(email);
             receipt.setTelephoneNumber(telephone);
-            Integer receiptID = ReceiptDaoImpl.getInstance().insertReceiptAfterPayment(receipt);
+            Integer receiptID = ReceiptService.getInstance().insertReceiptAfterPayment(receipt);
             for (Cart c : cart_list) {
                 receipt.setPeriodicalSellId(c.getSellId());
-                Double price = PeriodicalsDaoImpl.getInstance().getPriceById(c.getSellId()) * c.getMonths();
+                Double price = PeriodicalService.getInstance().getPriceById(c.getSellId()) * c.getMonths();
                 receipt.setMonths(c.getMonths());
                 receipt.setPricePerMonth(price);
 
                 log.trace("User " + req.getSession().getAttribute("userName") + " ordered periodical " + c.getSellId());
                 if (receiptID!=null) {
-                    ReceiptHasPeriodicalDaoImpl.getInstance().insertReceiptAndPeriodical(receipt, receiptID);
+                    ReceiptHasPeriodicalService.getInstance().insertReceiptAndPeriodical(receipt, receiptID);
                 }
                 else{
                     break;
                 }
             }
             actualBalance = actualBalance-totalPrice;
-            UserDaoImpl.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
+            UserService.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
             cart_list.clear();
             resp.sendRedirect(req.getContextPath()+"/shop?currentPage=1&category=0");
         } else {
