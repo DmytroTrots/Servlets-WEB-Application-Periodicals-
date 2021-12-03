@@ -1,6 +1,6 @@
 package com.trots.periodicals.dao;
 
-import com.trots.periodacals.rerository.mysql.MySQLSubjectDao;
+import com.trots.periodacals.rerository.mysql.SubjectDaoImpl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,10 +22,10 @@ public class SubjectDaoTest {
 
     @Test
     public void findAllSubjectsTest(){
-        MySQLSubjectDao mySQLSubjectDao = new MySQLSubjectDao();
+        SubjectDaoImpl subjectDaoImpl = new SubjectDaoImpl();
         Map<String, Integer> subjectMap = null;
         try{
-            subjectMap = mySQLSubjectDao.findAllSubjects(connection);
+            subjectMap = subjectDaoImpl.findAllSubjects(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -34,11 +34,11 @@ public class SubjectDaoTest {
 
     @Test
     public void insertSubjectIntoDBTest(){
-        MySQLSubjectDao mySQLSubjectDao = new MySQLSubjectDao();
+        SubjectDaoImpl subjectDaoImpl = new SubjectDaoImpl();
         Integer result = null;
         try{
             connection.setAutoCommit(false);
-            result = mySQLSubjectDao.insertSubject("subject8", connection);
+            result = subjectDaoImpl.insertSubject("subject8", connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }finally {

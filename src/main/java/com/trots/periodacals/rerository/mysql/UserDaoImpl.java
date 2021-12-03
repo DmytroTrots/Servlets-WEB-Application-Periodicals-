@@ -10,7 +10,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySQLUserDao implements UserDao, SQLQuery {
+/**
+ * The type User dao.
+ */
+public class UserDaoImpl implements UserDao, SQLQuery {
 
     @Override
     public String loginCheck(Connection connection, User user) throws SQLException, NoSuchAlgorithmException, InvalidKeySpecException {

@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * The type Profile servlet.
+ */
 @WebServlet("/profile")
 public class ProfileServlet extends HttpServlet {
 

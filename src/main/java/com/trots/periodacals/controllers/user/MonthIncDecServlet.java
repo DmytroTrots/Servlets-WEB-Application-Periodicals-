@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * The type Month inc dec servlet.
+ */
 @WebServlet("/inc-dec")
 public class MonthIncDecServlet extends HttpServlet {
 

@@ -1,7 +1,7 @@
 package com.trots.periodicals.dao;
 
 import com.trots.periodacals.entity.Receipt;
-import com.trots.periodacals.rerository.mysql.MySQLReceiptDao;
+import com.trots.periodacals.rerository.mysql.ReceiptDaoImpl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class ReceiptDaoTest {
 
     @Test
     public void insertOrderTest(){
-        MySQLReceiptDao mySQLReceiptDao = new MySQLReceiptDao();
+        ReceiptDaoImpl receiptDaoImpl = new ReceiptDaoImpl();
         Integer result = null;
         try{
             Receipt receipt = new Receipt();
@@ -32,10 +32,10 @@ public class ReceiptDaoTest {
             receipt.setEmail("testEmail@gmail.com");
             receipt.setTelephoneNumber("380999999999");
             receipt.setAddress("testAddress");
-            receipt.setUserId(46);
+            receipt.setUserId(82);
             receipt.setStatusId(1);
             connection.setAutoCommit(false);
-            result = mySQLReceiptDao.insertOrder(receipt, connection);
+            result = receiptDaoImpl.insertOrder(receipt, connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }finally {
@@ -49,10 +49,10 @@ public class ReceiptDaoTest {
 
     @Test
     public void findOrdersOfOneOrdersTest(){
-        MySQLReceiptDao mySQLReceiptDao = new MySQLReceiptDao();
+        ReceiptDaoImpl receiptDaoImpl = new ReceiptDaoImpl();
         List<Receipt> list = null;
         try{
-            list = mySQLReceiptDao.findOrdersOfOneUser(46, connection);
+            list = receiptDaoImpl.findOrdersOfOneUser(46, connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -61,10 +61,10 @@ public class ReceiptDaoTest {
 
     @Test
     public void findAllAcceptedOrdersTest(){
-        MySQLReceiptDao mySQLReceiptDao = new MySQLReceiptDao();
+        ReceiptDaoImpl receiptDaoImpl = new ReceiptDaoImpl();
         List<Receipt> list = null;
         try{
-            list = mySQLReceiptDao.findAllAcceptedOrdersOfUser(connection);
+            list = receiptDaoImpl.findAllAcceptedOrdersOfUser(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

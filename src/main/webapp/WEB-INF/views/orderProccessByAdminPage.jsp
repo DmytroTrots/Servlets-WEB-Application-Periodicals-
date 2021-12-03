@@ -10,8 +10,14 @@
     <link type="text/css" rel="stylesheet" href="/resources/css/style.css">
 </head>
 <body>
-<%@include file="header.jsp"%>
-<span style="color:red"><%=(request.getSession().getAttribute("ex") == null) ? "" : request.getSession().getAttribute("ex")%></span>
+<%@include file="header.jsp" %>
+<span style="color:red">
+    <c:if test="${not empty sessionScope.ex}">
+   <div class="alert alert-warning">
+       <strong><c:out value="${sessionScope.ex}"/></strong>
+   </div>
+        <c:set var="ex" value="" scope="session"/>
+    </c:if></span>
 <table class="table">
     <thead class="bg-light">
     <tr>
@@ -44,16 +50,16 @@
             <td>${list.create_time}</td>
             <td>${list.statusName}</td>
             <c:if test="${list.statusName == 'payed'}">
-            <form action="accept-order" method="post">
-                <td><input type="hidden" name="id" value="${list.id}">
-                <input type="submit" value="<fmt:message key="label.accept"/>">
-            </form>
-            <form action="discard-order" method="post">
-                <input type="hidden" name="id" value="${list.id}">
-                <input type="hidden" name="userId" value="${list.userId}">
-                <input type="hidden" name="price" value="${list.pricePerMonth}">
-                <input type="submit" value="<fmt:message key="label.discard"/>"></td>
-            </form>
+                <form action="accept-order" method="post">
+                    <td><input type="hidden" name="id" value="${list.id}">
+                        <input type="submit" value="<fmt:message key="label.accept"/>">
+                </form>
+                <form action="discard-order" method="post">
+                    <input type="hidden" name="id" value="${list.id}">
+                    <input type="hidden" name="userId" value="${list.userId}">
+                    <input type="hidden" name="price" value="${list.pricePerMonth}">
+                    <input type="submit" value="<fmt:message key="label.discard"/>"></td>
+                </form>
             </c:if>
         </tr>
     </c:forEach>

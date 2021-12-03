@@ -19,6 +19,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 
+/**
+ * The type Login servlet.
+ */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 

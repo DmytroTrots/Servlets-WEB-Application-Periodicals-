@@ -1,6 +1,6 @@
 package com.trots.periodicals.dao;
 
-import com.trots.periodacals.rerository.mysql.MysSQLPublisherDao;
+import com.trots.periodacals.rerository.mysql.PublisherDaoImpl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -22,10 +22,10 @@ public class PublisherDaoTest {
 
     @Test
     public void findAllPublisherTest(){
-        MysSQLPublisherDao mysSQLPublisherDao = new MysSQLPublisherDao();
+        PublisherDaoImpl publisherDaoImpl = new PublisherDaoImpl();
         Map<String, Integer> publisherMap = null;
         try{
-            publisherMap = mysSQLPublisherDao.findAllPublishers(connection);
+            publisherMap = publisherDaoImpl.findAllPublishers(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -34,11 +34,11 @@ public class PublisherDaoTest {
 
     @Test
     public void insertPublisherIntoDBTest(){
-        MysSQLPublisherDao mysSQLPublisherDao = new MysSQLPublisherDao();
+        PublisherDaoImpl publisherDaoImpl = new PublisherDaoImpl();
         Integer result = null;
         try{
             connection.setAutoCommit(false);
-            result = mysSQLPublisherDao.insertPublisher("publisher7", "38099999999", connection);
+            result = publisherDaoImpl.insertPublisher("publisher7", "38099999999", connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }finally {

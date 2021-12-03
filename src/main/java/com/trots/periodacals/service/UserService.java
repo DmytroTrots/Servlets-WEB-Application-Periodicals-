@@ -3,7 +3,7 @@ package com.trots.periodacals.service;
 import com.trots.periodacals.dbconnection.ConnectionPool;
 import com.trots.periodacals.entity.User;
 import com.trots.periodacals.rerository.UserDao;
-import com.trots.periodacals.rerository.mysql.MySQLDaoFactory;
+import com.trots.periodacals.rerository.mysql.DaoImplFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,12 +14,20 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The type User service.
+ */
 public class UserService {
 
     private static final Logger log = LogManager.getLogger(UserService.class);
 
     private static UserService instance;
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static synchronized UserService getInstance() {
         if (instance == null) {
             instance = new UserService();
@@ -27,10 +35,19 @@ public class UserService {
         return instance;
     }
 
-    UserDao repository = new MySQLDaoFactory().getUserDao();
+    /**
+     * The Repository.
+     */
+    UserDao repository = new DaoImplFactory().getUserDao();
 
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
+    /**
+     * Authenticate user string.
+     *
+     * @param user the user
+     * @return the string
+     */
     public String authenticateUser(User user) {
         try (Connection con = connectionPool.getConnection()) {
             return repository.loginCheck(con, user);
@@ -42,6 +59,11 @@ public class UserService {
         return "Invalid user credentials";
     }
 
+    /**
+     * Find all users list.
+     *
+     * @return the list
+     */
     public List<User> findAllUsers() {
         try (Connection con = connectionPool.getConnection()) {
             return repository.findAll(con);
@@ -52,6 +74,12 @@ public class UserService {
     }
 
 
+    /**
+     * Add user integer.
+     *
+     * @param user the user
+     * @return the integer
+     */
     public Integer addUser(User user) {
         try (Connection con = connectionPool.getConnection()) {
             return repository.userRegistration(user, con);
@@ -61,6 +89,13 @@ public class UserService {
         return null;
     }
 
+    /**
+     * Update field balance after top up boolean.
+     *
+     * @param id      the id
+     * @param balance the balance
+     * @return the boolean
+     */
     public boolean updateFieldBalanceAfterTopUp(int id, Double balance) {
         try (Connection con = connectionPool.getConnection()) {
             return repository.updateBalanceTopUp(id, balance, con);
@@ -70,6 +105,12 @@ public class UserService {
         return false;
     }
 
+    /**
+     * Gets single user by id.
+     *
+     * @param id the id
+     * @return the single user by id
+     */
     public User getSingleUserById(Integer id) {
         try (Connection con = connectionPool.getConnection()) {
             return repository.findSingleUserById(id, con);
@@ -79,6 +120,13 @@ public class UserService {
         return null;
     }
 
+    /**
+     * Update ban status of user boolean.
+     *
+     * @param status the status
+     * @param id     the id
+     * @return the boolean
+     */
     public boolean updateBanStatusOfUser(String status, Integer id) {
         try (Connection con = connectionPool.getConnection()) {
             return repository.setBanStatus(status, id, con);
@@ -88,6 +136,12 @@ public class UserService {
         return false;
     }
 
+    /**
+     * Delete user from admin page boolean.
+     *
+     * @param id the id
+     * @return the boolean
+     */
     public boolean deleteUserFromAdminPage(Integer id) {
         try (Connection con = connectionPool.getConnection()) {
             return repository.deleteUserAdmin(id, con);

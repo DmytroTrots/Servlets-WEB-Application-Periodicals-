@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * The type Add to cart servlet.
+ */
 @WebServlet(name = "cartPage", urlPatterns = "/cart")
 public class AddToCartServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;

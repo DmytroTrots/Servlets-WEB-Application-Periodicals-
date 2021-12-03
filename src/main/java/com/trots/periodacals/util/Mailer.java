@@ -8,12 +8,32 @@ import javax.mail.internet.MimeMultipart;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * The type Mailer.
+ */
 public class Mailer {
 
+    /**
+     * The constant user.
+     */
     final static String user="periodicalsiteepam@gmail.com";//change accordingly
+    /**
+     * The constant pass.
+     */
     final static String pass="passwordEPAM";
+    /**
+     * The constant ORDER_REPORT_PDF.
+     */
     public static final String ORDER_REPORT_PDF = "C:\\Users\\Dima\\Desktop\\periodacals\\src\\main\\webapp\\resources\\images\\order_report.pdf";
 
+    /**
+     * Send.
+     *
+     * @param to      the to
+     * @param subject the subject
+     * @param message the message
+     * @throws MessagingException the messaging exception
+     */
     public static void send(String to, String subject, String message) throws MessagingException {
         Session session = getSession(user, pass);
         session.setDebug(true);
@@ -39,6 +59,14 @@ public class Mailer {
         }
     }
 
+    /**
+     * Send mail to admin report orders.
+     *
+     * @param to      the to
+     * @param subject the subject
+     * @param message the message
+     * @throws MessagingException the messaging exception
+     */
     public static void sendMailToAdminReportOrders(String to, String subject, String message) throws MessagingException {
         Session session = getSession(user, pass);
         session.setDebug(true);

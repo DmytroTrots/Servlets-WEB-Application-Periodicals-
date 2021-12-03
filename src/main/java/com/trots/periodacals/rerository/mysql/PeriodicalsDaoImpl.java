@@ -8,6 +8,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The type Periodicals dao.
+ */
 public class PeriodicalsDaoImpl implements PeriodicalsDao, SQLQuery {
     @Override
     public List<Periodical> getAll(Connection con) throws SQLException {

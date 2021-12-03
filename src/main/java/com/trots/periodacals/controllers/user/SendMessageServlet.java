@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The type Send message servlet.
+ */
 @WebServlet(urlPatterns = "/send-message")
 public class SendMessageServlet extends HttpServlet {
 

@@ -7,12 +7,20 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+/**
+ * The type Connection pool.
+ */
 public class ConnectionPool {
 
     private static ConnectionPool instance;
 
     private DataSource dataSource;
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static synchronized ConnectionPool getInstance() {
         if (instance == null) {
             instance = new ConnectionPool();
@@ -20,6 +28,9 @@ public class ConnectionPool {
         return instance;
     }
 
+    /**
+     * Instantiates a new Connection pool.
+     */
     public ConnectionPool() {
         try {
             Context initContext = new InitialContext();
@@ -30,6 +41,11 @@ public class ConnectionPool {
         }
     }
 
+    /**
+     * Gets connection.
+     *
+     * @return the connection
+     */
     public Connection getConnection() {
         Connection con = null;
         try {

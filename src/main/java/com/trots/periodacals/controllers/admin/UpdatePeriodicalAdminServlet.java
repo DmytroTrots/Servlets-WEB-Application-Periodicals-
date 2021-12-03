@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.Map;
 
 
+/**
+ * The type Update periodical admin servlet.
+ */
 @WebServlet("/update-periodical")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 4, // 1 MB
         maxFileSize = 1024 * 1024 * 10    // 10 MB

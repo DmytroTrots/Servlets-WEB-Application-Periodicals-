@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * The type Add user admin servlet.
+ */
 @WebServlet("/addUser")
 public class AddUserAdminServlet extends HttpServlet {
 

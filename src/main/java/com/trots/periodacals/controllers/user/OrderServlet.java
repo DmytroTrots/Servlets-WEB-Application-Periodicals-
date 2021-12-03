@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
+/**
+ * The type Order servlet.
+ */
 @WebServlet("/order-periodical")
 public class OrderServlet extends HttpServlet {
 

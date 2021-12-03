@@ -16,8 +16,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimerTask;
 
+/**
+ * The type Create report orders.
+ */
 public class CreateReportOrders extends TimerTask {
 
+    /**
+     * The constant ORDER_REPORT_PDF.
+     */
     public static final String ORDER_REPORT_PDF = "C:\\Users\\Dima\\Desktop\\periodacals\\src\\main\\webapp\\resources\\images\\order_report.pdf";
 
     @Override

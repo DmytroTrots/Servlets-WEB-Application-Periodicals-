@@ -35,6 +35,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="?sessionLocale=ua"><img src="/resources/images/UA-Ukraine-Flag-icon.png"></a>
                 </li>
+                <c:if test="${sessionScope['lang']==null}">
+                    <c:set var="lang" value="en" scope="session"/>
+                </c:if>
             </ul>
         </div>
     </div>

@@ -29,7 +29,7 @@ public class PeriodicalsDaoTest {
         periodical.setPercentageOfAdvertising(4);
         periodical.setDescription("description");
         periodical.setTitle("title");
-        periodical.setPublisherId(12);
+        periodical.setPublisherId(22);
         periodical.setPricePerMonth(16.1);
     }
 

@@ -1,5 +1,8 @@
 package com.trots.periodacals.rerository.mysql;
 
+/**
+ * The interface Sql query.
+ */
 public interface SQLQuery {
     String INSERT_USER_BY_ADMIN = "INSERT INTO `dbperiodicals`.`user` " + "(`username`, `email`, `password`, `role`, `telephone`, `name`, `surname`, `address`)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     String SELECT_ALL_USERS = "SELECT * FROM user";

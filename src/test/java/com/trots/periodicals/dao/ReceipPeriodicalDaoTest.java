@@ -1,7 +1,7 @@
 package com.trots.periodicals.dao;
 
 import com.trots.periodacals.entity.Receipt;
-import com.trots.periodacals.rerository.mysql.MySQLReceiptHasPeriodicalsDao;
+import com.trots.periodacals.rerository.mysql.ReceiptHasPeriodicalsDaoImpl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class ReceipPeriodicalDaoTest {
 
     @Test
     public void insertRecordIntoReceiptHasPeriodicalsTest(){
-        MySQLReceiptHasPeriodicalsDao mySQLReceiptHasPeriodicalsDao = new MySQLReceiptHasPeriodicalsDao();
+        ReceiptHasPeriodicalsDaoImpl receiptHasPeriodicalsDaoImpl = new ReceiptHasPeriodicalsDaoImpl();
         boolean result = false;
         try{
             Receipt receipt = new Receipt();
@@ -32,11 +32,11 @@ public class ReceipPeriodicalDaoTest {
             receipt.setEmail("testEmail@gmail.com");
             receipt.setTelephoneNumber("380999999999");
             receipt.setAddress("testAddress");
-            receipt.setUserId(46);
-            receipt.setPeriodicalSellId(57);
+            receipt.setUserId(82);
+            receipt.setPeriodicalSellId(93);
             receipt.setStatusId(1);
             connection.setAutoCommit(false);
-            result = mySQLReceiptHasPeriodicalsDao.insertRecordIntoReceiptHasPeriodicals(receipt, 72, connection);
+            result = receiptHasPeriodicalsDaoImpl.insertRecordIntoReceiptHasPeriodicals(receipt, 102, connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }finally {
@@ -51,10 +51,10 @@ public class ReceipPeriodicalDaoTest {
 
     @Test
     public void getAllOrdersForProccessTest(){
-        MySQLReceiptHasPeriodicalsDao mySQLReceiptHasPeriodicalsDao = new MySQLReceiptHasPeriodicalsDao();
+        ReceiptHasPeriodicalsDaoImpl receiptHasPeriodicalsDaoImpl = new ReceiptHasPeriodicalsDaoImpl();
         List<Receipt> list = null;
         try{
-            list = mySQLReceiptHasPeriodicalsDao.getAllOrdersForProccess(connection);
+            list = receiptHasPeriodicalsDaoImpl.getAllOrdersForProccess(connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }

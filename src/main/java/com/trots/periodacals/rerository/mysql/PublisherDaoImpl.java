@@ -6,7 +6,10 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MysSQLPublisherDao implements PublisherDao, SQLQuery {
+/**
+ * The type Publisher dao.
+ */
+public class PublisherDaoImpl implements PublisherDao, SQLQuery {
     @Override
     public Map<String, Integer> findAllPublishers(Connection con) throws SQLException {
         Map<String, Integer> publisherMap = new HashMap<>();

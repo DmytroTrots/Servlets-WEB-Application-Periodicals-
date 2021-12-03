@@ -3,8 +3,7 @@ package com.trots.periodacals.service;
 import com.trots.periodacals.dbconnection.ConnectionPool;
 import com.trots.periodacals.entity.Receipt;
 import com.trots.periodacals.rerository.ReceiptDao;
-import com.trots.periodacals.rerository.UserDao;
-import com.trots.periodacals.rerository.mysql.MySQLDaoFactory;
+import com.trots.periodacals.rerository.mysql.DaoImplFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,12 +12,20 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * The type Receipt service.
+ */
 public class ReceiptService {
 
     private static final Logger log = LogManager.getLogger(ReceiptService.class);
 
     private static ReceiptService instance;
 
+    /**
+     * Gets instance.
+     *
+     * @return the instance
+     */
     public static synchronized ReceiptService getInstance() {
         if (instance == null) {
             instance = new ReceiptService();
@@ -26,10 +33,19 @@ public class ReceiptService {
         return instance;
     }
 
-    ReceiptDao repository = new MySQLDaoFactory().getReceiptDao();
+    /**
+     * The Repository.
+     */
+    ReceiptDao repository = new DaoImplFactory().getReceiptDao();
 
     private ConnectionPool connectionPool = ConnectionPool.getInstance();
 
+    /**
+     * Insert receipt after payment integer.
+     *
+     * @param receipt the receipt
+     * @return the integer
+     */
     public Integer insertReceiptAfterPayment(Receipt receipt){
         try(Connection con = connectionPool.getConnection()) {
             return repository.insertOrder(receipt, con);
@@ -39,6 +55,12 @@ public class ReceiptService {
         return null;
     }
 
+    /**
+     * Get all orders of user by id list.
+     *
+     * @param id the id
+     * @return the list
+     */
     public List<Receipt> getAllOrdersOfUserById(Integer id){
         try(Connection con = connectionPool.getConnection()) {
             return repository.findOrdersOfOneUser(id, con);
@@ -48,6 +70,11 @@ public class ReceiptService {
         return Collections.emptyList();
     }
 
+    /**
+     * Get all accepted order list.
+     *
+     * @return the list
+     */
     public List<Receipt> getAllAcceptedOrder(){
         try(Connection con = connectionPool.getConnection()) {
             return repository.findAllAcceptedOrdersOfUser(con);
@@ -57,6 +84,11 @@ public class ReceiptService {
         return Collections.emptyList();
     }
 
+    /**
+     * Accept order by admin.
+     *
+     * @param receiptId the receipt id
+     */
     public void acceptOrderByAdmin(Integer receiptId){
         try(Connection connection = connectionPool.getConnection()){
             repository.acceptOrderOfUserByAdmin(receiptId, connection);
@@ -65,6 +97,11 @@ public class ReceiptService {
         }
     }
 
+    /**
+     * Discard order by admin.
+     *
+     * @param receiptId the receipt id
+     */
     public void discardOrderByAdmin(Integer receiptId){
         try(Connection connection = connectionPool.getConnection()){
             repository.discardOrderOfUserByAdmin(receiptId, connection);

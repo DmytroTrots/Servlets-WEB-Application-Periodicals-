@@ -8,6 +8,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Properties;
 
+/**
+ * The type Banned and not logged user filter.
+ */
 @WebFilter(urlPatterns = "/*")
 public class BannedAndNotLoggedUserFilter implements Filter {
 

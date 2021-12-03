@@ -14,6 +14,9 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 
+/**
+ * The type Top up balance servlet.
+ */
 @WebServlet("/top-up")
 public class TopUpBalanceServlet extends HttpServlet {
 

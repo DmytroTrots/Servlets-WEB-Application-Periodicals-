@@ -7,7 +7,10 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySQLReceiptHasPeriodicalsDao implements ReceiptHasPeriodicalDao, SQLQuery {
+/**
+ * The type Receipt has periodicals dao.
+ */
+public class ReceiptHasPeriodicalsDaoImpl implements ReceiptHasPeriodicalDao, SQLQuery {
     @Override
     public boolean insertRecordIntoReceiptHasPeriodicals(Receipt receipt, Integer receiptId, Connection connection) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_RECORD_INTO_RECEIPT_HAS_PERIODICALS_TABLE)) {

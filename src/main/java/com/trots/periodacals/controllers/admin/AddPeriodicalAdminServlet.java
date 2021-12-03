@@ -21,6 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Add periodical admin servlet.
+ */
 @WebServlet(name = "FileUploadServlet", urlPatterns = {"/fileupload"})
 @MultipartConfig(fileSizeThreshold = 1024 * 1024 * 3, // 1 MB
         maxFileSize = 1024 * 1024 * 10    // 10 MB

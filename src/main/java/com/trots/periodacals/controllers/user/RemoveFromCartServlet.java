@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * The type Remove from cart servlet.
+ */
 @WebServlet("/remove-record")
 public class RemoveFromCartServlet extends HttpServlet {
 

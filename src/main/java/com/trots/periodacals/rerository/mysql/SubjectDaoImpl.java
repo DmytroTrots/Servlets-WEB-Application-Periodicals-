@@ -6,7 +6,10 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MySQLSubjectDao implements SubjectDao, SQLQuery {
+/**
+ * The type Subject dao.
+ */
+public class SubjectDaoImpl implements SubjectDao, SQLQuery {
     @Override
     public Map<String, Integer> findAllSubjects(Connection con) throws SQLException {
         Map<String, Integer> subjectMap = new HashMap<>();

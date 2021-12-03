@@ -7,8 +7,19 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 
+/**
+ * The type Pbkdf 2 password hashing.
+ */
 public class PBKDF2PasswordHashing {
 
+    /**
+     * Generate storng password hash string.
+     *
+     * @param password the password
+     * @return the string
+     * @throws NoSuchAlgorithmException the no such algorithm exception
+     * @throws InvalidKeySpecException  the invalid key spec exception
+     */
     public static String generateStorngPasswordHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException {
         int iterations = 1000;
         char[] chars = password.toCharArray();
@@ -40,6 +51,15 @@ public class PBKDF2PasswordHashing {
         }
     }
 
+    /**
+     * Validate password boolean.
+     *
+     * @param originalPassword the original password
+     * @param storedPassword   the stored password
+     * @return the boolean
+     * @throws NoSuchAlgorithmException the no such algorithm exception
+     * @throws InvalidKeySpecException  the invalid key spec exception
+     */
     public static boolean validatePassword(String originalPassword, String storedPassword)
             throws NoSuchAlgorithmException, InvalidKeySpecException
     {

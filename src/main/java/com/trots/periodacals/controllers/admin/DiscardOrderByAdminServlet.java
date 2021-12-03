@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The type Discard order by admin servlet.
+ */
 @WebServlet("/discard-order")
 public class DiscardOrderByAdminServlet extends HttpServlet {
 

@@ -13,6 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The type Ban user servlet.
+ */
 @WebServlet("/ban-user")
 public class banUserServlet extends HttpServlet {
 

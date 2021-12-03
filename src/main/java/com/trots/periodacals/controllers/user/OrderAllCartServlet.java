@@ -15,8 +15,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * The type Order all cart servlet.
+ */
 @WebServlet("/order-all")
 public class OrderAllCartServlet extends HttpServlet {
 
@@ -24,7 +27,7 @@ public class OrderAllCartServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ArrayList<Cart> cart_list = (ArrayList<Cart>) req.getSession().getAttribute("cart_list");
+        List<Cart> cart_list = (List<Cart>) req.getSession().getAttribute("cart_list");
 
         String name = req.getParameter("name");
         String surname = req.getParameter("surname");

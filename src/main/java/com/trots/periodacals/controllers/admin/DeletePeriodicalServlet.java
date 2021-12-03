@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The type Delete periodical servlet.
+ */
 @WebServlet("/delete-periodical")
 public class DeletePeriodicalServlet extends HttpServlet {
 

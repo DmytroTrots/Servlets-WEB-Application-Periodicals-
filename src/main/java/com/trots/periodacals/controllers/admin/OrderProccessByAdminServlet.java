@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The type Order proccess by admin servlet.
+ */
 @WebServlet("/orders")
 public class OrderProccessByAdminServlet extends HttpServlet {
     @Override

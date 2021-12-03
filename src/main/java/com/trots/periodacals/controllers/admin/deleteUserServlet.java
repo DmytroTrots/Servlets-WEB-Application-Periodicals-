@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * The type Delete user servlet.
+ */
 @WebServlet("/delete-user")
 public class deleteUserServlet extends HttpServlet {
 

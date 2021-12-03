@@ -9,7 +9,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySQLSubjectPeriodicalsDao implements SubjectPeriodicalsDao, SQLQuery {
+/**
+ * The type Subject periodicals dao.
+ */
+public class SubjectPeriodicalsDaoImpl implements SubjectPeriodicalsDao, SQLQuery {
     @Override
     public boolean insertSubjIdAndPeriodicalId(Integer subjId, Integer periodId, Connection con) throws SQLException {
         try (PreparedStatement preparedStatement = con.prepareStatement(INSERT_RECORD_INTO_PERIODICAL_HAS_SUBJECT)) {

@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+/**
+ * The type Authentication filter.
+ */
 @WebFilter(urlPatterns = {"/addUser", "/fileupload", "/update-periodical", "/delete-periodical", "/ban-user", "/orders"}, initParams = @WebInitParam(name = "role", value = "admin"))
 public class AuthenticationFilter implements Filter {
 

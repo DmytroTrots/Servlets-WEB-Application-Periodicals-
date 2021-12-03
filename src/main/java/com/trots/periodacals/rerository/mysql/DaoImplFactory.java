@@ -2,25 +2,49 @@ package com.trots.periodacals.rerository.mysql;
 
 import com.trots.periodacals.rerository.*;
 
-public class MySQLDaoFactory extends AbstractDAOFactory {
+/**
+ * The type Dao impl factory.
+ */
+public class DaoImplFactory extends AbstractDAOFactory {
+    /**
+     * The User dao.
+     */
     public UserDao userDao;
 
+    /**
+     * The Periodicals dao.
+     */
     public PeriodicalsDao periodicalsDao;
 
+    /**
+     * The Receipt has periodical dao.
+     */
     public ReceiptHasPeriodicalDao receiptHasPeriodicalDao;
 
+    /**
+     * The Subject dao.
+     */
     public SubjectDao subjectDao;
 
+    /**
+     * The Subject periodicals dao.
+     */
     public SubjectPeriodicalsDao subjectPeriodicalsDao;
 
+    /**
+     * The Publisher dao.
+     */
     public PublisherDao publisherDao;
 
+    /**
+     * The Receipt dao.
+     */
     public ReceiptDao receiptDao;
 
     @Override
     public UserDao getUserDao() {
         if (userDao == null) {
-            return new MySQLUserDao();
+            return new UserDaoImpl();
         }
         return userDao;
     }
@@ -36,7 +60,7 @@ public class MySQLDaoFactory extends AbstractDAOFactory {
     @Override
     public ReceiptHasPeriodicalDao getReceiptHasPeriodicalDao() {
         if (receiptHasPeriodicalDao == null) {
-            return new MySQLReceiptHasPeriodicalsDao();
+            return new ReceiptHasPeriodicalsDaoImpl();
         }
         return receiptHasPeriodicalDao;
     }
@@ -44,7 +68,7 @@ public class MySQLDaoFactory extends AbstractDAOFactory {
     @Override
     public SubjectDao getSubjectDao() {
         if (subjectDao == null) {
-            return new MySQLSubjectDao();
+            return new SubjectDaoImpl();
         }
         return subjectDao;
     }
@@ -52,7 +76,7 @@ public class MySQLDaoFactory extends AbstractDAOFactory {
     @Override
     public SubjectPeriodicalsDao getSubjectPeriodicalDao() {
         if (subjectPeriodicalsDao == null) {
-            return new MySQLSubjectPeriodicalsDao();
+            return new SubjectPeriodicalsDaoImpl();
         }
         return subjectPeriodicalsDao;
     }
@@ -60,7 +84,7 @@ public class MySQLDaoFactory extends AbstractDAOFactory {
     @Override
     public PublisherDao getPublisherDao() {
         if (publisherDao == null) {
-            return new MysSQLPublisherDao();
+            return new PublisherDaoImpl();
         }
         return publisherDao;
     }
@@ -68,7 +92,7 @@ public class MySQLDaoFactory extends AbstractDAOFactory {
     @Override
     public ReceiptDao getReceiptDao() {
         if (receiptDao == null) {
-            return new MySQLReceiptDao();
+            return new ReceiptDaoImpl();
         }
         return receiptDao;
     }

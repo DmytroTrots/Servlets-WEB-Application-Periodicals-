@@ -8,6 +8,9 @@ import javax.servlet.annotation.WebListener;
 import org.apache.logging.log4j.*;
 
 
+/**
+ * The type Context listener.
+ */
 @WebListener
 public class ContextListener implements ServletContextListener {
 

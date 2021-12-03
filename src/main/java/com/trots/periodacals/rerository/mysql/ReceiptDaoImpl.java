@@ -9,7 +9,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySQLReceiptDao implements ReceiptDao, SQLQuery {
+/**
+ * The type Receipt dao.
+ */
+public class ReceiptDaoImpl implements ReceiptDao, SQLQuery {
     @Override
     public Integer insertOrder(Receipt receipt, Connection con) throws SQLException {
         Integer receiptId = null;
