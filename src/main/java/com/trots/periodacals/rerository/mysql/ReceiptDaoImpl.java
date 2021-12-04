@@ -78,24 +78,25 @@ public class ReceiptDaoImpl implements ReceiptDao, SQLQuery {
     }
 
     @Override
-    public void acceptOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException {
+    public boolean acceptOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(ACCEPT_ORDER_OF_USER_FROM_ADMIN_PAGE)) {
             preparedStatement.setInt(1, receiptId);
             preparedStatement.executeUpdate();
         }
+        return true;
     }
 
     @Override
-    public void discardOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException {
+    public boolean discardOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(DISCARD_ORDER_OF_USER_FROM_ADMIN_PAGE)) {
             preparedStatement.setInt(1, receiptId);
             preparedStatement.executeUpdate();
         }
+        return true;
     }
 
     @Override
-    public void getAllOrdersForDelete(Connection connection) throws SQLException {
-        List<Receipt> list = new ArrayList<>();
+    public boolean getAllOrdersForDelete(Connection connection) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_ORDERS_OF_ALL_USERS_FOR_DELETE)) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 java.util.Date date = new java.util.Date();
@@ -115,5 +116,6 @@ public class ReceiptDaoImpl implements ReceiptDao, SQLQuery {
                 }
             }
         }
+        return true;
     }
 }

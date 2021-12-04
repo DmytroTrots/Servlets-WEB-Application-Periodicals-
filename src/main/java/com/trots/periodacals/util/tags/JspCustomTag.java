@@ -17,6 +17,5 @@ public class JspCustomTag extends SimpleTagSupport{
     public void doTag() throws JspException, IOException {
         JspWriter out = getJspContext().getOut();
         out.println( message );
-
     }
 }

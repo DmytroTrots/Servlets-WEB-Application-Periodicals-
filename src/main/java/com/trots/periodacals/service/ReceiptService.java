@@ -89,12 +89,13 @@ public class ReceiptService {
      *
      * @param receiptId the receipt id
      */
-    public void acceptOrderByAdmin(Integer receiptId){
+    public boolean acceptOrderByAdmin(Integer receiptId){
         try(Connection connection = connectionPool.getConnection()){
-            repository.acceptOrderOfUserByAdmin(receiptId, connection);
+            return repository.acceptOrderOfUserByAdmin(receiptId, connection);
         } catch (SQLException throwables) {
             log.error("Cannot accept order");
         }
+        return false;
     }
 
     /**
@@ -102,19 +103,21 @@ public class ReceiptService {
      *
      * @param receiptId the receipt id
      */
-    public void discardOrderByAdmin(Integer receiptId){
+    public boolean discardOrderByAdmin(Integer receiptId){
         try(Connection connection = connectionPool.getConnection()){
-            repository.discardOrderOfUserByAdmin(receiptId, connection);
+            return repository.discardOrderOfUserByAdmin(receiptId, connection);
         } catch (SQLException throwables) {
             log.error("Cannot accept order");
         }
+        return false;
     }
 
-    public void deleteOrdersAfterTime(){
+    public boolean deleteOrdersAfterTime(){
         try(Connection connection = connectionPool.getConnection()){
-            repository.getAllOrdersForDelete(connection);
+            return repository.getAllOrdersForDelete(connection);
         } catch (SQLException throwables) {
             log.error("Cannot delete orders");
         }
+        return false;
     }
 }

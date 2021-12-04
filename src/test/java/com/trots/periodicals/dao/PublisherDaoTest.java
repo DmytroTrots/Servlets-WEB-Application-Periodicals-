@@ -38,7 +38,7 @@ public class PublisherDaoTest {
         Integer result = null;
         try{
             connection.setAutoCommit(false);
-            result = publisherDaoImpl.insertPublisher("publisher7", "38099999999", connection);
+            result = publisherDaoImpl.insertPublisher("publisher40", "38099999999", connection);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }finally {

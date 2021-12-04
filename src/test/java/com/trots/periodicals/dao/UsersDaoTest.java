@@ -199,5 +199,41 @@ public class UsersDaoTest {
         }
         Assert.assertEquals("admin", check);
     }
+
+    @Test
+    public void findUserByUsernameTest() {
+        UserDaoImpl userDaoImpl = new UserDaoImpl();
+        User user = new User();
+        try {
+            user = userDaoImpl.findUserByUsername("customer", connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Assert.assertNotNull(user);
+    }
+
+    @Test
+    public void findUserByMailTest() {
+        UserDaoImpl userDaoImpl = new UserDaoImpl();
+        User user = new User();
+        try {
+            user = userDaoImpl.findUserByMail("customer@gmail.com", connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Assert.assertNotNull(user);
+    }
+
+    @Test
+    public void findUserByTelephoneTest() {
+        UserDaoImpl userDaoImpl = new UserDaoImpl();
+        User user = new User();
+        try {
+            user = userDaoImpl.findUserByTelephone("380990000000", connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Assert.assertNotNull(user);
+    }
 }
 

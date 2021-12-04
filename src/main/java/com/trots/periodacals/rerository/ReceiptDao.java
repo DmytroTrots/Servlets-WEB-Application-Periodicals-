@@ -46,7 +46,7 @@ public interface ReceiptDao {
      * @param connection the connection
      * @throws SQLException the sql exception
      */
-    void acceptOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException;
+    boolean acceptOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException;
 
     /**
      * Discard order of user by admin.
@@ -55,12 +55,13 @@ public interface ReceiptDao {
      * @param connection the connection
      * @throws SQLException the sql exception
      */
-    void discardOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException;
+    boolean discardOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException;
 
     /**
      * @param connection
+     * @return
      * @throws SQLException
      */
-    void getAllOrdersForDelete(Connection connection) throws SQLException;
+    boolean getAllOrdersForDelete(Connection connection) throws SQLException;
 
 }

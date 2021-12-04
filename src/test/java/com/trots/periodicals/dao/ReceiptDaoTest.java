@@ -71,4 +71,82 @@ public class ReceiptDaoTest {
         Assert.assertNotNull(list);
     }
 
+    @Test
+    public void acceptOrderOfUserByAdminTest(){
+        boolean result = false;
+        Integer id;
+        ReceiptDaoImpl receiptDaoImpl = new ReceiptDaoImpl();
+        try{
+            Receipt receipt = new Receipt();
+            receipt.setName("testName");
+            receipt.setSurname("testSurname");
+            receipt.setEmail("testEmail@gmail.com");
+            receipt.setTelephoneNumber("380999999999");
+            receipt.setAddress("testAddress");
+            receipt.setUserId(82);
+            receipt.setStatusId(1);
+            connection.setAutoCommit(false);
+            id = receiptDaoImpl.insertOrder(receipt, connection);
+            result = receiptDaoImpl.acceptOrderOfUserByAdmin(id, connection);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }finally {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void discardOrderOfUserByAdminTest(){
+        boolean result = false;
+        Integer id;
+        ReceiptDaoImpl receiptDaoImpl = new ReceiptDaoImpl();
+        try{
+            Receipt receipt = new Receipt();
+            receipt.setName("testName");
+            receipt.setSurname("testSurname");
+            receipt.setEmail("testEmail@gmail.com");
+            receipt.setTelephoneNumber("380999999999");
+            receipt.setAddress("testAddress");
+            receipt.setUserId(82);
+            receipt.setStatusId(1);
+            connection.setAutoCommit(false);
+            id = receiptDaoImpl.insertOrder(receipt, connection);
+            result = receiptDaoImpl.discardOrderOfUserByAdmin(id, connection);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }finally {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void getAllOrdersForDeleteTest(){
+        boolean result = false;
+        ReceiptDaoImpl receiptDaoImpl = new ReceiptDaoImpl();
+        try{
+            connection.setAutoCommit(false);
+            result = receiptDaoImpl.getAllOrdersForDelete(connection);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }finally {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        Assert.assertTrue(result);
+    }
+
+
 }

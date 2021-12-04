@@ -1,5 +1,6 @@
 package com.trots.periodicals.dao;
 
+import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Periodical;
 import com.trots.periodacals.rerository.mysql.PeriodicalsDaoImpl;
 import org.junit.Assert;
@@ -9,6 +10,7 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PeriodicalsDaoTest {
@@ -154,7 +156,7 @@ public class PeriodicalsDaoTest {
         PeriodicalsDaoImpl periodicalsDaoImpl = new PeriodicalsDaoImpl();
         List<Periodical> list = null;
         try {
-            list = periodicalsDaoImpl.getRecords("SELECT `periodical`.`sell_id`, periodical.rating, `periodical`.`title`, `periodical`.`price_per_month`,`periodical`.`images`, `publisher`.`name` FROM periodical_has_subject JOIN periodical ON periodical_has_subject.periodical_id = periodical.sell_id JOIN publisher ON periodical.publisher_id = publisher.id JOIN `subject` ON periodical_has_subject.subject_id = `subject`.id group by periodical.sell_id", connection);
+            list = periodicalsDaoImpl.getRecords("SELECT `periodical`.`sell_id`, periodical.rating, periodical.periodicity_per_year, `periodical`.`title`, `periodical`.`price_per_month`,`periodical`.`images`, `publisher`.`name` FROM periodical_has_subject JOIN periodical ON periodical_has_subject.periodical_id = periodical.sell_id JOIN publisher ON periodical.publisher_id = publisher.id JOIN `subject` ON periodical_has_subject.subject_id = `subject`.id group by periodical.sell_id", connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -171,6 +173,49 @@ public class PeriodicalsDaoTest {
             e.printStackTrace();
         }
         Assert.assertNotEquals(0, result);
+    }
+
+    @Test
+    public void getPeriodicalByTitle() {
+        PeriodicalsDaoImpl periodicalsDaoImpl = new PeriodicalsDaoImpl();
+        Periodical periodical1 = new Periodical();
+        try {
+            connection.setAutoCommit(false);
+            periodicalsDaoImpl.insertPeriodical(periodical, connection);
+            periodical1 = periodicalsDaoImpl.getPeriodicalByTitle("title", connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                connection.rollback();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        Assert.assertNotNull(periodical1);
+    }
+
+    @Test
+    public void getTotalCartPrice() throws SQLException {
+        PeriodicalsDaoImpl periodicalsDaoImpl = new PeriodicalsDaoImpl();
+        List<Cart> list = new ArrayList<>();
+        Cart cart = new Cart();
+        cart.setSellId(95);
+        cart.setMonths(2);
+        list.add(cart);
+        double summa = periodicalsDaoImpl.getTotalCartPrice(list, connection);
+        Assert.assertNotEquals(0.0,summa);
+    }
+
+    @Test
+    public void getPeriodicalForCartTest() throws SQLException {
+        PeriodicalsDaoImpl periodicalsDaoImpl = new PeriodicalsDaoImpl();
+        List<Cart> list = new ArrayList<>();
+        Cart cart = new Cart();
+        cart.setSellId(95);
+        list.add(cart);
+        list = periodicalsDaoImpl.getCartPeriodical(list, connection);
+        Assert.assertNotNull(list);
     }
 
 }
