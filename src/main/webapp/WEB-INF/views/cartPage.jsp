@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="ex" uri="WEB-INF/custom.tld" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <fmt:setLocale value="${sessionScope.lang}"/>
 <fmt:setBundle basename="messages"/>
@@ -25,7 +26,13 @@
             <c:set var="ex" value="" scope="session"/>
         </c:if>
     </span>
-    <div class="d-flex py-3"><h3><fmt:message key="label.totalPrice"/> ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
+    <c:if test="${sessionScope.lang==null || sessionScope.lang =='en'}">
+        <div class="d-flex py-3"><h3><fmt:message key="label.totalPrice"/><ex:sign message="$"/> ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
+    </c:if>
+    <c:if test="${sessionScope.lang == 'ua'}">
+        <div class="d-flex py-3"><h3><fmt:message key="label.totalPrice"/><ex:sign message="₴"/> ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
+    </c:if>
+
     <form action="/order-all" method="post">
         <table class="table table-loght">
             <thead>
@@ -40,7 +47,7 @@
 
             <c:if test="${sessionScope['cart_list'] != null && not empty sessionScope['cart_list']}">
                 <c:forEach items="${cartPeriodical}" var="list">
-                    <tbody>
+                    <tbody class="cart-items">
                     <td>${list.title}</td>
                     <td>${list.publisher}</td>
                     <td>${sessionScope['decimalFormat'].format(list.pricePerMonth)}</td>

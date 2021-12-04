@@ -1,0 +1,17 @@
+<taglib>
+    <tlib-version>1.0</tlib-version>
+    <jsp-version>2.0</jsp-version>
+    <short-name>ex</short-name>
+    <uri>WEB-INF/custom.tld</uri>
+
+    <tag>
+        <name>sign</name>
+        <tag-class>com.trots.periodacals.util.tags.JspCustomTag</tag-class>
+        <body-content>scriptless</body-content>
+
+        <attribute>
+            <name>message</name>
+        </attribute>
+
+    </tag>
+</taglib>

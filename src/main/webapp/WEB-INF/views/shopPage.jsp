@@ -69,7 +69,7 @@
                         <h6 class="price"><fmt:message key="label.totalPrice"/>${list.pricePerMonth}</h6>
                         <h6 class="category"><fmt:message key="label.publisherShop"/> ${list.publisher}</h6>
                         <h6 class="rating"><fmt:message key="label.ratingShop"/> ${list.rating}</h6>
-                        <h6 class="rating"><fmt:message key="label.periodicity"/> ${list.periodicityPerYear}</h6>
+                        <h6 class="rating"><fmt:message key="label.periodicity"/>: ${list.periodicityPerYear}</h6>
                         <div class="mt-3 d-flex justify-content-between">
                             <form method="post" action="cart">
                                 <input name="id" type="hidden" value="${list.sellId}">
