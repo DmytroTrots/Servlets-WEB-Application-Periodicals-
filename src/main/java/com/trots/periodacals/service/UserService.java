@@ -84,7 +84,7 @@ public class UserService {
         try (Connection con = connectionPool.getConnection()) {
             return repository.userRegistration(user, con);
         } catch (SQLException throwables) {
-            log.error("Cannot register user, admin page");
+            log.error("Cannot register user");
         }
         return null;
     }
@@ -149,5 +149,32 @@ public class UserService {
             log.error("Cannot delete user, admin page");
         }
         return false;
+    }
+
+    public User getSingleUserByUsername(String username) {
+        try (Connection con = connectionPool.getConnection()) {
+            return repository.findUserByUsername(username, con);
+        } catch (SQLException throwables) {
+            log.error("Cannot get user by username");
+        }
+        return null;
+    }
+
+    public User getSingleUserByTelephone(String telephone) {
+        try (Connection con = connectionPool.getConnection()) {
+            return repository.findUserByTelephone(telephone, con);
+        } catch (SQLException throwables) {
+            log.error("Cannot get user by telephone");
+        }
+        return null;
+    }
+
+    public User getSingleUserByEmail(String email) {
+        try (Connection con = connectionPool.getConnection()) {
+            return repository.findUserByMail(email, con);
+        } catch (SQLException throwables) {
+            log.error("Cannot get user by email");
+        }
+        return null;
     }
 }

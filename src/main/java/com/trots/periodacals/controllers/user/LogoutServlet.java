@@ -8,7 +8,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -22,13 +21,19 @@ public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        HttpSession session = request.getSession(false); //Fetch session object
+        String lang = (String) request.getSession().getAttribute("lang");
 
-        if(session!=null) //If session is not null
+        if(request.getSession()!=null) //If session is not null
         {
-            session.invalidate(); //removes all session attributes bound to the session
-            response.sendRedirect(request.getContextPath()+"/shop?currentPage=1&category=0");
-            System.out.println("Logged out");
+            request.getSession().invalidate(); //removes all session attributes bound to the session
+            if (lang == null || lang.equals("en")) {
+                request.getSession().setAttribute("ex", "You are successfully logged out");
+            }else{
+                request.getSession().setAttribute("ex", "Ви успішно вийшли з системи");
+            }
+            log.trace("Successfully logged out");
+            request.getSession().setAttribute("lang", lang);
+            response.sendRedirect(request.getContextPath()+"/login");
         }
     }
 }

@@ -19,6 +19,15 @@
         <input type="number" name="balance" min="1"/>
         <input type="submit" value="<fmt:message key="label.submit"/>"/>
     </form>
+
+    <span style="color:red">
+        <c:if test="${not empty sessionScope.ex}">
+            <div class="alert alert-warning">
+                <strong><c:out value="${sessionScope.ex}"/></strong>
+            </div>
+            <c:set var="ex" value="" scope="session"/>
+        </c:if>
+    </span>
 </div>
 </body>
 </html>

@@ -88,7 +88,7 @@
                                         key="label.surname"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="surname" class="form-control" name="surname"
-                                           pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                                           pattern="[а-яА-ЯёЁa-zA-Z]{1,25}"
                                            title="<fmt:message key="label.nameValidate"/>" required>
                                 </div>
                             </div>
@@ -98,7 +98,7 @@
                                         key="label.name"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="name" class="form-control" name="name"
-                                           pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                                           pattern="[а-яА-ЯёЁa-zA-Z]{1,25}"
                                            title="<fmt:message key="label.nameValidate"/>" required>
                                 </div>
                             </div>
@@ -119,7 +119,7 @@
                                        class="col-md-4 col-form-label text-md-right"><fmt:message
                                         key="label.address"/></label>
                                 <div class="col-md-6">
-                                    <input type="text" id="address" class="form-control" name="address"
+                                    <input type="text" id="address" class="form-control" name="address" maxlength="300"
                                            required>
                                 </div>
                             </div>
@@ -131,6 +131,15 @@
                                     <fmt:message key="label.allFieldsValidate"/>
                                 </div>
                             </div>
+
+                            <span style="color:red">
+                                <c:if test="${not empty sessionScope.ex}">
+                                    <div class="alert alert-warning">
+                                        <strong><c:out value="${sessionScope.ex}"/></strong>
+                                    </div>
+                                    <c:set var="ex" value="" scope="session"/>
+                                </c:if>
+                            </span>
 
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

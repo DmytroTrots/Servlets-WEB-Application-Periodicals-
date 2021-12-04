@@ -198,4 +198,18 @@ public class PeriodicalsDaoImpl implements PeriodicalsDao, SQLQuery {
         }
         return numOfRows;
     }
+
+    @Override
+    public Periodical getPeriodicalByTitle(String title, Connection connection) throws SQLException {
+        Periodical periodical = null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(GET_ONE_PERIODICAL_BY_TITLE)) {
+            preparedStatement.setString(1, title);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    periodical = new Periodical();
+                }
+            }
+        }
+        return periodical;
+    }
 }

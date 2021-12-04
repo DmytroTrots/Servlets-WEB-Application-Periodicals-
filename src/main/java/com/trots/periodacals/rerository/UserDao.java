@@ -90,4 +90,34 @@ public interface UserDao {
      */
 ///method for deleting user
     boolean deleteUserAdmin(Integer id, Connection con) throws SQLException;
+
+    /**
+     * Find user by username user.
+     *
+     * @param username the username
+     * @param con      the con
+     * @return the user
+     * @throws SQLException the sql exception
+     */
+    User findUserByUsername(String username, Connection con) throws SQLException;
+
+    /**
+     * Find user by mail user.
+     *
+     * @param mail the mail
+     * @param con  the con
+     * @return the user
+     * @throws SQLException the sql exception
+     */
+    User findUserByMail(String mail, Connection con) throws SQLException;
+
+    /**
+     * Find user by telephone user.
+     *
+     * @param telephone the telephone
+     * @param con       the con
+     * @return the user
+     * @throws SQLException the sql exception
+     */
+    User findUserByTelephone(String telephone, Connection con) throws SQLException;
 }

@@ -27,7 +27,7 @@
                                        class="col-md-4 col-form-label text-md-right"><fmt:message key="label.title"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="title" class="form-control" name="title"
-                                           pattern="[A-Za-z]{2,64}" title="<fmt:message key="label.titleValidate"/>"
+                                           pattern="[A-Za-z0-9_ ]{2,64}" title="<fmt:message key="label.titleValidate"/>"
                                            required autocomplete="off" autofocus>
                                 </div>
                             </div>
@@ -36,15 +36,21 @@
                                 <label for="numberOfPages" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.numberOfPages"/></label>
                                 <div class="col-md-6">
                                     <input type="number" id="numberOfPages" class="form-control" name="numberOfPages"
-                                           min="1" required autocomplete="off">
+                                           min="1" max="1000" required autocomplete="off">
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label for="periodicityPerYear" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.periodicityPerYear"/></label>
                                 <div class="col-md-6">
-                                    <input type="number" id="periodicityPerYear" class="form-control" name="periodicityPerYear"
-                                           min="1" required autocomplete="off">
+                                    <select class="form-control" name="periodicityPerYear" id="periodicityPerYear" required>
+                                        <option selected value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="6">6</option>
+                                        <option value="12">12</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -68,7 +74,7 @@
                             <div class="form-group row">
                                 <label for="description" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.description"/></label>
                                 <div class="col-md-6">
-                                    <input type="text" id="description" class="form-control" name="description"
+                                    <input type="text" id="description" class="form-control" name="description" maxlength="1024"
                                            required autocomplete="off">
                                 </div>
                             </div>
@@ -77,7 +83,7 @@
                                 <label for="rating" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.rating"/></label>
                                 <div class="col-md-6">
                                     <input type="number" id="rating" class="form-control" name="rating"
-                                           min="0" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1}"
+                                           min="0" step="0.01" max="5" pattern="[+-]?([0-9]*[.])?[0-9]{1}"
                                            title="<fmt:message key="label.ratingValidate"/>" autocomplete="off"
                                            required>
                                 </div>
@@ -87,7 +93,7 @@
                                 <label for="publisher" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.publisher"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="publisher" class="form-control" name="publisher"
-                                           list="publisherList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                                           list="publisherList" pattern="[а-яА-ЯёЁa-zA-Z0-9]{1,25}"
                                            title="<fmt:message key="label.publisherValidate"/>" autocomplete="off" required>
                                 </div>
                             </div>
@@ -105,7 +111,7 @@
                                 <label for="subject" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.subject"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="subject" class="form-control" name="subject"
-                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" autocomplete="off" required>
+                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z0-9]{1,25}" autocomplete="off" required>
                                 </div>
                             </div>
 
@@ -113,7 +119,7 @@
                                 <label for="subject2" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.subject"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="subject2" class="form-control" name="subject"
-                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" autocomplete="off">
+                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z0-9]{1,25}" autocomplete="off">
                                 </div>
                             </div>
 
@@ -121,7 +127,7 @@
                                 <label for="subject3" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.subject"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="subject3" class="form-control" name="subject"
-                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" autocomplete="off">
+                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z0-9]{1,25}" autocomplete="off">
                                 </div>
                             </div>
 
@@ -131,6 +137,15 @@
                                     <input type="file" id="file" class="form-control" name="file" required>
                                 </div>
                             </div>
+
+                            <span style="color:red">
+                                <c:if test="${not empty sessionScope.ex}">
+                                    <div class="alert alert-warning">
+                                        <strong><c:out value="${sessionScope.ex}"/></strong>
+                                    </div>
+                                    <c:set var="ex" value="" scope="session"/>
+                                </c:if>
+                            </span>
 
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

@@ -5,6 +5,7 @@ import com.trots.periodacals.entity.Periodical;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.Period;
 import java.util.List;
 
 /**
@@ -111,4 +112,12 @@ public interface PeriodicalsDao {
      * @throws SQLException the sql exception
      */
     int getNumberOfRows(Connection connection) throws SQLException;
+
+    /**
+     * @param title
+     * @param connection
+     * @return
+     * @throws SQLException
+     */
+    Periodical getPeriodicalByTitle(String title, Connection connection) throws SQLException;
 }

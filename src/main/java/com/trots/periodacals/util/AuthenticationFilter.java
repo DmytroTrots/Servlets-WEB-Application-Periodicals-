@@ -7,6 +7,7 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -32,27 +33,23 @@ public class AuthenticationFilter implements Filter {
         Integer id = (Integer) ((HttpServletRequest) servletRequest).getSession().getAttribute("ID");
         String lang = (String) ((HttpServletRequest) servletRequest).getSession().getAttribute("lang");
         servletResponse.setCharacterEncoding("UTF-16");
-        PrintWriter out = servletResponse.getWriter();
+        System.out.println(id);
+
 
 
         if(id == null){
-            if(lang == null || lang.equals("en")){
-                out.println("You are not logged in");
+            if (lang == null || lang.equals("en")) {
+                ((HttpServletRequest) servletRequest).getSession().setAttribute("ex", "You are not logged in");
+            }else{
+                ((HttpServletRequest) servletRequest).getSession().setAttribute("ex", "Ви не уввійшли у систему");
             }
-            else{
-                out.println("Ви не уввійшли у систему");
-            }
+            ((HttpServletResponse) servletResponse).sendRedirect("/login");
         }
-        if(roleRequest.equals(role)){
+        else if(roleRequest.equals(role)){
             filterChain.doFilter(servletRequest, servletResponse);//sends request to next resource
         }
         else{
-            if(lang == null || lang.equals("en")){
-                out.println("U are not allowed to visit this page");
-            }
-            else{
-                out.println("Вам заборонено відвідувати цю сторінку");
-            }
+            ((HttpServletResponse) servletResponse).sendRedirect("/shop?currentPage=1&category=0");
         }
     }
 

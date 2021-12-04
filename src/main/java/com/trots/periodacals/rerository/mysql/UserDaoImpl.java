@@ -136,4 +136,46 @@ public class UserDaoImpl implements UserDao, SQLQuery {
         }
         return true;
     }
+
+    @Override
+    public User findUserByUsername(String username, Connection con) throws SQLException {
+        User user = null;
+        try (PreparedStatement preparedStatement = con.prepareStatement(GET_SINGLE_USER_BY_USERNAME)) {
+            preparedStatement.setString(1, username);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    user = new User();
+                }
+            }
+        }
+        return user;
+    }
+
+    @Override
+    public User findUserByMail(String mail, Connection con) throws SQLException {
+        User user = null;
+        try (PreparedStatement preparedStatement = con.prepareStatement(GET_SINGLE_USER_BY_EMAIL)) {
+            preparedStatement.setString(1, mail);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    user = new User();
+                }
+            }
+        }
+        return user;
+    }
+
+    @Override
+    public User findUserByTelephone(String telephone, Connection con) throws SQLException {
+        User user = null;
+        try (PreparedStatement preparedStatement = con.prepareStatement(GET_SINGLE_USER_BY_TELEPHONE)) {
+            preparedStatement.setString(1, telephone);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    user = new User();
+                }
+            }
+        }
+        return user;
+    }
 }

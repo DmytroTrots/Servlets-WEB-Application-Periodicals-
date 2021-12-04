@@ -33,14 +33,23 @@ public class DiscardOrderByAdminServlet extends HttpServlet {
         Integer id = Integer.parseInt(req.getParameter("id"));
         Integer userId = Integer.parseInt(req.getParameter("userId"));
         Double price = Double.parseDouble(req.getParameter("price"));
+        String lang = (String) req.getSession().getAttribute("lang");
         ReceiptService.getInstance().discardOrderByAdmin(id);
         User user = UserService.getInstance().getSingleUserById(userId);
         Double actualBalance = user.getBalance();
         actualBalance = actualBalance + price;
         UserService.getInstance().updateFieldBalanceAfterTopUp(userId, actualBalance);
         log.trace("Successfully --> order " + id + " discarded");
+        langCheck(req, resp, lang, "Order was discarded", "Замовлення було відхилено");
+    }
 
-        resp.sendRedirect(req.getContextPath() + "/orders");
+    private void langCheck(HttpServletRequest request, HttpServletResponse response, String lang, String message1, String message2) throws IOException {
+        if (lang == null || lang.equals("en")) {
+            request.getSession().setAttribute("ex", message1);
+        } else {
+            request.getSession().setAttribute("ex", message2);
+        }
+        response.sendRedirect(request.getContextPath() + "/orders");
     }
 }
 

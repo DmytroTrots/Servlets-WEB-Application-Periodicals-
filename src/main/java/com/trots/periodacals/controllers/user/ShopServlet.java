@@ -101,18 +101,11 @@ public class ShopServlet extends HttpServlet {
         request.getSession().setAttribute("currentPage", currentPage);
         request.setAttribute("recordsPerPage", recordsPerPage);
 
-
-        ///Check if user is banned
         if (id != null) {
             User user = UserService.getInstance().getSingleUserById(id);
-            if (user.getBanStatus() == null) {
-                request.getSession().setAttribute("user", user);
-                request.getSession().setAttribute("balance", user.getBalance());
-            } else {
-                request.setAttribute("ex", "You are banned, sorry");
-                request.getSession().invalidate();
-                request.getRequestDispatcher("WEB-INF/views/loginPage.jsp").forward(request, response);
-            }
+            request.getSession().setAttribute("user", user);
+            request.getSession().setAttribute("balance", user.getBalance());
+
         }
 
         List<Cart> cart_list = (List<Cart>) request.getSession().getAttribute("cart-list");

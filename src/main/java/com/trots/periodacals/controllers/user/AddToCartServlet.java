@@ -11,9 +11,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,38 +45,46 @@ public class AddToCartServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            List<Cart> cartList = new ArrayList<>();
+        String lang = (String) request.getSession().getAttribute("lang");
+        List<Cart> cartList = new ArrayList<>();
 
-            int id = Integer.parseInt(request.getParameter("id"));
-            Integer currentPage = (Integer) request.getSession().getAttribute("currentPage");
+        int id = Integer.parseInt(request.getParameter("id"));
+        Integer currentPage = (Integer) request.getSession().getAttribute("currentPage");
 
-            Cart cm = new Cart();
-            cm.setSellId(id);
-            cm.setMonths(1);
+        Cart cm = new Cart();
+        cm.setSellId(id);
+        cm.setMonths(1);
 
 
-            List<Cart> cart_list = (List<Cart>) request.getSession().getAttribute("cart-list");
+        List<Cart> cart_list = (List<Cart>) request.getSession().getAttribute("cart-list");
 
-            if (cart_list == null) {
-                cartList.add(cm);
-                request.getSession().setAttribute("cart-list", cartList);
-                response.sendRedirect(request.getContextPath()+"/shop?currentPage="+currentPage+"&category="+request.getSession().getAttribute("category"));
-            } else {
-                cartList = cart_list;
-                boolean exist = false;
-                for (Cart c : cartList) {
-                    if (c.getSellId()==id){
-                        exist = true;
-                        out.println("Item already exist in your cart");
-                    }
-                }
-                if(!exist){
-                    cartList.add(cm);
-                    response.sendRedirect(request.getContextPath()+"/shop?currentPage="+currentPage+"&category="+request.getSession().getAttribute("category"));
+        if (cart_list == null) {
+            cartList.add(cm);
+            request.getSession().setAttribute("cart-list", cartList);
+            langCheck(request,currentPage,response,lang,"Periodical was added to your card","Видання було додате до вашої корзини");
+        } else {
+            cartList = cart_list;
+            boolean exist = false;
+            for (Cart c : cartList) {
+                if (c.getSellId() == id) {
+                    exist = true;
+                    langCheck(request,currentPage,response,lang,"This periodical is already in your cart","Видання уже знаходиться у корзині");
                 }
             }
+            if (!exist) {
+                cartList.add(cm);
+                langCheck(request,currentPage,response,lang,"Periodical was added to your card","Видання було додате до вашої корзини");
+            }
         }
+
+    }
+
+    private void langCheck(HttpServletRequest request, int currentPage, HttpServletResponse response, String lang, String message1, String message2) throws IOException {
+        if (lang == null || lang.equals("en")) {
+            request.getSession().setAttribute("ex", message1);
+        } else {
+            request.getSession().setAttribute("ex", message2);
+        }
+        response.sendRedirect(request.getContextPath() + "/shop?currentPage=" + currentPage + "&category=" + request.getSession().getAttribute("category"));
     }
 }

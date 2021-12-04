@@ -30,15 +30,26 @@ public class banUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
+        String lang = (String) req.getSession().getAttribute("lang");
         User user = UserService.getInstance().getSingleUserById(id);
         String banStatus = user.getBanStatus();
         if (banStatus == null) {
             UserService.getInstance().updateBanStatusOfUser("banned", id);
+            langCheck(req, resp, lang, "User was banned", "Користувач був заблокований");
             log.trace("Successfully --> user " + id + " banned");
         } else {
             UserService.getInstance().updateBanStatusOfUser(null, id);
+            langCheck(req, resp, lang, "User was unbanned", "Користувач був розблокований");
             log.trace("Successfully --> user " + id + " unbanned");
         }
-        resp.sendRedirect(req.getContextPath() + "/addUser");
+    }
+
+    private void langCheck(HttpServletRequest request, HttpServletResponse response, String lang, String message1, String message2) throws IOException {
+        if (lang == null || lang.equals("en")) {
+            request.getSession().setAttribute("ex", message1);
+        } else {
+            request.getSession().setAttribute("ex", message2);
+        }
+        response.sendRedirect("/addUser");
     }
 }

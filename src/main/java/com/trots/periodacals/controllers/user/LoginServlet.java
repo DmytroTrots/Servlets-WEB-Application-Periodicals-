@@ -40,6 +40,9 @@ public class LoginServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (request.getSession().getAttribute("ID")!=null){
+            response.sendRedirect("/shop?currentPage=1&category=0");
+        }
         System.out.println("Login#doGet");
 
         RequestDispatcher dispatcher = request.getRequestDispatcher("WEB-INF/views/loginPage.jsp");
@@ -63,10 +66,8 @@ public class LoginServlet extends HttpServlet {
         {
             String userValidate = UserService.getInstance().authenticateUser(user);
 
-            if(userValidate.equals("admin"))
+            if(userValidate.equals("admin") || userValidate.equals("customer"))
             {
-                System.out.println("Admin's Home");
-
                 HttpSession session = request.getSession(); //Creating a session
                 session.setAttribute("Role", userValidate); //setting session attribute
                 for (User u : userList){
@@ -76,48 +77,14 @@ public class LoginServlet extends HttpServlet {
                 }
                 request.getSession().setAttribute("userName", username);
 
-                log.trace("Success user validation, user --> " + username + ", role --> admin");
-
-                response.sendRedirect(request.getContextPath() + "/shop?currentPage=1&category=0");
-            }
-            else if(userValidate.equals("manager"))
-            {
-                System.out.println("Editor's Home");
-
-                HttpSession session = request.getSession();
-                session.setAttribute("Role", userValidate);
-                for (User u : userList){
-                    if (u.getUsername().equals(username)){
-                        session.setAttribute("ID", u.getId());
-                    }
-                }
-                request.getSession().setAttribute("userName", username);
-
-                log.trace("Success user validation, user --> " + username + ", role --> manager");
-
-                response.sendRedirect(request.getContextPath() + "/shop?currentPage=1&category=0");
-            }
-            else if(userValidate.equals("customer"))
-            {
-                System.out.println("User's Home");
-
-                HttpSession session = request.getSession();
-                session.setAttribute("Role", userValidate);
-                for (User u : userList){
-                    if (u.getUsername().equals(username)){
-                        session.setAttribute("ID", u.getId());
-                    }
-                }
-                request.getSession().setAttribute("userName", username);
-
-                log.trace("Success user validation, user --> " + username + ", role --> customer");
+                log.trace("Success user validation, user --> " + username + ", role --> " + userValidate);
 
                 response.sendRedirect(request.getContextPath() + "/shop?currentPage=1&category=0");
             }
             else
             {
                 System.out.println("Error message = "+userValidate);
-                request.setAttribute("ex", userValidate);
+                request.getSession().setAttribute("ex", userValidate);
 
                 log.trace("Can not validate user --> " + username);
 
@@ -129,5 +96,5 @@ public class LoginServlet extends HttpServlet {
         } catch (ServletException e) {
             log.error(e);
         }
-    } //End of doPost()
+    }
 }

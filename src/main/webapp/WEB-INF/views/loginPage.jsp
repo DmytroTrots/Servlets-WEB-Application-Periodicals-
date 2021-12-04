@@ -70,11 +70,14 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
-                                <div class="col-md-6 offset-md-4">
-                                    <span style="color:red"><%=(request.getAttribute("ex") == null) ? "" : request.getAttribute("ex")%></span>
-                                </div>
-                            </div>
+                            <span style="color:red">
+                                <c:if test="${not empty sessionScope.ex}">
+                                    <div class="alert alert-warning">
+                                        <strong><c:out value="${sessionScope.ex}"/></strong>
+                                    </div>
+                                         <c:set var="ex" value="" scope="session"/>
+                                </c:if>
+                            </span>
 
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

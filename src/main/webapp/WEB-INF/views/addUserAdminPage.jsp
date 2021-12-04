@@ -99,7 +99,6 @@
                                        class="col-md-4 col-form-label text-md-right"><fmt:message key="label.role"/></label>
                                 <div class="col-md-6">
                                     <select id="nameOfRole" class="form-control" name="nameOfRole" required>
-                                        <option selected disabled><fmt:message key="label.chooseCategory"/></option>
                                         <c:forEach var="roleList" items="${ROLE_LIST}">
                                             <option value="${roleList.toString()}">${roleList.toString()}</option>
                                         </c:forEach>
@@ -112,6 +111,15 @@
                                     <fmt:message key="label.allFieldsValidate"/>
                                 </div>
                             </div>
+
+                            <span style="color:red">
+                                <c:if test="${not empty sessionScope.ex}">
+                                    <div class="alert alert-warning">
+                                        <strong><c:out value="${sessionScope.ex}"/></strong>
+                                    </div>
+                                    <c:set var="ex" value="" scope="session"/>
+                                </c:if>
+                            </span>
 
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

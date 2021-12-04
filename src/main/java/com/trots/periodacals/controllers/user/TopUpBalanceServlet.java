@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 
@@ -31,16 +30,22 @@ public class TopUpBalanceServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Double balance = Double.parseDouble(request.getParameter("balance"));
+        String lang = (String) request.getSession().getAttribute("lang");
 
-        HttpSession session = request.getSession();
-        int id = (int) session.getAttribute("ID");
+        int id = (int) request.getSession().getAttribute("ID");
 
         Double actualBalance = (Double) request.getSession().getAttribute("balance");
         if (actualBalance != null) {
             actualBalance += balance;
             UserService.getInstance().updateFieldBalanceAfterTopUp(id, actualBalance);
-            session.setAttribute("balance", actualBalance);
-        } response.sendRedirect(request.getContextPath() + "/cart");
+            request.getSession().setAttribute("balance", actualBalance);
+        }
+        if (lang == null || lang.equals("en")) {
+            request.getSession().setAttribute("ex", "Balance replenished ");
+        } else {
+            request.getSession().setAttribute("ex", "Баланс поповнено");
+        }
+        response.sendRedirect(request.getContextPath() + "/top-up");
     }
 
 }

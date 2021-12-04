@@ -16,6 +16,14 @@
 <form class="send-message"action="/send-message" method="post">
     <input type="hidden" name="to" value="headerperiodicalsiteepam@gmail.com"/><br/>
     <input type="hidden" name="subject" value="<fmt:message key="label.username"/> -> ${sessionScope['userName']}, ID -> ${sessionScope['ID']}, <fmt:message key="label.messageFromCustomer"/>" ><br/>
+    <span style="color:red">
+        <c:if test="${not empty sessionScope.ex}">
+            <div class="alert alert-warning">
+                <strong><c:out value="${sessionScope.ex}"/></strong>
+            </div>
+            <c:set var="ex" value="" scope="session"/>
+        </c:if>
+    </span>
     <label for="message"><fmt:message key="label.sendMessageLabel"/></label></br>
     <textarea class="textarea" rows="10" cols="70" id="message" name="message"></textarea><br/>
     <input type="submit" value="<fmt:message key="label.sendMessage"/>"/>

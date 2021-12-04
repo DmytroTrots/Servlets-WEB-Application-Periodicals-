@@ -17,6 +17,14 @@
 <body>
 <%@include file="header.jsp" %>
 <div class="container">
+    <span style="color:red">
+        <c:if test="${not empty sessionScope.ex}">
+            <div class="alert alert-warning">
+                <strong><c:out value="${sessionScope.ex}"/></strong>
+            </div>
+            <c:set var="ex" value="" scope="session"/>
+        </c:if>
+    </span>
     <div class="d-flex py-3"><h3><fmt:message key="label.totalPrice"/> ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
     <form action="/order-all" method="post">
         <table class="table table-loght">

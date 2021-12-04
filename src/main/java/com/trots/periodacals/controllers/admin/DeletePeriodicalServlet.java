@@ -30,9 +30,17 @@ public class DeletePeriodicalServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
         PeriodicalService.getInstance().deletePeriodicalFromAdminPage(id);
+        String lang = (String) req.getSession().getAttribute("lang");
         log.trace("Successfully --> periodical " + id + " deleted");
+        langCheck(req,resp,lang,"Periodical was deleted", "Видання було видалено");
+    }
 
-        resp.sendRedirect(req.getContextPath() + "/fileupload");
-
+    private void langCheck(HttpServletRequest request, HttpServletResponse response, String lang, String message1, String message2) throws IOException {
+        if (lang == null || lang.equals("en")) {
+            request.getSession().setAttribute("ex", message1);
+        } else {
+            request.getSession().setAttribute("ex", message2);
+        }
+        response.sendRedirect(request.getContextPath() + "/fileupload");
     }
 }

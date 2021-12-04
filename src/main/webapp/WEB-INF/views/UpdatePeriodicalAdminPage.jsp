@@ -26,7 +26,7 @@
                                        class="col-md-4 col-form-label text-md-right"><fmt:message key="label.title"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="title" class="form-control" value="${periodicalInf.getTitle()}" name="title"
-                                           pattern="[A-Za-z]{2,64}" title="<fmt:message key="label.titleValidate"/>"
+                                           pattern="[A-Za-z0-9_ ]{2,64}" title="<fmt:message key="label.titleValidate"/>"
                                            required autocomplete="off" autofocus>
                                 </div>
                             </div>
@@ -35,15 +35,21 @@
                                 <label for="numberOfPages" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.numberOfPages"/></label>
                                 <div class="col-md-6">
                                     <input type="number" id="numberOfPages" value="${periodicalInf.getNumberOfPages()}" class="form-control" name="numberOfPages"
-                                           min="1" required autocomplete="off">
+                                           min="1" max="1000" required autocomplete="off">
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label for="periodicityPerYear" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.periodicityPerYear"/></label>
                                 <div class="col-md-6">
-                                    <input type="number" id="periodicityPerYear" value="${periodicalInf.getPeriodicityPerYear()}" class="form-control" name="periodicityPerYear"
-                                           min="1" required autocomplete="off">
+                                    <select class="form-control" name="periodicityPerYear" id="periodicityPerYear" required>
+                                        <option ${periodicalInf.getPeriodicityPerYear() == 1 ? 'selected':''} value="1">1</option>
+                                        <option ${periodicalInf.getPeriodicityPerYear() == 2 ? 'selected':''} value="2">2</option>
+                                        <option ${periodicalInf.getPeriodicityPerYear() == 3 ? 'selected':''} value="3">3</option>
+                                        <option ${periodicalInf.getPeriodicityPerYear() == 4 ? 'selected':''} value="4">4</option>
+                                        <option ${periodicalInf.getPeriodicityPerYear() == 6 ? 'selected':''} value="6">6</option>
+                                        <option ${periodicalInf.getPeriodicityPerYear() == 12 ? 'selected':''} value="12">12</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -68,7 +74,7 @@
                                 <label for="description" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.description"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="description" value="${periodicalInf.getDescription()}" class="form-control" name="description"
-                                           required autocomplete="off">
+                                           maxlength="1024" required autocomplete="off">
                                 </div>
                             </div>
 
@@ -76,7 +82,7 @@
                                 <label for="rating" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.rating"/></label>
                                 <div class="col-md-6">
                                     <input type="number" id="rating" value="${periodicalInf.getRating()}" class="form-control" name="rating"
-                                           min="0" step="0.01" pattern="[+-]?([0-9]*[.])?[0-9]{1}"
+                                           min="0" step="0.01" max="5" pattern="[+-]?([0-9]*[.])?[0-9]{1}"
                                            title="<fmt:message key="label.ratingValidate"/>" autocomplete="off"
                                            required>
                                 </div>
@@ -86,7 +92,7 @@
                                 <label for="publisher" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.publisher"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="publisher" value="${periodicalInf.getPublisher()}" class="form-control" name="publisher"
-                                           list="publisherList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                                           list="publisherList" pattern="[а-яА-ЯёЁa-zA-Z0-9]{1,25}"
                                            title="<fmt:message key="label.publisherValidate"/>" autocomplete="off" required>
                                 </div>
                             </div>
@@ -103,24 +109,24 @@
                             <div class="form-group row">
                                 <label for="subject" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.subject"/></label>
                                 <div class="col-md-6">
-                                    <input type="text" id="subject" value="${subj1}" class="form-control" name="subject"
-                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" autocomplete="off" required>
+                                    <input type="text" ${(subj1!="" && subj1!=null)?'readonly':''} id="subject" value="${subj1}" class="form-control" name="subject"
+                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z0-9]{1,25}" autocomplete="off" required>
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label for="subject2" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.subject"/></label>
                                 <div class="col-md-6">
-                                    <input type="text" id="subject2" value="${subj2}" class="form-control" name="subject"
-                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" autocomplete="off">
+                                    <input type="text" ${(subj2!="" && subj2!=null)?'readonly':''} id="subject2" value="${subj2}" class="form-control" name="subject"
+                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z0-9]{1,25}" autocomplete="off">
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label for="subject3" class="col-md-4 col-form-label text-md-right"><fmt:message key="label.subject"/></label>
                                 <div class="col-md-6">
-                                    <input type="text" id="subject3" value="${subj3}" class="form-control" name="subject"
-                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}" autocomplete="off">
+                                    <input type="text" ${(subj3!="" && subj3!=null)?'readonly':''} id="subject3" value="${subj3}" class="form-control" name="subject"
+                                           list="subjectList" pattern="[а-яА-ЯёЁa-zA-Z0-9]{1,25}" autocomplete="off">
                                 </div>
                             </div>
 

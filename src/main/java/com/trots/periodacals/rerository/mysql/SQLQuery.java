@@ -10,6 +10,9 @@ public interface SQLQuery {
     String SELECT_ALL_PERIODICALS = "SELECT `sell_id`, `title`, `number_of_pages`, `periodicity_per_year`, `percentage_of_advertising`, `price_per_month`, `description`, `rating`, `publisher`.`name`, `images` FROM periodical, publisher WHERE id = periodical.publisher_id";
     String GET_SINGLE_USER_BY_ID = "SELECT * FROM user WHERE (`id` = ?)";
     String UPDATE_BALANCE_AFTER_TOP_UP = "UPDATE `dbperiodicals`.`user` SET `balance` = ? WHERE (`id` = ?)";
+    String GET_SINGLE_USER_BY_USERNAME = "SELECT * FROM user WHERE (`username` = ?)";
+    String GET_SINGLE_USER_BY_TELEPHONE = "SELECT * FROM user WHERE (`telephone` = ?)";
+    String GET_SINGLE_USER_BY_EMAIL = "SELECT * FROM user WHERE (`email` = ?)";
     String SET_BAN_STATUS = "UPDATE `dbperiodicals`.`user` " + "SET `ban_status` = ? WHERE (`id` = ?)";
     String DELETE_USER_FROM_ADMIN_PAGE = "DELETE FROM `dbperiodicals`.`user` WHERE (`id` = ?)";
     String GET_PERIODICALS_FOR_CART = "SELECT `sell_id`, `title`, `price_per_month`, `name` FROM periodical, publisher WHERE sell_id=? AND `publisher`.`id` = periodical.publisher_id";
@@ -17,7 +20,8 @@ public interface SQLQuery {
     String GET_PRICE_OF_ONE_PERIODICAL_BY_ID = "SELECT price_per_month FROM periodical WHERE sell_id = ?";
     String INSERT_PERIODICAL = "INSERT INTO `dbperiodicals`.`periodical` " + "(`title`, `number_of_pages`, `periodicity_per_year`, `percentage_of_advertising`, `price_per_month`, " + "`description`, `rating`, `publisher_id`, `images`) " + "VALUES (?,?,?,?,?,?,?,?,?)";
     String DELETE_PERIODICAL_FROM_ADMIN_PAGE = "DELETE FROM `dbperiodicals`.`periodical` WHERE (`sell_id` = ?)";
-    String GET_ONE_PERIODICAL_BY_ID = "SELECT `sell_id`, `title`, `number_of_pages`, `periodicity_per_year`, `percentage_of_advertising`, `price_per_month`, `description`, `rating`, `publisher`.`name`, `publisher`.`telephone_number`, `images` FROM periodical, publisher WHERE sell_id = ?";
+    String GET_ONE_PERIODICAL_BY_ID = "SELECT `sell_id`, `title`, `number_of_pages`, `periodicity_per_year`, `percentage_of_advertising`, `price_per_month`, `description`, `rating`, `publisher`.`name`, `publisher`.`telephone_number`, `images` FROM `periodical` join `publisher` on `publisher_id` = `publisher`.`id` where `sell_id` = ?;";
+    String GET_ONE_PERIODICAL_BY_TITLE = "SELECT * FROM periodical WHERE title = ?";
     String UPDATE_PERIODICAL_FROM_ADMIN_PAGE = "UPDATE `dbperiodicals`.`periodical` " + "SET `title` = ?, `number_of_pages` = ?, `periodicity_per_year` = ?, `percentage_of_advertising` = ?, " + "`price_per_month` = ?, `description` = ?, `rating` = ?, `publisher_id` = ?, `images` = ? " + "WHERE (`sell_id` = ?)";
     String GET_NUMBER_OF_ALL_PERIODICALS = "SELECT COUNT(sell_id) FROM periodical";
     String GET_ALL_PUBLISHERS = "SELECT * FROM publisher";

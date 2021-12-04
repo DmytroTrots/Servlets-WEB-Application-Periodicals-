@@ -32,6 +32,7 @@ public class SendMessageServlet extends HttpServlet {
         String to = req.getParameter("to");
         String subject = req.getParameter("subject");
         String message = req.getParameter("message");
+        String lang = (String) req.getSession().getAttribute("lang");
 
         try {
             Mailer.send(to, subject, message);
@@ -39,6 +40,11 @@ public class SendMessageServlet extends HttpServlet {
             e.printStackTrace();
         }
 
+        if (lang == null || lang.equals("en")) {
+            req.getSession().setAttribute("ex", "Message was sent");
+        } else {
+            req.getSession().setAttribute("ex", "Лист успішно надіслано");
+        }
         resp.sendRedirect(req.getContextPath() + "/send-message");
     }
 }

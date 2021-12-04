@@ -30,9 +30,19 @@ public class AcceptOrderByAdminServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Integer id = Integer.parseInt(req.getParameter("id"));
+        String lang = (String) req.getSession().getAttribute("lang");
         ReceiptService.getInstance().acceptOrderByAdmin(id);
-        req.getSession().setAttribute("ex", "Order accepted");
         log.trace("Successfully --> order " + id + " accepted");
-        resp.sendRedirect(req.getContextPath() + "/orders");
+        langCheck(req, resp, lang, "Order was accepted", "Замовлення було прийнято");
+
+    }
+
+    private void langCheck(HttpServletRequest request, HttpServletResponse response, String lang, String message1, String message2) throws IOException {
+        if (lang == null || lang.equals("en")) {
+            request.getSession().setAttribute("ex", message1);
+        } else {
+            request.getSession().setAttribute("ex", message2);
+        }
+        response.sendRedirect(request.getContextPath() + "/orders");
     }
 }

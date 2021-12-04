@@ -190,4 +190,17 @@ public class PeriodicalService {
         }
         return 0;
     }
+
+    /**
+     * @param title
+     * @return
+     */
+    public Periodical getPeriodicalByTitle(String title) {
+        try (Connection con = connectionPool.getConnection()) {
+            return repository.getPeriodicalByTitle(title, con);
+        } catch (SQLException e) {
+            log.error("Cannot get periodical by title");
+        }
+        return null;
+    }
 }
