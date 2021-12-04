@@ -33,15 +33,16 @@ public class MonthIncDecServlet extends HttpServlet {
         if (action != null && id >= 1) {
             if (action.equals("inc")) {
                 for (Cart c : cart_list) {
-                    if (c.getSellId() == id) {
+                    if (c.getSellId() == id && c.getMonths() < 12) {
                         int month = c.getMonths();
                         month++;
                         c.setMonths(month);
-                        response.sendRedirect(request.getContextPath()+"/cart");
+                        break;
                     }
                 }
+                response.sendRedirect(request.getContextPath() + "/cart");
             }
-            if (action.equals("dec")) {
+            else if (action.equals("dec")) {
                 for (Cart c : cart_list) {
                     if (c.getSellId() == id && c.getMonths() > 1) {
                         int month = c.getMonths();
@@ -50,10 +51,10 @@ public class MonthIncDecServlet extends HttpServlet {
                         break;
                     }
                 }
-                response.sendRedirect(request.getContextPath()+"/cart");
+                response.sendRedirect(request.getContextPath() + "/cart");
             }
         } else {
-            response.sendRedirect(request.getContextPath()+"/cart");
+            response.sendRedirect(request.getContextPath() + "/cart");
         }
     }
 }

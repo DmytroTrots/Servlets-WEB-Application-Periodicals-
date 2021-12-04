@@ -3,6 +3,7 @@ package com.trots.periodacals.controllers.user;
 import com.trots.periodacals.entity.User;
 import com.trots.periodacals.service.UserService;
 import com.trots.periodacals.util.CreateReportOrders;
+import com.trots.periodacals.util.DeleteSubscriptionsSchedule;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,12 +32,19 @@ public class LoginServlet extends HttpServlet {
     public void init(){
         Timer timer = new Timer();
         Calendar cal = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
         cal.set(Calendar.HOUR_OF_DAY,23);
         cal.set(Calendar.MINUTE,59);
+        cal2.set(Calendar.DAY_OF_MONTH,1);
+        cal2.set(Calendar.HOUR_OF_DAY,0);
+        cal2.set(Calendar.MINUTE,1);
 
-        Date timeoRun = cal.getTime();
+        Date timeOnRun = cal.getTime();
+        Date timeOnRun2 = cal2.getTime();
         CreateReportOrders createReportOrders = new CreateReportOrders();
-        timer.schedule(createReportOrders, timeoRun);
+        DeleteSubscriptionsSchedule deleteSubscriptionsSchedule = new DeleteSubscriptionsSchedule();
+        timer.schedule(deleteSubscriptionsSchedule,timeOnRun2);
+        timer.schedule(createReportOrders, timeOnRun);
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

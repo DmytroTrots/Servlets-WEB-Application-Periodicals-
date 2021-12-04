@@ -109,4 +109,12 @@ public class ReceiptService {
             log.error("Cannot accept order");
         }
     }
+
+    public void deleteOrdersAfterTime(){
+        try(Connection connection = connectionPool.getConnection()){
+            repository.getAllOrdersForDelete(connection);
+        } catch (SQLException throwables) {
+            log.error("Cannot delete orders");
+        }
+    }
 }

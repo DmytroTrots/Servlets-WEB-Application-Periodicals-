@@ -180,6 +180,7 @@ public class PeriodicalsDaoImpl implements PeriodicalsDao, SQLQuery {
                 periodical.setPricePerMonth(resultSet.getDouble("price_per_month"));
                 periodical.setPublisher(resultSet.getString("name"));
                 periodical.setImage(resultSet.getString("images"));
+                periodical.setPeriodicityPerYear(resultSet.getInt("periodicity_per_year"));
                 periodical.setRating(resultSet.getDouble("rating"));
                 list.add(periodical);
             }

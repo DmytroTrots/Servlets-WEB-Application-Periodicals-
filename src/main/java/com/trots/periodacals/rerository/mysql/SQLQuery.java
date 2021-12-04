@@ -4,6 +4,7 @@ package com.trots.periodacals.rerository.mysql;
  * The interface Sql query.
  */
 public interface SQLQuery {
+
     String INSERT_USER_BY_ADMIN = "INSERT INTO `dbperiodicals`.`user` " + "(`username`, `email`, `password`, `role`, `telephone`, `name`, `surname`, `address`)" + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     String SELECT_ALL_USERS = "SELECT * FROM user";
     String SELECT_CREDENTIALS_LOGIN = "SELECT `username`, `password`, `role` FROM `user`";
@@ -28,6 +29,8 @@ public interface SQLQuery {
     String INSERT_PUBLISHER = "INSERT INTO `dbperiodicals`.`publisher` " + "(`name`, `telephone_number`) VALUES (?, ?)";
     String INSERT_ORDER_INTO_DB = "INSERT INTO `dbperiodicals`.`receipt` (`name`, " + "`surname`, `adress`, `telephone_number`, `status_id`, `user_id`, `email`)" + "VALUES (?, ?, ?, ?, ?, ?, ?)";
     String FIND_ORDERS_OF_ONE_USER = "select periodical_has_receipt.price_per_month, periodical_has_receipt.number_of_month, `status`.`status_name`, periodical.title, receipt.create_time, publisher.`name`\n" + "from ((((periodical_has_receipt\n" + "inner join receipt on  periodical_has_receipt.receipt_id = receipt.id)\n" + "inner join `periodical` on periodical_has_receipt.periodical_sell_id = periodical.sell_id)\n" + "inner join `status` on receipt.status_id = `status`.id)\n" + "inner join publisher on periodical.publisher_id = publisher.id)\n" + "where receipt.user_id = ? order by status_name asc";
+    String FIND_ORDERS_OF_ALL_USERS_FOR_DELETE = "select periodical_has_receipt.periodical_sell_id, periodical_has_receipt.receipt_id, periodical_has_receipt.price_per_month, periodical.periodicity_per_year, periodical_has_receipt.number_of_month, `status`.`status_name`, periodical.title, receipt.create_time, publisher.`name` from ((((periodical_has_receipt inner join receipt on  periodical_has_receipt.receipt_id = receipt.id) inner join `periodical` on periodical_has_receipt.periodical_sell_id = periodical.sell_id) inner join `status` on receipt.status_id = `status`.id) inner join publisher on periodical.publisher_id = publisher.id)";
+    String DELETE_ORDER_AFTER_TIME = "DELETE FROM `periodical_has_receipt` WHERE (`periodical_sell_id` = ?) and (`receipt_id` = ?)";
     String FIND_ALL_ACCEPTED_ORDERS_FOR_ADMIN_REPORT = "select periodical_has_receipt.price_per_month, periodical_has_receipt.number_of_month, periodical.title, receipt.user_id\n" + "from periodical_has_receipt \n" + "inner join receipt on  periodical_has_receipt.receipt_id = receipt.id\n" + "inner join `periodical` on periodical_has_receipt.periodical_sell_id = periodical.sell_id\n" + "where cast(receipt.create_time as date) = ? and receipt.status_id = 3;";
     String INSERT_RECORD_INTO_RECEIPT_HAS_PERIODICALS_TABLE = "INSERT INTO `dbperiodicals`.`periodical_has_receipt` (`periodical_sell_id`, `receipt_id`, `price_per_month`, `number_of_month`) VALUES (?, ?, ?, ?)";
     String GET_ALL_ORDERS_FOR_ADMIN_PAGE = "select receipt.id, receipt.adress, receipt.`name`, receipt.surname, MAX(`status`.`status_name`) as s, " + "receipt.user_id, receipt.telephone_number, receipt.email, receipt.create_time, " + "sum(periodical_has_receipt.price_per_month) as sum, " + "group_concat(periodical_sell_id) as conc from periodical_has_receipt, receipt, status " + "where receipt.status_id = `status`.`id`  and receipt_id = receipt.id  group by receipt_id order by s DESC";

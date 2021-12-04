@@ -92,4 +92,28 @@ public class ReceiptDaoImpl implements ReceiptDao, SQLQuery {
             preparedStatement.executeUpdate();
         }
     }
+
+    @Override
+    public void getAllOrdersForDelete(Connection connection) throws SQLException {
+        List<Receipt> list = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_ORDERS_OF_ALL_USERS_FOR_DELETE)) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                java.util.Date date = new java.util.Date();
+                long currentDate =date.getTime();
+                while (resultSet.next()) {
+                    Date dateDB = resultSet.getDate("create_time");
+                    int periodicity = resultSet.getInt("periodicity_per_year");
+                    int months = resultSet.getInt("number_of_month");
+                    long endDate = dateDB.getTime()+(((long) (12 / periodicity) *months)*30L*24L*60L*60L*1000L);
+                    if (endDate<currentDate){
+                        try(PreparedStatement preparedStatement1 = connection.prepareStatement(DELETE_ORDER_AFTER_TIME)){
+                            preparedStatement1.setInt(1, resultSet.getInt("periodical_sell_id"));
+                            preparedStatement1.setInt(2, resultSet.getInt("receipt_id"));
+                            preparedStatement1.executeUpdate();
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

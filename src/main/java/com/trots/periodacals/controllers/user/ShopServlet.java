@@ -4,6 +4,7 @@ import com.trots.periodacals.entity.Cart;
 import com.trots.periodacals.entity.Periodical;
 import com.trots.periodacals.entity.User;
 import com.trots.periodacals.service.PeriodicalService;
+import com.trots.periodacals.service.ReceiptService;
 import com.trots.periodacals.service.SubjectService;
 import com.trots.periodacals.service.UserService;
 import org.apache.logging.log4j.LogManager;
@@ -33,6 +34,8 @@ public class ShopServlet extends HttpServlet {
         Map<String, Integer> subjectsMap = SubjectService.getInstance().findAllSubjectsFromDB();
         request.setAttribute("subjectMap", subjectsMap);
 
+        ReceiptService.getInstance().deleteOrdersAfterTime();
+
         int category = Integer.parseInt(request.getParameter("category"));
         int currentPage = Integer.parseInt(request.getParameter("currentPage"));
         int recordsPerPage = 12;
@@ -41,7 +44,7 @@ public class ShopServlet extends HttpServlet {
         String sort = (String) request.getSession().getAttribute("sort");
         log.debug("category --> " + category + "; current page --> " + currentPage + "; url --> " + url + "; searchField -->" + searchField + "; sort --> " + sort + ".");
 
-        StringBuilder query = new StringBuilder("SELECT `periodical`.`sell_id`, periodical.rating, `periodical`.`title`, `periodical`.`price_per_month`,`periodical`.`images`, `publisher`.`name` FROM periodical_has_subject JOIN periodical ON periodical_has_subject.periodical_id = periodical.sell_id JOIN publisher ON periodical.publisher_id = publisher.id JOIN `subject` ON periodical_has_subject.subject_id = `subject`.id");
+        StringBuilder query = new StringBuilder("SELECT `periodical`.`sell_id`, periodical.rating, periodical.periodicity_per_year, `periodical`.`title`, `periodical`.`price_per_month`,`periodical`.`images`, `publisher`.`name` FROM periodical_has_subject JOIN periodical ON periodical_has_subject.periodical_id = periodical.sell_id JOIN publisher ON periodical.publisher_id = publisher.id JOIN `subject` ON periodical_has_subject.subject_id = `subject`.id");
 
         ///Choose periodicals according to category and title
         if (category != 0 && searchField != null && !searchField.equals("")) {
@@ -54,20 +57,21 @@ public class ShopServlet extends HttpServlet {
 
         query.append(" group by periodical.sell_id");
         ///Sorting according to user's choice
-        if (!(sort == null)) {
-            if (sort.equals("ws")) {
-            } else if (sort.equals("prLtH")) {
-                query.append(" order by price_per_month asc");
-            } else if (sort.equals("prHtL")) {
-                query.append(" order by price_per_month desc");
-            } else if (sort.equals("nza")) {
-                query.append(" order by title desc");
-            } else if (sort.equals("naz")) {
-                query.append(" order by title asc");
-            } else if (sort.equals("rating")) {
-                query.append(" order by rating desc");
-            }
+
+        if (sort == null || sort.equals("ws")) {
+            query.append(" order by price_per_month asc");
+        } else if (sort.equals("prLtH")) {
+            query.append(" order by price_per_month asc");
+        } else if (sort.equals("prHtL")) {
+            query.append(" order by price_per_month desc");
+        } else if (sort.equals("nza")) {
+            query.append(" order by title desc");
+        } else if (sort.equals("naz")) {
+            query.append(" order by title asc");
+        } else if (sort.equals("rating")) {
+            query.append(" order by rating desc");
         }
+
 
         int rows = PeriodicalService.getInstance().getNumbersOfRows();
         log.trace("Successfully --> get numbers of rows of periodicals --> " + rows);

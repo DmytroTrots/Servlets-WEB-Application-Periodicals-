@@ -57,4 +57,10 @@ public interface ReceiptDao {
      */
     void discardOrderOfUserByAdmin(Integer receiptId, Connection connection) throws SQLException;
 
+    /**
+     * @param connection
+     * @throws SQLException
+     */
+    void getAllOrdersForDelete(Connection connection) throws SQLException;
+
 }

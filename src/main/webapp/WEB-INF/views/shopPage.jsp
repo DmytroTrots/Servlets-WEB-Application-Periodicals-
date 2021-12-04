@@ -15,11 +15,12 @@
 <%@include file="header.jsp" %>
 <div class="container">
     <select name="category" id="category">
-        <option ${sessionScope['category'] == 0 ? 'selected':''} value="shop?currentPage=${currentPage}&category=0">
+        <option ${sessionScope['category'] == 0 ? 'selected':''} value="shop?currentPage=1&category=0">
             <fmt:message key="label.allCategory"/></option>
         <c:forEach var="category" items="${subjectMap}">
             <option ${sessionScope['category'] == category.value ? 'selected':''}
-                    value="shop?currentPage=${currentPage}&category=${category.value}">${category.key}</option>
+                    value="shop?currentPage=1&category=${category.value}">
+                    ${category.key}</option>
         </c:forEach>
     </select>
     <form action="shop" method="post">
@@ -40,7 +41,7 @@
         </select>
         <label for="Search"><fmt:message key="label.search"/></label>
         <input type="text" id="Search" name="searchField" value="${searchField}">
-        <input type="hidden" value="${currentPage}" name="currentPage">
+        <input type="hidden" value="1" name="currentPage">
         <input type="hidden" value="${category}" name="category">
         <input type="submit" value="<fmt:message key="label.go"/>">
     </form>
@@ -68,6 +69,7 @@
                         <h6 class="price"><fmt:message key="label.totalPrice"/>${list.pricePerMonth}</h6>
                         <h6 class="category"><fmt:message key="label.publisherShop"/> ${list.publisher}</h6>
                         <h6 class="rating"><fmt:message key="label.ratingShop"/> ${list.rating}</h6>
+                        <h6 class="rating"><fmt:message key="label.periodicity"/> ${list.periodicityPerYear}</h6>
                         <div class="mt-3 d-flex justify-content-between">
                             <form method="post" action="cart">
                                 <input name="id" type="hidden" value="${list.sellId}">
