@@ -12,6 +12,8 @@ import java.security.spec.InvalidKeySpecException;
  */
 public class PBKDF2PasswordHashing {
 
+    //1000:2ec7d8a3ebd0663b095dba9526decfb7:b735b24045e9ffec77a6c51bc7f7dfedwe90d698fed94688402dc93656d25eb60b397feb4528256140c950f8e06e903ce4b685da1921143c91bfcbbd6d302bf9
+
     /**
      * Generate storng password hash string.
      *

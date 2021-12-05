@@ -1,6 +1,5 @@
 package com.trots.periodacals.util;
 
-import com.trots.periodacals.controllers.user.LoginServlet;
 import com.trots.periodacals.service.ReceiptService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
