@@ -32,7 +32,7 @@ public class AuthenticationFilter implements Filter {
         String roleRequest = (String) ((HttpServletRequest) servletRequest).getSession().getAttribute("Role");
         Integer id = (Integer) ((HttpServletRequest) servletRequest).getSession().getAttribute("ID");
         String lang = (String) ((HttpServletRequest) servletRequest).getSession().getAttribute("lang");
-        servletResponse.setCharacterEncoding("UTF-16");
+        servletResponse.setCharacterEncoding("UTF-8");
         System.out.println(id);
 
 

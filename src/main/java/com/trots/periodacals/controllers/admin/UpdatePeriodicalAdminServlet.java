@@ -59,7 +59,6 @@ public class UpdatePeriodicalAdminServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Periodical periodicalOld = (Periodical) request.getSession().getAttribute("periodicalInf");
         Map<String, Integer> publisherMap = (Map<String, Integer>) request.getSession().getAttribute("publisherMap");
-        Map<String, Integer> subjectMap = (Map<String, Integer>) request.getSession().getAttribute("subjectMap");
         String oldImage = periodicalOld.getImage();
 
         String title = request.getParameter("title");
@@ -128,6 +127,7 @@ public class UpdatePeriodicalAdminServlet extends HttpServlet {
             ///check subject -> add(and get generated key)
             List<String> existedSubj = (List<String>) request.getSession().getAttribute("existedSubject");
             for (String s : subject) {
+                Map<String, Integer> subjectMap = SubjectService.getInstance().findAllSubjectsFromDB();
                 Integer subjectsId = subjectMap.get(subject.get(subject.indexOf(s)));
                 if (subjectsId == null && !subject.get(subject.indexOf(s)).equals("")) {
                     subjectsId = SubjectService.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));

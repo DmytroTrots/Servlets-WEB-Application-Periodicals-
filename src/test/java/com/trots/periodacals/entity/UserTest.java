@@ -31,8 +31,6 @@ public class UserTest {
         Assert.assertEquals(1.0, user.getBalance(),0.1);
         Assert.assertEquals("address",user.getAddress());
 
-
-
     }
 
 }

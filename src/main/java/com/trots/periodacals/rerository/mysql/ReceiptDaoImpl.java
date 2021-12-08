@@ -100,7 +100,7 @@ public class ReceiptDaoImpl implements ReceiptDao, SQLQuery {
         try (PreparedStatement preparedStatement = connection.prepareStatement(FIND_ORDERS_OF_ALL_USERS_FOR_DELETE)) {
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 java.util.Date date = new java.util.Date();
-                long currentDate =date.getTime();
+                long currentDate = date.getTime();
                 while (resultSet.next()) {
                     Date dateDB = resultSet.getDate("create_time");
                     int periodicity = resultSet.getInt("periodicity_per_year");

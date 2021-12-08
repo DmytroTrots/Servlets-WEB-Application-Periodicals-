@@ -27,10 +27,12 @@
         </c:if>
     </span>
     <c:if test="${sessionScope.lang==null || sessionScope.lang =='en'}">
-        <div class="d-flex py-3"><h3><fmt:message key="label.totalPrice"/><ex:sign message="$"/> ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
+        <div class="d-flex py-3"><h3><fmt:message key="label.totalPrice"/><ex:sign
+                message="$"/> ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
     </c:if>
     <c:if test="${sessionScope.lang == 'ua'}">
-        <div class="d-flex py-3"><h3><fmt:message key="label.totalPrice"/><ex:sign message="₴"/> ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
+        <div class="d-flex py-3"><h3><fmt:message key="label.totalPrice"/><ex:sign
+                message="₴"/> ${(totalPrice>0)?decimalFormat.format(totalPrice):0}</h3></div>
     </c:if>
 
     <form action="/order-all" method="post">
@@ -46,54 +48,59 @@
             </thead>
 
             <c:if test="${sessionScope['cart_list'] != null && not empty sessionScope['cart_list']}">
-                <c:forEach items="${cartPeriodical}" var="list">
-                    <tbody class="cart-items">
-                    <td>${list.title}</td>
-                    <td>${list.publisher}</td>
-                    <td>${sessionScope['decimalFormat'].format(list.pricePerMonth)}</td>
-                    <td>
-                        <input type="hidden" name="id" value="${list.sellId}" class="form-input">
-                        <div class="form-group d-flex justify-content-between w-50">
-                            <a class="btn bnt-sm btn-decre" href="inc-dec?action=dec&id=${list.sellId}"><i
-                                    class="fas fa-minus-square"></i> </a>
-                            <input type="number" name="month" class="form-control w-50" value="${list.months}"
-                                   readonly>
-                            <a class="btn bnt-sm btn-incre" href="inc-dec?action=inc&id=${list.sellId}"><i
-                                    class="fas fa-plus-square"></i> </a>
-                        </div>
-                    </td>
-                    <td><a class="btn btn-sm btn-danger" href="remove-record?id=${list.sellId}"> <fmt:message key="label.remove"/> </a></td>
-                    </tbody>
-                </c:forEach>
+            <c:forEach items="${cartPeriodical}" var="list">
+                <tbody class="cart-items">
+                <td>${list.title}</td>
+                <td>${list.publisher}</td>
+                <td>${sessionScope['decimalFormat'].format(list.pricePerMonth)}</td>
+                <td>
+                    <input type="hidden" name="id" value="${list.sellId}" class="form-input">
+                    <div class="form-group d-flex justify-content-between w-50">
+                        <a class="btn bnt-sm btn-decre" href="inc-dec?action=dec&id=${list.sellId}"><i
+                                class="fas fa-minus-square"></i> </a>
+                        <input type="number" name="month" class="form-control w-50" value="${list.months}"
+                               readonly>
+                        <a class="btn bnt-sm btn-incre" href="inc-dec?action=inc&id=${list.sellId}"><i
+                                class="fas fa-plus-square"></i> </a>
+                    </div>
+                </td>
+                <td><a class="btn btn-sm btn-danger" href="remove-record?id=${list.sellId}"> <fmt:message
+                        key="label.remove"/> </a></td>
+                </tbody>
+            </c:forEach>
         </table>
-        <table style="with: 80%">
-            <tr>
-                <td><fmt:message key="label.name"/></td>
-                <td><input type="text" name="name" value="${user.getName()}" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
-                           title="<fmt:message key="label.name"/>" required/></td>
-            </tr>
-            <tr>
-                <td><fmt:message key="label.surname"/></td>
-                <td><input type="text" name="surname" value="${user.getSurname()}" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
-                           title="<fmt:message key="label.surnameValidate"/>" required/></td>
-            </tr>
-            <tr>
-                <td><fmt:message key="label.email"/></td>
-                <td><input type="email" name="email" value="${user.getEmail()}" required/></td>
-            </tr>
-            <tr>
-                <td><fmt:message key="label.telephone"/></td>
-                <td><input type="tel" name="telephone" value="${user.getTelephone()}" pattern="[0-9]{11,12}"
-                           title="<fmt:message key="label.telephoneValidate"/>"
-                           required/></td>
-            </tr>
-            <tr>
-                <td><fmt:message key="label.address"/></td>
-                <td><input type="text" name="address" value="${user.getAddress()}" required/></td>
-            </tr>
-        </table>
-        <button type="submit" class="btn btn-primary btn-sm" href="order-all"><fmt:message key="label.buy"/></button>
-            </c:if>
+        <c:if test="${sessionScope['ID'] != null}">
+            <table style="with: 80%">
+                <tr>
+                    <td><fmt:message key="label.name"/></td>
+                    <td><input type="text" name="name" value="${user.getName()}" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                               title="<fmt:message key="label.name"/>" required/></td>
+                </tr>
+                <tr>
+                    <td><fmt:message key="label.surname"/></td>
+                    <td><input type="text" name="surname" value="${user.getSurname()}" pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                               title="<fmt:message key="label.surnameValidate"/>" required/></td>
+                </tr>
+                <tr>
+                    <td><fmt:message key="label.email"/></td>
+                    <td><input type="email" name="email" value="${user.getEmail()}" required/></td>
+                </tr>
+                <tr>
+                    <td><fmt:message key="label.telephone"/></td>
+                    <td><input type="tel" name="telephone" value="${user.getTelephone()}" pattern="[0-9]{11,12}"
+                               title="<fmt:message key="label.telephoneValidate"/>"
+                               required/></td>
+                </tr>
+                <tr>
+                    <td><fmt:message key="label.address"/></td>
+                    <td><input type="text" name="address" value="${user.getAddress()}" required/></td>
+                </tr>
+            </table>
+            <button type="submit" class="btn btn-primary btn-sm" href="order-all"><fmt:message
+                    key="label.buy"/></button>
+        </c:if>
+        </c:if>
+
     </form>
 </div>
 

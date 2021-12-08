@@ -48,7 +48,6 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, Integer> publisherMap = (Map<String, Integer>) request.getSession().getAttribute("publisherMap");
-        Map<String, Integer> subjectMap = (Map<String, Integer>) request.getSession().getAttribute("subjectMap");
 
         String title = request.getParameter("title");
         int numberOfPages = Integer.parseInt(request.getParameter("numberOfPages"));
@@ -113,6 +112,7 @@ public class AddPeriodicalAdminServlet extends HttpServlet {
             ///insert subject into db
 
             for (String s : subject) {
+                Map<String, Integer> subjectMap = SubjectService.getInstance().findAllSubjectsFromDB();
                 Integer subjectsId = subjectMap.get(subject.get(subject.indexOf(s)));
                 if (subjectsId == null && !subject.get(subject.indexOf(s)).equals("")) {
                     subjectsId = SubjectService.getInstance().insertSubjectIntoDB(subject.get(subject.indexOf(s)));

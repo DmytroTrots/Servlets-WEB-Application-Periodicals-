@@ -58,7 +58,7 @@
                                         key="label.surname"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="surname" class="form-control" name="surname"
-                                           pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                                           pattern="[а-яА-ЯёЁa-zA-Z]{1,25}"
                                            title="<fmt:message key="label.nameValidate"/>" required>
                                 </div>
                             </div>
@@ -68,7 +68,7 @@
                                         key="label.name"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="name" class="form-control" name="name"
-                                           pattern="[а-яА-ЯёЁa-zA-Z]{1-25}"
+                                           pattern="[а-яА-ЯёЁa-zA-Z]{1,25}"
                                            title="<fmt:message key="label.nameValidate"/>" required>
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
                                         key="label.address"/></label>
                                 <div class="col-md-6">
                                     <input type="text" id="address" class="form-control" name="address"
-                                           required>
+                                           maxlength="300" required>
                                 </div>
                             </div>
 
